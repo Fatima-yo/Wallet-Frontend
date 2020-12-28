@@ -8,11 +8,11 @@ import ProtectedWallet from '../contracts/ProtectedWallet.json'
 import Web3 from 'web3';
 import Contract from 'web3-eth-contract';
  
-const providerURL = "https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27";
+const providerURL = "https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27";
 
 const snowflakeAddress = '0xB0D5a36733886a4c5597849a05B315626aF5222E'
 
-const hydroAddress = '0x4959c7f62051D6b2ed6EaeD3AAeE1F961B145F20'
+const hydroAddress = '0xebbdf302c940c6bfd49c6b165f457fdb324649bc'
 
 const identityRegistryAddress = '0xa7ba71305bE9b2DFEad947dc0E5730BA2ABd28EA'
 
@@ -21,8 +21,6 @@ const clientRaindropAddress = '0x387Ce3020e13B0a334Bb3EB25DdCb73c133f1D7A'
 const oldClientRaindropAddress = '0xb29778Cf8abFFF8BF245b9060CD2299ADb358040'
 
 const protectedWalletFactoryAddress = '0xF834224699b6c1Fd5a9dF0DBbe7674Ba7C31db49'
-
-const abi = [{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"greet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getGreeting","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}];
 
 
 class Web3Service {
@@ -38,11 +36,16 @@ class Web3Service {
     }
 
     async createHydroTokenContract() {  
-        // const myContract = await new this.web3.eth.Contract(abi, hydroAddress);
-        // const myData = myContract.methods.greet( "hello blockchain devs").encodeABI();
-        // console.log(myData)
         const hydroTokenContract = await new this.web3.eth.Contract(HydroToken.abi, hydroAddress)
         return hydroTokenContract;
+    }
+
+    async getHydroTokenABI() {  
+        return HydroToken.abi;
+    }
+
+    async getHydroTokenAddress() {
+        return hydroAddress;
     }
 
     async createIdentityRegistryContract() {
@@ -61,7 +64,6 @@ class Web3Service {
     }
 
 }
-
 
 const w3s = new Web3Service()
 export default w3s;

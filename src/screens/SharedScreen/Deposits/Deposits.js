@@ -42,11 +42,13 @@ class Deposits extends Component {
         qrvalue: '',
         privatekeyValue: '',
         OpenScanner: false,
+        balance: "",
+        qrSection: false,
     }
 
     async componentDidMount() {
+        w3s.initContract()
         this.retrieveData()
-        this.web3 = await new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27'));
     }
 
     retrieveData = async () => {
@@ -61,8 +63,7 @@ class Deposits extends Component {
         }
     }
 
-
-    deposit = async () => {
+    deposits = async () => {
 
         try {
 
@@ -80,55 +81,27 @@ class Deposits extends Component {
                 await this.setState({ isError: false })
             }
 
-            let currentProvider = await new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
-            let provider = new ethers.providers.Web3Provider(currentProvider);
-
             let privateKey = this.state.privatekeyValue;
-            let wallet = new ethers.Wallet(privateKey)
 
-            
-            let transaction = {
-                to: this.state.hydroaddress,
-                value: ethers.utils.parseEther(this.state.amount),
-                chainId: 4,
-                nonce: 3,
-                privateKey
+            const abi = await w3s.getHydroTokenABI();
+            const hydrotokenaddress = await w3s.getHydroTokenAddress();
+
+            const provider = ethers.getDefaultProvider()
+            const wallet = new ethers.Wallet(privateKey, provider)
+
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+            const receiverWallet = this.state.hydroaddress
+
+            const howMuchTokens = ethers.utils.parseUnits(this.state.amount, 18)
+            console.log("Before sending!")
+            async function sendTokens() {
+                await contract.transfer(receiverWallet, howMuchTokens) 
+                console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
             }
+            sendTokens()
 
-            provider.estimateGas(transaction).then(function (estimate) {
-                transaction.gasLimit = estimate;
-                console.log('estimate: ' + estimate);
-                
-                var signPromise = wallet.sign(transaction);
-              
-                signPromise.then((signedTransaction) => {
-                    console.log(signedTransaction);
-    
-                    // let provider = new ethers.providers.Web3Provider(currentProvider);
-                    let provider = ethers.getDefaultProvider()
-                    provider.sendTransaction(signedTransaction).then((tx) => {
-                        console.log(tx);
-                        // {
-                        //    // These will match the above values (excluded properties are zero)
-                        //    "nonce", "gasLimit", "gasPrice", "to", "value", "data", "chainId"
-                        //
-                        //    // These will now be present
-                        //    "from", "hash", "r", "s", "v"
-                        //  }
-                        // Hash:
-                    })
-                    .catch((e)=>{
-                        console.log(e.message)
-                    })
-                })
-                .catch((e)=>{
-                    console.log(e.message)
-                })
 
-            })
-            .catch((e)=>{
-                console.log(e.message)
-            })
         }
         catch (ex) {
             console.log(ex)
@@ -147,8 +120,8 @@ class Deposits extends Component {
     };
     onChange = (value) => {
         // alert(value)
-        this.setState({ amount: value })
-        console.log("state value --->", this.state.amount);
+        this.setState({ amount: value });
+        //console.log("state value --->", this.state.amount);
     }
 
     render() {
@@ -156,27 +129,11 @@ class Deposits extends Component {
         return (
 
             <BgView>
-                <Header.Back title="Deposits" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <Header.Back title="Transfer Hydro" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
-                        <DepositCard
-                            hydroAddress={this.props.route.params.walletToken}
-                            onIdPress={this.onCopyToClipboard}
-                        />
 
-                        <View style={styles.qrcode}>
-                            <QRCode
-                                value={JSON.stringify(this.props.route.params.walletToken)}
-                                size={width * 0.8}
-                                color="white"
-                                backgroundColor="black"
-                                logoSize={30}
-                                logoMargin={2}
-                                logoBorderRadius={15}
-                                logoBackgroundColor="yellow"
-                            />
-                        </View>
                         <LabelInput
                             label="Hydro Address"
                             placeholder="Enter Hydro Address"
@@ -187,25 +144,13 @@ class Deposits extends Component {
                                 this.setState({ hydroaddress: value })
                             }}
                         />
+
                         <LabelInput
                             label="Amount"
                             placeholder="0.00"
                             keyboardType={'number-pad'}
                             value={this.state.amount}
                             onChangeText={(value) => this.onChange(value)}
-                        // onChangeText={(value) => {
-                        //     console.log(value)
-                        //     this.setState({ value })
-                        // }}
-                        />
-                        <LabelInput
-                            label="Comments"
-                            placeholder="Comments"
-                            value={this.state.comments}
-                            onChangeText={(value) => {
-                                console.log(value)
-                                this.setState({ comments: value })
-                            }}
                         />
 
                         {this.state.isError &&
@@ -219,15 +164,11 @@ class Deposits extends Component {
                             </Text>
                         }
 
-                        <View style={{ flexDirection: 'row', flex: 1, }}>
+                        <View style={{ flexDirection: 'row', width: '98%' }}>
                             <View style={styles.button}>
-                                <Button text="Deposit" onPress={this.deposit} />
+                                <Button text="Transfer Hydro" onPress={this.deposits} />
                             </View>
-                            {/* <View style={styles.button}>
-                                <Button text="Read QR" onPress={this.onOpenScanner} />
-                            </View> */}
                         </View>
-
                     </KeyboardAwareScrollView>
                 </View>
             </BgView>

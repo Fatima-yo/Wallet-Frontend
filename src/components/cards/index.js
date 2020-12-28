@@ -304,6 +304,116 @@ export const DepositCard = ({
     </View>
   );
 };
+export const HydroBalance = ({
+  hydroAddress,
+  onWalletPress,
+  onIdPress,
+  onAddPress,
+  customToken,
+  ...props
+}) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View
+      style={{
+        backgroundColor: theme.secondaryCard,
+        // paddingVertical: width * 0.05,
+        width: width - width * 0.1,
+        //marginTop: width * 0.05,
+        //paddingHorizontal: width * 0.05,
+        borderRadius: 10,
+        //  marginBottom: width * 0.05,
+      }}
+      {...props}
+    >
+
+      <View style={{}}>
+        <Lead>Hydro Balance</Lead>
+        <TouchableOpacity
+          onPress={onIdPress}
+          style={{
+            padding: 5,
+            backgroundColor: theme.secondary,
+            borderRadius: 5,
+            // marginTop: 5
+          }}
+        >
+          <Paragraph>{hydroAddress}</Paragraph>
+        </TouchableOpacity>
+      </View>
+      {customToken && Object.keys(customToken).length > 0 &&
+        <View style={{ marginTop: 10 }}>
+          <Lead>Custom Token</Lead>
+          <TouchableOpacity
+            style={{
+              padding: 5,
+              backgroundColor: theme.secondary,
+              borderRadius: 5,
+            }}
+          >
+            <Paragraph>{customToken.symbol}</Paragraph>
+          </TouchableOpacity>
+        </View>
+      }
+    </View>
+  );
+};
+export const EtherBalance = ({
+  hydroAddress,
+  onWalletPress,
+  onIdPress,
+  onAddPress,
+  customToken,
+  ...props
+}) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View
+      style={{
+        backgroundColor: theme.secondaryCard,
+        // paddingVertical: width * 0.05,
+        width: width - width * 0.1,
+        //marginTop: width * 0.05,
+        //paddingHorizontal: width * 0.05,
+        borderRadius: 10,
+        //  marginBottom: width * 0.05,
+      }}
+      {...props}
+    >
+
+      <View style={{}}>
+        <Lead>Ether balance</Lead>
+        <TouchableOpacity
+          onPress={onIdPress}
+          style={{
+            padding: 5,
+            backgroundColor: theme.secondary,
+            borderRadius: 5,
+            // marginTop: 5
+          }}
+        >
+          <Paragraph>{hydroAddress}</Paragraph>
+        </TouchableOpacity>
+      </View>
+      {customToken && Object.keys(customToken).length > 0 &&
+        <View style={{ marginTop: 10 }}>
+          <Lead>Custom Token</Lead>
+          <TouchableOpacity
+            style={{
+              padding: 5,
+              backgroundColor: theme.secondary,
+              borderRadius: 5,
+            }}
+          >
+            <Paragraph>{customToken.symbol}</Paragraph>
+          </TouchableOpacity>
+        </View>
+      }
+    </View>
+  );
+};
 export const SettingsItemCard = ({ value, onPress, ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
@@ -388,7 +498,7 @@ export const WalletCard = ({ balance, address, cardName, withdraw, transfer, dep
         <Image source={require('../../assets/images/hydro.png')} />
         <View style={{ position: 'absolute', right: 10 }}>
           <Paragraph style={{ fontWeight: 'bold', fontSize: 20 }}>
-            {balance} HYDRO
+            HYDRO WALLET
           </Paragraph>
         </View>
       </View>
@@ -398,21 +508,21 @@ export const WalletCard = ({ balance, address, cardName, withdraw, transfer, dep
           <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-down" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Withdraw</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Ether</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={deposit} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-up" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Deposit</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Hydro</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="exchange-alt" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive/Balance</Text>
         </View>
 
       </View>

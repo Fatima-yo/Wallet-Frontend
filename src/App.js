@@ -41,7 +41,6 @@ const App = ({ navigation, route }) => {
 
   useEffect(async () => {
 
-   
       // const address = await AsyncStorage.getItem('@wallet_address_key');
       // const hydroId = await AsyncStorage.getItem('@hydro_id_key');
       // console.log('wallet_address_key--------------------------->', address,)
@@ -55,8 +54,6 @@ const App = ({ navigation, route }) => {
       //   navigation.navigate("register");
       // }
 
-
-    
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         `https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27`

@@ -5,65 +5,137 @@ import {
     KeyboardAvoidingView,
     Text,
     Dimensions,
-    Platform, StatusBar, StyleSheet
+    Linking,
+    TouchableHighlight,
+    PermissionsAndroid,
+    Platform,
+    StatusBar, StyleSheet, SafeAreaView, Clipboard, ToastAndroid,
 } from "react-native";
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import Button from "../../../components/Button";
+import Button from "../../../components/Button/index";
 import w3s from '../../../libs/Web3Service';
-import Web3 from 'web3';
 import { toWei } from '../../../libs/format';
+import Web3 from 'web3';
+import HydroToken from '../../../contracts/HydroToken.json'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { ThemeProvider } from '@react-navigation/native';
+import { ethers, } from 'ethers';
+import { Value } from 'react-native-reanimated';
+import AsyncStorage from "@react-native-community/async-storage";
+import { DepositCard, } from "../../../components/cards";
+import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
-
-const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E"
-
+//const Web3 = require("web3")
+ 
+const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
 class Withdraw extends Component {
     state = {
-        addressTo: "",
+        from: "",
+        hydroaddress: "",
         amount: "",
+        comments: "",
         isError: false,
         isSuccess: false,
-        error: ""
+        error: "",
+        qrvalue: '',
+        privatekeyValue: '',
+        OpenScanner: false,
     }
+
     async componentDidMount() {
+        this.retrieveData()
+    }
+
+
+
+    retrieveData = async () => {
         try {
-            await w3s.initContract()
-            if (this.props.route.params.walletToken) {
-                this.setState({ addressTo: this.props.route.params.walletToken })
+            const value = await AsyncStorage.getItem('@privateKey');    
+            this.setState({ privatekeyValue: value })
+            if (value !== null) {
+                console.log('PrivateKey-->', value)
             }
-        }
-        catch (ex) {
-            console.log(ex)
+        } catch (error) {
+
         }
     }
 
+
     withdraw = async () => {
+
         try {
-            if (!this.state.addressTo) {
-                await this.setState({ isError: true, error: "To Address must required!" })
+
+            if (!this.state.hydroaddress) {
+                await this.setState({ isError: true, error: "Hydro Address Required" })
                 return
-            }
-            else if (!this.state.amount) {
-                await this.setState({ isError: true, error: "amount must required!" })
-                return
-            }
-            else {
+            } else {
                 await this.setState({ isError: false })
             }
 
+            if (!this.state.amount) {
+                await this.setState({ isError: true, error: "uint256 must required!" })
+                return
+            } else {
+                await this.setState({ isError: false })
+            }
+            
+            let web3 = await new Web3('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
 
-            const myContract = await w3s.createSnowflakeContract();
-            console.log(toWei(this.state.amount.toString()), "myContract.methods");
-            let token = await myContract.methods.withdrawSnowflakeBalance(this.state.addressTo, toWei(this.state.amount.toString())).send({
-                from: this.state.addressTo
+            let privateKey = this.state.privatekeyValue;
+            let wallet = new ethers.Wallet(privateKey)
+            console.log(privateKey)
+
+            var txCount = await web3.eth.getTransactionCount(wallet.address)
+
+            var gasPrice = await web3.eth.getGasPrice()
+            // gasPrice += 1
+
+            let transaction = {
+                to: this.state.hydroaddress,
+                value: ethers.utils.parseEther(this.state.amount),
+                chainId: 1,
+                nonce: txCount,
+                gasPrice: gasPrice
+            }
+
+            console.log(transaction)
+
+            web3.eth.estimateGas(transaction).then(function (estimate) {
+                transaction.gasLimit = estimate;
+                console.log('estimate: ' + estimate);
+                
+                var signPromise = wallet.sign(transaction);
+              
+                signPromise.then((signedTransaction) => {
+                    console.log(signedTransaction);
+    
+                    // let provider = new ethers.providers.Web3Provider(currentProvider);
+                    // let provider = ethers.getDefaultProvider()
+                    web3.eth.sendSignedTransaction(signedTransaction).then((tx) => {
+                        console.log(tx);
+                        // {
+                        //    // These will match the above values (excluded properties are zero)
+                        //    "nonce", "gasLimit", "gasPrice", "to", "value", "data", "chainId"
+                        //
+                        //    // These will now be present
+                        //    "from", "hash", "r", "s", "v"
+                        //  }
+                        // Hash:
+                    })
+                    .catch((e)=>{
+                        console.log(e.message)
+                    })
+                })
+                .catch((e)=>{
+                    console.log(e.message)
+                })
+
             })
-            console.log(token, "token")
-            this.setState({ isSuccess: true, addressTo: "", amount: "" })
-            setTimeout(() => {
-                this.setState({ isSuccess: false })
-            }, 5000)
+            .catch((e)=>{
+                console.log(e.message)
+            })
         }
         catch (ex) {
             console.log(ex)
@@ -72,34 +144,50 @@ class Withdraw extends Component {
                 await this.setState({ error: ex.message })
         }
 
+
+    };
+
+
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.props.route.params.walletToken);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
+    };
+    onChange = (value) => {
+        // alert(value)
+        this.setState({ amount: value })
+        console.log("state value --->", this.state.amount);
     }
 
     render() {
         console.log(this.props.route.params.walletToken, "Props")
         return (
-            <BgView>
-                <Header.Back title="Withdraw" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
 
+            <BgView>
+                <Header.Back title="Transfer Ether" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-
                         <View style={{ paddingVertical: width * 0.02 }} />
+
                         <LabelInput
                             label="Hydro Address"
                             placeholder="Enter Hydro Address"
-                            value={''} //this.state.addressTo
-                            onChangeText={(value) => this.setState({ addressTo: value })}
+                            // keyboardType={'number-pad'}
+                            value={this.state.hydroaddress}
+                            onChangeText={(value) => {
+                                console.log(value)
+                                this.setState({ hydroaddress: value })
+                            }}
                         />
-
                         <LabelInput
-                            label="amount"
+                            label="Amount"
                             placeholder="0.00"
                             keyboardType={'number-pad'}
                             value={this.state.amount}
-                            onChangeText={(value) => {
-                                console.log(value)
-                                this.setState({ amount: value })
-                            }}
+                            onChangeText={(value) => this.onChange(value)}
+                        // onChangeText={(value) => {
+                        //     console.log(value)
+                        //     this.setState({ value })
+                        // }}
                         />
 
                         {this.state.isError &&
@@ -109,21 +197,27 @@ class Withdraw extends Component {
                         }
                         {this.state.isSuccess &&
                             <Text style={{ color: 'green' }}>
-                                Withdraw Successfully !
+                                Transfer Success!
                             </Text>
                         }
 
-                        <View style={styles.button}>
-                            <Button text="Withdraw" onPress={this.withdraw} />
+                        <View style={{ flexDirection: 'row', flex: 1, }}>
+                            <View style={styles.button}>
+                                <Button text="Transfer" onPress={this.withdraw} />
+                            </View>
+                            {/* <View style={styles.button}>
+                                <Button text="Read QR" onPress={this.onOpenScanner} />
+                            </View> */}
                         </View>
 
                     </KeyboardAwareScrollView>
                 </View>
-
-
             </BgView>
+
         );
+
     }
+
 }
 
 const styles = StyleSheet.create({
@@ -142,8 +236,16 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: width * 0.05
-    }
+        paddingVertical: width * 0.03,
+
+    },
+    qrcode: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: width * 0.05,
+        marginBottom: width * 0.05,
+        marginRight: width * 0.02,
+    },
 
 })
 

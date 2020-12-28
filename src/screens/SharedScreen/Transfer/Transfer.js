@@ -10,11 +10,18 @@ import {
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/TwoButton/index";
+import { DepositCard, HydroBalance, EtherBalance } from "../../../components/cards";
 import w3s from '../../../libs/Web3Service';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
 import { CameraKitCameraScreen } from 'react-native-camera-kit';
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import QRCode from 'react-native-qrcode-svg';
+import AsyncStorage from "@react-native-community/async-storage";
+import { ethers, } from 'ethers';
+import Web3 from 'web3';
+
+
 class Transfer extends Component {
     state = {
         addressTo: "",
@@ -24,45 +31,46 @@ class Transfer extends Component {
         error: "",
         qrvalue: "",
         qrSection: false,
+        walletaddress: "",
+        hydrobalance: "",
+        etherbalance: "",
+        privateKey: "",
     }
 
     async componentDidMount() {
         await w3s.initContract()
+        this.retrieveData()
     }
 
-    transfer = async () => {
+    retrieveData = async () => {
         try {
-            if (!this.state.addressTo) {
-                await this.setState({ isError: true, error: "To Address must required!" })
-                return
-            }
-            else if (!this.state.amount) {
-                await this.setState({ isError: true, error: "amount must required!" })
-                return
-            }
-            else {
-                await this.setState({ isError: false })
+            const value = await AsyncStorage.getItem('@privateKey');    
+            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({walletaddress: wallet.address})
+            if (value !== null) {
+                console.log('PrivateKey-->', value)
             }
 
+            const abi = await w3s.getHydroTokenABI()
+            const hydrotokenaddress = await w3s.getHydroTokenAddress()
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+            
+            let hydrobalance = await contract.balanceOf(wallet.address);
+            hydrobalance = Web3.utils.fromWei(hydrobalance.toString())
+            this.setState({hydrobalance: hydrobalance})
 
-            const myContract = await w3s.createHydroTokenContract();
-            console.log(myContract, "myContract");
-            let token = await myContract.methods.transfer(this.state.addressTo, this.state.amount).call()
-            console.log(token, "token")
-            this.setState({ isSuccess: true, addressTo: "", amount: "" })
+            let etherbalance = await wallet.getBalance()
+            etherbalance = Web3.utils.fromWei(etherbalance.toString())
+            this.setState({etherbalance: etherbalance})
+
+        } catch (error) {
+            console.log(error)
         }
-        catch (ex) {
-            console.log(ex)
-            await this.setState({ isError: true })
-            if (ex.message)
-                await this.setState({ error: ex.message })
-        }
-
     }
-    onOpenlink = () => {
-        // If scanned then function to open URL in Browser
-        Linking.openURL(this.state.qrvalue);
-    };
+
+
     onBarcodeScan = (qrvalue) => {
         // Called after te successful scanning of QRCode/Barcode
         this.setState({ Qrvalue: qrvalue });
@@ -83,78 +91,39 @@ class Transfer extends Component {
 
         return (
             <BgView>
-                <Header.Back title="Transfer" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <Header.Back title="Receive" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
 
-                <View style={styles.container}>
-                    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-                        <View style={{ paddingVertical: width * 0.02, width: width }} />
-                        <LabelInput
-                            label="Hydro Address"
-                            placeholder="Enter Hydro Address"
-                            value={this.state.qrvalue}
-                            onChangeText={(value) => this.setState({ addressTo: value })}
+                    <View style={{ paddingVertical: width * 0.02 }} />
+
+                    <DepositCard
+                        hydroAddress={this.state.walletaddress}
+                        onIdPress={this.onCopyToClipboard}
+                    />
+
+                    <View style={styles.qrcode}>
+                        <QRCode
+                            value={JSON.stringify(this.state.walletaddress)}
+                            size={width * 0.8}
+                            color="white"
+                            backgroundColor="black"
+                            logoSize={30}
+                            logoMargin={2}
+                            logoBorderRadius={15}
+                            logoBackgroundColor="yellow"
                         />
-                    </KeyboardAwareScrollView>
-                </View>
+                    </View>
 
-                {this.state.qrSection == true ?
-                    <View style={{ alignItems: 'center', flex: 1, marginTop: width * 0.33 }}>
-                        <QRCodeScanner
-                            onRead={this.onSuccess}
-                            reactivate={true}
-                            showMarker={true}
-                            markerStyle={{ borderColor: 'black', borderRadius: 10 }}
-                            // checkAndroidPermissions={false}
-                            cameraStyle={{ height: height * 0.25, width: width * 0.88 }}
-                            containerStyle={{ height: height * 0.25, width: width * 0.88 }}
-                        />
+                    <HydroBalance
+                        hydroAddress={this.state.hydrobalance}
+                        onIdPress={this.onCopyToClipboard}
+                    />
 
-                    </View> : null}
-
-
-
-
-                <View style={[styles.container]}>
-                    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-                        <View style={{ width: width - width * 0.05 }} />
-                        <LabelInput
-                            label="Amount"
-                            placeholder="0.00"
-                            keyboardType={'number-pad'}
-                            value={this.state.amount}
-                            onChangeText={(value) => {
-                                console.log(value)
-                                this.setState({ amount: value })
-                            }}
-                        />
-
-                        {this.state.isError &&
-                            <Text style={{ color: 'red' }}>
-                                Error : {this.state.error}
-                            </Text>
-                        }
-                        {this.state.isSuccess &&
-                            <Text style={{ color: 'green' }}>
-                                Transfer Successfully !
-                            </Text>
-                        }
-
-                        {/* <View style={styles.button}>
-                            <Button text="Transfer" onPress={this.transfer} />
-                        </View>  */}
-                         
-                        <View style={{ flexDirection: 'row', width: '98%' }}>
-                            <View style={[styles.button, { marginLeft: -15}]}>
-                                <Button text="Transfer" onPress={this.transfer} />
-                            </View>
-                            <View style={styles.button}>
-                                <Button text="Read QR" onPress={this.openqr} />
-                            </View>
-                        </View>
-                    </KeyboardAwareScrollView>
-
-                </View>
-
+                    <EtherBalance
+                        hydroAddress={this.state.etherbalance}
+                        onIdPress={this.onCopyToClipboard}
+                    />
+                </KeyboardAwareScrollView>
             </BgView>
         );
     }
