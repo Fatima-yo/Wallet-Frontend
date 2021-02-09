@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  StatusBar
+  StatusBar,
+  BackHandler
 } from "react-native";
 import { BgView, Header } from "../../components/Layouts";
 import { Paragraph, Lead } from "../../components/Typography";
@@ -99,6 +100,23 @@ const Home = ({ navigation, route }) => {
   );
 
   const theme = isLightTheme ? lightTheme : darkTheme;
+
+  function handleBackButtonClick() {
+    if(navigation.isFocused()) {
+      BackHandler.exitApp();
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    };
+  }, []);
 
   return (
     <BgView>

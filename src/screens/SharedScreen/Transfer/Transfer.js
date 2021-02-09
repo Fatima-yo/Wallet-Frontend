@@ -92,7 +92,9 @@ class Transfer extends Component {
         return (
             <BgView>
                 <Header.Back title="Receive" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
-                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ alignItems:'center'}}
+                >
 
                     <View style={{ paddingVertical: width * 0.02 }} />
 
@@ -101,7 +103,7 @@ class Transfer extends Component {
                         onIdPress={this.onCopyToClipboard}
                     />
 
-                    <View style={styles.qrcode}>
+                    <View style={[styles.qrcode, { paddingVertical: 40}]}>
                         <QRCode
                             value={JSON.stringify(this.state.walletaddress)}
                             size={width * 0.8}
@@ -119,10 +121,12 @@ class Transfer extends Component {
                         onIdPress={this.onCopyToClipboard}
                     />
 
+                    <View style={{ marginTop: 15}}>
                     <EtherBalance
                         hydroAddress={this.state.etherbalance}
                         onIdPress={this.onCopyToClipboard}
                     />
+                    </View>
                 </KeyboardAwareScrollView>
             </BgView>
         );
