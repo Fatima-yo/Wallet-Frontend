@@ -471,7 +471,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
       width: width - width * 0.10,
       height: 200,
       borderRadius: 25,
-      paddingHorizontal: 20,
+      paddingHorizontal: 10,
       paddingVertical: 20,
       marginTop: width * 0.06,
       // alignItems: 'center',
