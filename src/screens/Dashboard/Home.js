@@ -14,7 +14,7 @@ import { BgView, Header } from "../../components/Layouts";
 import { Paragraph, Lead } from "../../components/Typography";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import { TxFeedCard, WalletCard } from "../../components/cards";
+import { TxFeedCard, HydroCard, EtherCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
 import Button from "../../components/Button";
 import LottieView from 'lottie-react-native';
@@ -140,23 +140,25 @@ const Home = ({ navigation, route }) => {
         }}
       />
 
-
-
-
-
-
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: width * 0.05 }}>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <WalletCard
+          <HydroCard
             balance="0"
             address={address}
             cardName="Hydro Card"
-            withdraw={() => navigation.navigate("withdraw", { walletToken: address })}
             transfer={() => navigation.navigate("transfer")}
             deposit={() => navigation.navigate("deposits", { walletToken: address })}
           />
 
-          {/* <Button style={{ marginTop: "10%" }} text="Snowflake" onPress={() => navigation.navigate("snowflake")} /> */}
+          <EtherCard
+            balance="0"
+            address={address}
+            cardName="Hydro Card"
+            withdraw={() => navigation.navigate("withdraw", { walletToken: address })}
+            transfer={() => navigation.navigate("receiveether")}
+          />
+
+          { /* <Button style={{ marginTop: "10%" }} text="Snowflake" onPress={() => navigation.navigate("snowflake")} /> */}
         </View>
 
         {/* {identityAddress !== null ? (
@@ -193,11 +195,11 @@ const Home = ({ navigation, route }) => {
               onPress={getIdentityAddress}
             />
           </View>
-        )} */}
+          )} */}
 
 
         <Lead style={{ paddingVertical: width * 0.05 }}>Tx Feed</Lead>
-        {/* <View
+        { /*<View
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <LottieView
             source={require('../../assets/tx.json')}
@@ -206,7 +208,7 @@ const Home = ({ navigation, route }) => {
             loop
             style={{ width: '60%', height: '100%', }}
           />
-        </View> */}
+        </View> }
         <Paragraph
           style={{
             textAlign: "center",
@@ -215,9 +217,9 @@ const Home = ({ navigation, route }) => {
             marginTop: "30%",
           }}
         >
-          You have no transaction record.
-        </Paragraph>
-        {/* <View
+          You have no transaction record. 
+        </Paragraph> 
+        { <View
           style={{
             flex: 1,
             flexWrap: "wrap",
@@ -229,7 +231,7 @@ const Home = ({ navigation, route }) => {
           {TxFeed.map((feedItem, id) => (
             <TxFeedCard {...feedItem} key={id} />
           ))}
-        </View> */}
+          </View> */}
       </ScrollView>
 
     </BgView>

@@ -10,7 +10,7 @@ import {
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/TwoButton/index";
-import { DepositCard, HydroBalance, EtherBalance } from "../../../components/cards";
+import { DepositCard, HydroBalance } from "../../../components/cards";
 import w3s from '../../../libs/Web3Service';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
@@ -33,7 +33,6 @@ class Transfer extends Component {
         qrSection: false,
         walletaddress: "",
         hydrobalance: "",
-        etherbalance: "",
         privateKey: "",
     }
 
@@ -60,10 +59,6 @@ class Transfer extends Component {
             let hydrobalance = await contract.balanceOf(wallet.address);
             hydrobalance = Web3.utils.fromWei(hydrobalance.toString())
             this.setState({hydrobalance: hydrobalance})
-
-            let etherbalance = await wallet.getBalance()
-            etherbalance = Web3.utils.fromWei(etherbalance.toString())
-            this.setState({etherbalance: etherbalance})
 
         } catch (error) {
             console.log(error)
@@ -119,10 +114,6 @@ class Transfer extends Component {
                         onIdPress={this.onCopyToClipboard}
                     />
 
-                    <EtherBalance
-                        hydroAddress={this.state.etherbalance}
-                        onIdPress={this.onCopyToClipboard}
-                    />
                 </KeyboardAwareScrollView>
             </BgView>
         );

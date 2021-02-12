@@ -93,7 +93,7 @@ export default class Validate extends React.Component {
 
   generateKeys = async (value) => {
     this.setState({ spinner: true }, async () => {
-      axios.post('http://takedoodles.com:8080/hdkey/', {
+      axios.post('http://wallet.hydro.ethernity.live:8080/hdkey/', {
         mnemonic: value //await bip39.generateMnemonic(128)
       })
         .then(response => {
@@ -150,7 +150,7 @@ export default class Validate extends React.Component {
     }
 
     this.setState({ spinner: true }, async () => {
-      axios.post('http://takedoodles.com:8080/passwordkey/', {
+      axios.post('http://wallet.hydro.ethernity.live:8080/passwordkey/', {
         key: this.state.privateKey,
         password: this.state.password
       })
