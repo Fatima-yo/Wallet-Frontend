@@ -76,10 +76,9 @@ class EtherHistory extends Component {
             let etherscanProvider = new ethers.providers.EtherscanProvider();
 
             etherscanProvider.getHistory(wallet.address).then((history) => {
-                console.log("hello2")
-                history.forEach((tx) => {
-                    console.log(tx);
-                })
+                //history.forEach((tx) => {
+                //    console.log(tx);
+                //})
                 return history
             });
 
