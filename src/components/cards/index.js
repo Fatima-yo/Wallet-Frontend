@@ -569,7 +569,7 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
         source={require('../../assets/images/map.png')}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
-        <Image source={require('../../assets/images/hydro.png')} />
+        <Image source={require('../../assets/images/ethereum.png')} />
         <View style={{ position: 'absolute', right: 10 }}>
           <Paragraph style={{ fontWeight: 'bold', fontSize: 20 }}>
             ETHER
@@ -580,7 +580,7 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="arrow-down" color={"#fff"} size={28} />
+            <Icon name="arrow-up" color={"#fff"} size={28} />
           </TouchableOpacity>
           <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Ether</Text>
         </View>
@@ -608,6 +608,82 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
     </View >
   );
 };
+
+
+export const TuscCard = ({ balance, address, cardName, withdraw, transfer, deposit, ...props }) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View style={{
+      position: 'relative',
+      backgroundColor: theme.primary,
+      width: width - width * 0.10,
+      height: 200,
+      borderRadius: 25,
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      marginTop: width * 0.06,
+      // alignItems: 'center',
+      // justifyContent: 'space-between',
+      shadowColor: '#56D5D0',
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 13.35,
+    }} {...props}>
+      <Image
+        style={{
+          position: 'absolute',
+          left: 10,
+          right: 0,
+          top: 0,
+          bottom: 0,
+        }}
+        source={require('../../assets/images/map.png')}
+      />
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
+        <Image source={require('../../assets/images/tusc.png')} />
+        <View style={{ position: 'absolute', right: 10 }}>
+          <Paragraph style={{ fontWeight: 'bold', fontSize: 20 }}>
+            TUSC
+          </Paragraph>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
+            <Icon name="arrow-up" color={"#fff"} size={28} />
+          </TouchableOpacity>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Tusc</Text>
+        </View>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
+            <Icon name="exchange-alt" color={"#fff"} size={28} />
+          </TouchableOpacity>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive/Balance</Text>
+        </View>
+
+      </View>
+      {/* <Paragraph
+        style={{
+          fontSize: 21,
+          paddingHorizontal: 10,
+          marginBottom: '10%',
+          color: theme.white,
+          textAlign: 'center',
+        }}>
+        {address}
+      </Paragraph> */}
+
+
+    </View >
+  );
+};
+
 
 export const ComingSoonCard = ({ ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);

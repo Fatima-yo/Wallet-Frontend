@@ -15,7 +15,7 @@ import { BgView, Header } from "../../components/Layouts";
 import { Paragraph, Lead } from "../../components/Typography";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import { TxFeedCard, HydroCard, EtherCard } from "../../components/cards";
+import { TxFeedCard, HydroCard, EtherCard, TuscCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
 import Button from "../../components/Button";
 import LottieView from 'lottie-react-native';
@@ -166,13 +166,21 @@ const Home = ({ navigation, route }) => {
             cardName="Hydro Card"
             transfer={() => navigation.navigate("transfer")}
             deposit={() => navigation.navigate("deposits", { walletToken: address })}
-          />
+          /> 
 
           <EtherCard
             balance="0"
             address={address}
-            cardName="Hydro Card"
+            cardName="Ether Card"
             withdraw={() => navigation.navigate("withdraw", { walletToken: address })}
+            transfer={() => navigation.navigate("receiveether")}
+          />
+
+          <TuscCard
+            balance="0"
+            address={address}
+            cardName="Tusc Card"
+            withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}
             transfer={() => navigation.navigate("receiveether")}
           />
 
@@ -216,7 +224,7 @@ const Home = ({ navigation, route }) => {
           )} */}
 
 
-        <Lead style={{ paddingVertical: width * 0.05 }}>Tx Feed</Lead>
+        {/*<Lead style={{ paddingVertical: width * 0.05 }}>Tx Feed</Lead>*/}
         { /*<View
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <LottieView

@@ -69,6 +69,8 @@
     "string_decoder": "^0.10.31",
     "styled-components": "^5.1.1",
     "timers-browserify": "^1.4.2",
+    "tuscjs": "^0.0.11",
+    "tuscjs-ws": "^0.0.6",
     "url": "^0.10.3",
     "util": "^0.10.4",
     "vm-browserify": "0.0.4",

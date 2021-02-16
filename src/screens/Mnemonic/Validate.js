@@ -30,6 +30,7 @@ import axios from 'axios';
 import { BgView, Header } from "../../components/Layouts";
 const wallet = ethers.Wallet.createRandom();
 
+
 export default class Validate extends React.Component {
   constructor(props) {
     super(props);
