@@ -508,14 +508,14 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
           <TouchableOpacity onPress={deposit} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-up" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Hydro</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="exchange-alt" color={"#fff"} size={28} />
+            <Icon name="arrow-down" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive/Balance</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
         </View>
 
       </View>
@@ -535,7 +535,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
   );
 };
 
-export const EtherCard = ({ balance, address, cardName, withdraw, transfer, deposit, ...props }) => {
+export const EtherCard = ({ balance, address, cardName, withdraw, transfer, deposit, history, ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
   return (
@@ -582,14 +582,21 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
           <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-up" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Ether</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
+            <Icon name="arrow-down" color={"#fff"} size={28} />
+          </TouchableOpacity>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
+        </View>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={history} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="exchange-alt" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive/Balance</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>History</Text>
         </View>
 
       </View>
@@ -657,14 +664,14 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, depos
           <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-up" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Transfer Tusc</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="exchange-alt" color={"#fff"} size={28} />
+            <Icon name="arrow-down" color={"#fff"} size={28} />
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive/Balance</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
         </View>
 
       </View>

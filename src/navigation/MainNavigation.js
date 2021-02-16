@@ -26,6 +26,7 @@ import scanqr from "../screens/SharedScreen/Scanqr";
 import Transfer from "../screens/SharedScreen/Transfer/Transfer";
 import ReceiveEther from "../screens/SharedScreen/ReceiveEther/ReceiveEther";
 import TransferTusc from "../screens/SharedScreen/TransferTusc/TransferTusc";
+import EtherHistory from "../screens/SharedScreen/EtherHistory/EtherHistory";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ const MainNavigation = () => {
         <Stack.Screen name="transfertusc" component={TransferTusc} />
         <Stack.Screen name="transfer" component={Transfer} />
         <Stack.Screen name="receiveether" component={ReceiveEther} />
+        <Stack.Screen name="etherhistory" component={EtherHistory} />
         <Stack.Screen name="notification" component={Notification} />
         <Stack.Screen name="settings" component={Settings} />
         <Stack.Screen name="success" component={Success} />

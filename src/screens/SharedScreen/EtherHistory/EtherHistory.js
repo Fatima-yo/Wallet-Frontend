@@ -30,7 +30,7 @@ const { height, width } = Dimensions.get('window');
  
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
-class Deposits extends Component {
+class EtherHistory extends Component {
     state = {
         from: "",
         hydroaddress: "",
@@ -43,7 +43,7 @@ class Deposits extends Component {
         privatekeyValue: '',
         OpenScanner: false,
         balance: "",
-        qrSection: false,
+        qrSection: false
     }
 
     async componentDidMount() {
@@ -57,50 +57,31 @@ class Deposits extends Component {
             this.setState({ privatekeyValue: value })
             if (value !== null) {
                 console.log('PrivateKey-->', value)
+                this.etherhistory()
             }
         } catch (error) {
 
         }
     }
 
-    deposits = async () => {
+    etherhistory = async () => {
 
         try {
 
-            if (!this.state.hydroaddress) {
-                await this.setState({ isError: true, error: "Hydro Address Required" })
-                return
-            } else {
-                await this.setState({ isError: false })
-            }
-
-            if (!this.state.amount) {
-                await this.setState({ isError: true, error: "uint256 must required!" })
-                return
-            } else {
-                await this.setState({ isError: false })
-            }
-
             let privateKey = this.state.privatekeyValue;
-
-            const abi = await w3s.getHydroTokenABI();
-            const hydrotokenaddress = await w3s.getHydroTokenAddress();
-
             const provider = ethers.getDefaultProvider()
             const wallet = new ethers.Wallet(privateKey, provider)
+            
+            console.log(wallet.address, "address")
+            let etherscanProvider = new ethers.providers.EtherscanProvider();
 
-            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
-
-            const receiverWallet = this.state.hydroaddress
-
-            const howMuchTokens = ethers.utils.parseUnits(this.state.amount, 18)
-            console.log("Before sending!")
-            async function sendTokens() {
-                await contract.transfer(receiverWallet, howMuchTokens) 
-                console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
-            }
-            sendTokens()
-
+            etherscanProvider.getHistory(wallet.address).then((history) => {
+                console.log("hello2")
+                history.forEach((tx) => {
+                    console.log(tx);
+                })
+                return history
+            });
 
         }
         catch (ex) {
@@ -129,46 +110,11 @@ class Deposits extends Component {
         return (
 
             <BgView>
-                <Header.Back title="Transfer Hydro" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <Header.Back title="Ether History" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
 
-                        <LabelInput
-                            label="Hydro Address"
-                            placeholder="Enter Hydro Address"
-                            // keyboardType={'number-pad'}
-                            value={this.state.hydroaddress}
-                            onChangeText={(value) => {
-                                console.log(value)
-                                this.setState({ hydroaddress: value })
-                            }}
-                        />
-
-                        <LabelInput
-                            label="Amount"
-                            placeholder="0.00"
-                            keyboardType={'number-pad'}
-                            value={this.state.amount}
-                            onChangeText={(value) => this.onChange(value)}
-                        />
-
-                        {this.state.isError &&
-                            <Text style={{ color: 'red' }}>
-                                Error : {this.state.error}
-                            </Text>
-                        }
-                        {this.state.isSuccess &&
-                            <Text style={{ color: 'green' }}>
-                                Deposit Successfully !
-                            </Text>
-                        }
-
-                        <View style={{ flexDirection: 'row', width: '98%' }}>
-                            <View style={styles.button}>
-                                <Button text="Transfer" onPress={this.deposits} />
-                            </View>
-                        </View>
                     </KeyboardAwareScrollView>
                 </View>
             </BgView>
@@ -208,4 +154,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Deposits;
+export default EtherHistory;

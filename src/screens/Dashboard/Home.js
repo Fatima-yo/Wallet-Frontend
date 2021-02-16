@@ -174,6 +174,7 @@ const Home = ({ navigation, route }) => {
             cardName="Ether Card"
             withdraw={() => navigation.navigate("withdraw", { walletToken: address })}
             transfer={() => navigation.navigate("receiveether")}
+            history={() => navigation.navigate("etherhistory", { walletToken: address })}
           />
 
           <TuscCard

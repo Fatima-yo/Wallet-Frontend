@@ -68,7 +68,7 @@ class Withdraw extends Component {
         try {
 
             if (!this.state.hydroaddress) {
-                await this.setState({ isError: true, error: "Hydro Address Required" })
+                await this.setState({ isError: true, error: "Ether Address Required" })
                 return
             } else {
                 await this.setState({ isError: false })
@@ -169,8 +169,8 @@ class Withdraw extends Component {
                         <View style={{ paddingVertical: width * 0.02 }} />
 
                         <LabelInput
-                            label="Hydro Address"
-                            placeholder="Enter Hydro Address"
+                            label="Ether Address"
+                            placeholder="Enter Ether Address"
                             // keyboardType={'number-pad'}
                             value={this.state.hydroaddress}
                             onChangeText={(value) => {
