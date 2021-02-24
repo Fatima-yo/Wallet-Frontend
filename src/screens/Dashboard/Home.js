@@ -27,7 +27,7 @@ const { height, width } = Dimensions.get('window');
 const Home = ({ navigation, route }) => {
   const snowflakeContext = useContext(SnowflakeContext);
   const { address, hydroId } = route.params;
-  console.log(address);
+  console.log('address---->',address);
   const TxFeed = [
     {
       image: require("../../assets/images/emma.png"),

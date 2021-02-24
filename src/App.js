@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SplashScreen from "react-native-splash-screen";
-import { Animated, Easing, View, StatusBar, Platform } from "react-native";
+import { Animated, Easing, View, StatusBar, Platform,Text } from "react-native";
 import AppContainer from "./navigation/AppContainer";
 import AsyncStorage from "@react-native-community/async-storage";
 import LottieView from "lottie-react-native";
@@ -10,7 +10,7 @@ import Web3 from "web3";
 import MainNavigation from "./navigation/MainNavigation";
 import Home from './screens/Dashboard/Home'
 import { Alert } from "react-native";
-
+console.disableYellowBox = true;
 const ShowAnimation = () => {
   return (
     <View
@@ -20,7 +20,7 @@ const ShowAnimation = () => {
         justifyContent: "center",
       }}
     >
-      <LottieView
+      {/* <LottieView
         source={require("./assets/waves.json")}
         autoPlay
         key={1}
@@ -30,6 +30,8 @@ const ShowAnimation = () => {
           width: "100%",
         }}
       />
+       */}
+      {/* <Text>Welcome!</Text> */}
     </View>
   );
 };

@@ -39,12 +39,13 @@ const Landing = ({ navigation }) => {
   // const token = AsyncStorage.getItem('address')
   // const address = JSON.stringify(token)
   // console.log(address)
-  // useEffect(() => {
-  //   if(address !== null) {
-  //     navigation.navigate("app", { screen: "home" , params : { address }})
-  //   }
-    
-  // }, [])
+  useEffect(async () => {
+    const address = await AsyncStorage.getItem('@walletAddress');
+    const hydroId = await AsyncStorage.getItem('@privateKey');
+    if (hydroId !== null) {
+      navigation.navigate("app", { screen: "home", params: { address, hydroId } })
+    }
+  }, [])
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
 

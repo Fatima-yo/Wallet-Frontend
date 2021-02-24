@@ -27,7 +27,7 @@ import { DepositCard, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
- 
+
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
 class EtherHistory extends Component {
@@ -53,38 +53,39 @@ class EtherHistory extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@privateKey');    
+            const value = await AsyncStorage.getItem('@privateKey');
             this.setState({ privatekeyValue: value })
             if (value !== null) {
                 console.log('PrivateKey-->', value)
                 this.etherhistory()
             }
+            else
+                console.log('else_PrivateKey-->', value)
         } catch (error) {
 
         }
     }
 
     etherhistory = async () => {
-
+        console.log('etherhistory functioin calling-->')
         try {
-
             let privateKey = this.state.privatekeyValue;
             const provider = ethers.getDefaultProvider()
             const wallet = new ethers.Wallet(privateKey, provider)
-            
-            console.log(wallet.address, "address")
+
+            console.log("address----->", wallet.address)
             let etherscanProvider = new ethers.providers.EtherscanProvider();
+            console.log("etherscanProvider----->", etherscanProvider)
 
             etherscanProvider.getHistory(wallet.address).then((history) => {
-                //history.forEach((tx) => {
-                //    console.log(tx);
-                //})
+                history.forEach((tx) => {
+                    console.log('tx--------------------->', tx);
+                })
                 return history
             });
-
         }
         catch (ex) {
-            console.log(ex)
+            console.log('ex------------>', ex)
             await this.setState({ isError: true })
             if (ex.message)
                 await this.setState({ error: ex.message })
@@ -113,7 +114,7 @@ class EtherHistory extends Component {
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
-
+                        <Text>Hello</Text>
                     </KeyboardAwareScrollView>
                 </View>
             </BgView>
