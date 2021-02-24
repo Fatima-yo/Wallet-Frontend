@@ -37,10 +37,8 @@ const ShowAnimation = () => {
 const App = ({ navigation, route }) => {
   const [animationTime, setAnimationTime] = useState(false);
   const [wallet_address_Value, setwallet_address_Value] = useState('');
-
-
+  
   useEffect(async () => {
-
       // const address = await AsyncStorage.getItem('@wallet_address_key');
       // const hydroId = await AsyncStorage.getItem('@hydro_id_key');
       // console.log('wallet_address_key--------------------------->', address,)
@@ -57,8 +55,9 @@ const App = ({ navigation, route }) => {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         `https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27`
-      )
-    );
+      )); 
+    const address = await AsyncStorage.getItem('@wallet_address_key')
+    
 
     console.log(web3)
     SplashScreen.hide();
@@ -69,8 +68,9 @@ const App = ({ navigation, route }) => {
   return (
     <ThemeContextProvider>
       <SnowflakeState>
-        {/* {wallet_address_Value !== null ? <MainNavigation /> : <AppContainer />} */}
-        {animationTime ? <AppContainer /> : <ShowAnimation />}
+        <AppContainer />
+        {/*wallet_address_Value !== null ? <MainNavigation /> : <AppContainer />*/}
+        {/*animationTime ? <AppContainer /> : <ShowAnimation />*/}
       </SnowflakeState>
     </ThemeContextProvider>
   );

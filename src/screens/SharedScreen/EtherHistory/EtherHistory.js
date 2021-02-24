@@ -113,7 +113,40 @@ class EtherHistory extends Component {
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
-
+        {/*<Lead style={{ paddingVertical: width * 0.05 }}>Tx Feed</Lead>*/}
+        { /*<View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <LottieView
+            source={require('../../assets/tx.json')}
+            autoPlay
+            key={1}
+            loop
+            style={{ width: '60%', height: '100%', }}
+          />
+        </View> }
+        <Paragraph
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: 22,
+            marginTop: "30%",
+          }}
+        >
+          You have no transaction record. 
+        </Paragraph> 
+        { <View
+          style={{
+            flex: 1,
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+          }}
+        >
+          {TxFeed.map((feedItem, id) => (
+            <TxFeedCard {...feedItem} key={id} />
+          ))}
+          </View> */}
                     </KeyboardAwareScrollView>
                 </View>
             </BgView>
