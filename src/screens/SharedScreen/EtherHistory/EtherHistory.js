@@ -25,25 +25,36 @@ import { Value } from 'react-native-reanimated';
 import AsyncStorage from "@react-native-community/async-storage";
 import { DepositCard, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
+
+import { Table, TableWrapper, Row } from 'react-native-table-component';
+
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
 
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
 class EtherHistory extends Component {
-    state = {
-        from: "",
-        hydroaddress: "",
-        amount: "",
-        comments: "",
-        isError: false,
-        isSuccess: false,
-        error: "",
-        qrvalue: '',
-        privatekeyValue: '',
-        OpenScanner: false,
-        balance: "",
-        qrSection: false
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            from: "",
+            hydroaddress: "",
+            amount: "",
+            comments: "",
+            isError: false,
+            isSuccess: false,
+            error: "",
+            qrvalue: '',
+            privatekeyValue: '',
+            OpenScanner: false,
+            balance: "",
+            qrSection: false,
+            history: [],
+            tableHead: ['from', 'to', 'value', 'timestamp', 'confirmations'],
+            widthArr: [90, 90, 30, 80, 60]
+        }
     }
 
     async componentDidMount() {
@@ -56,42 +67,42 @@ class EtherHistory extends Component {
             const value = await AsyncStorage.getItem('@privateKey');
             this.setState({ privatekeyValue: value })
             if (value !== null) {
-                console.log('PrivateKey-->', value)
                 this.etherhistory()
             }
-            else
-                console.log('else_PrivateKey-->', value)
         } catch (error) {
 
         }
     }
 
     etherhistory = async () => {
-        console.log('etherhistory functioin calling-->')
         try {
             let privateKey = this.state.privatekeyValue;
             const provider = ethers.getDefaultProvider()
             const wallet = new ethers.Wallet(privateKey, provider)
+            const tableData = [];
 
-            console.log("address----->", wallet.address)
             let etherscanProvider = new ethers.providers.EtherscanProvider();
-            console.log("etherscanProvider----->", etherscanProvider)
 
             etherscanProvider.getHistory(wallet.address).then((history) => {
                 history.forEach((tx) => {
-                    console.log('tx--------------------->', tx);
+                    const rowData = [];
+                    rowData.push(tx.from)
+                    rowData.push(tx.to)
+                    rowData.push(Math.pow(16, tx.value._hex))
+                    rowData.push(tx.timestamp)
+                    rowData.push(tx.confirmations)
+                    tableData.push(rowData)
                 })
+                console.log('history----------->', tableData)
+                this.setState({ history: tableData })
                 return history
             });
         }
         catch (ex) {
-            console.log('ex------------>', ex)
             await this.setState({ isError: true })
             if (ex.message)
                 await this.setState({ error: ex.message })
         }
-
-
     };
 
 
@@ -100,21 +111,37 @@ class EtherHistory extends Component {
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     onChange = (value) => {
-        // alert(value)
         this.setState({ amount: value });
-        //console.log("state value --->", this.state.amount);
     }
 
     render() {
         console.log(this.props.route.params.walletToken, "Props")
         return (
-
             <BgView>
                 <Header.Back title="Ether History" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
-                        <Text>Hello</Text>
+                        <View style={styles.table_container}>
+                            <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+                                <Row data={this.state.tableHead} widthArr={this.state.widthArr} style={styles.table_header} textStyle={styles.table_text} />
+                            </Table>
+                            <ScrollView style={styles.table_dataWrapper}>
+                                <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+                                    {
+                                        this.state.history.map((rowData, index) => (
+                                            <Row
+                                                key={index}
+                                                data={rowData}
+                                                widthArr={this.state.widthArr}
+                                                style={[styles.table_row, index % 2 && { backgroundColor: '#F7F6E7' }]}
+                                                textStyle={styles.table_text}
+                                            />
+                                        ))
+                                    }
+                                </Table>
+                            </ScrollView>
+                        </View>
                     </KeyboardAwareScrollView>
                 </View>
             </BgView>
@@ -151,6 +178,12 @@ const styles = StyleSheet.create({
         marginBottom: width * 0.05,
         marginRight: width * 0.02,
     },
+
+    table_container: { flex: 1, backgroundColor: '#fff' },
+    table_header: { height: 50, backgroundColor: '#537791' },
+    table_text: { textAlign: 'center', fontWeight: '100' },
+    table_dataWrapper: { marginTop: -1 },
+    table_row: { backgroundColor: '#E7E6E1' }
 
 })
 

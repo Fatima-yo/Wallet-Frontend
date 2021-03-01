@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SplashScreen from "react-native-splash-screen";
-import { Animated, Easing, View, StatusBar, Platform,Text } from "react-native";
+import { Animated, Easing, View, StatusBar, Platform, Text } from "react-native";
 import AppContainer from "./navigation/AppContainer";
 import AsyncStorage from "@react-native-community/async-storage";
 import LottieView from "lottie-react-native";
@@ -29,41 +29,26 @@ const ShowAnimation = () => {
           height: "100%",
           width: "100%",
         }}
-      />
-       */}
-      {/* <Text>Welcome!</Text> */}
+      /> */}
+
+      <Text>Welcome!</Text>
     </View>
   );
 };
 
 const App = ({ navigation, route }) => {
   const [animationTime, setAnimationTime] = useState(false);
-  const [wallet_address_Value, setwallet_address_Value] = useState('');
-
 
   useEffect(async () => {
-
-      // const address = await AsyncStorage.getItem('@wallet_address_key');
-      // const hydroId = await AsyncStorage.getItem('@hydro_id_key');
-      // console.log('wallet_address_key--------------------------->', address,)
-      // console.log('Hydro----', hydroId);
-      // setwallet_address_Value(address);
-      // if (address, hydroId !== null) {
-
-      //   navigation.navigate("app", { screen: "home", params: { address, hydroId } });
-      // } else {
-
-      //   navigation.navigate("register");
-      // }
-
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         `https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27`
       )
     );
 
-    console.log(web3)
+    // console.log(web3)
     SplashScreen.hide();
+    // console.log('calling')
   }, []);
   setTimeout(() => {
     setAnimationTime(true);

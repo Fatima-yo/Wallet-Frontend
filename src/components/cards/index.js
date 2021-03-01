@@ -467,10 +467,10 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
   return (
     <View style={{
       position: 'relative',
-      backgroundColor: theme.primary,
+      // backgroundColor: theme.primary,
       width: width - width * 0.10,
       height: 200,
-      borderRadius: 25,
+      borderRadius: 5,
       paddingHorizontal: 10,
       paddingVertical: 20,
       marginTop: width * 0.06,
@@ -491,45 +491,36 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
           right: 0,
           top: 0,
           bottom: 0,
+          height: 200,
+          width: '100%',
+          borderRadius: 5
         }}
-        source={require('../../assets/images/map.png')}
+        source={require('../../assets/images/BG_HYDRO.png')}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
-        <Image source={require('../../assets/images/hydro.png')} />
-        <View style={{ position: 'absolute', right: 10 }}>
-          <Paragraph style={{ fontWeight: 'bold', fontSize: 20 }}>
-            HYDRO
-          </Paragraph>
+        <Image source={require('../../assets/images/hydro.png')} style={{ width: 30, height: 30 }} />
+      </View>
+      <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>1111 HYDRO</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
 
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={deposit} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="arrow-up" color={"#fff"} size={28} />
+          <TouchableOpacity onPress={deposit}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="arrow-down" color={"#fff"} size={28} />
+          <TouchableOpacity onPress={transfer}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
         </View>
 
       </View>
-      {/* <Paragraph
-        style={{
-          fontSize: 21,
-          paddingHorizontal: 10,
-          marginBottom: '10%',
-          color: theme.white,
-          textAlign: 'center',
-        }}>
-        {address}
-      </Paragraph> */}
-
 
     </View >
   );
@@ -541,15 +532,12 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
   return (
     <View style={{
       position: 'relative',
-      backgroundColor: theme.primary,
       width: width - width * 0.10,
       height: 200,
-      borderRadius: 25,
-      paddingHorizontal: 20,
+      borderRadius: 5,
+      paddingHorizontal: 10,
       paddingVertical: 20,
       marginTop: width * 0.06,
-      // alignItems: 'center',
-      // justifyContent: 'space-between',
       shadowColor: '#56D5D0',
       shadowOffset: {
         width: 0,
@@ -565,53 +553,34 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
           right: 0,
           top: 0,
           bottom: 0,
+          height: 200,
+          width: '100%',
+          borderRadius: 5
         }}
-        source={require('../../assets/images/map.png')}
+        source={require('../../assets/images/BG_ETH.png')}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
-        <Image source={require('../../assets/images/ethereum.png')} />
-        <View style={{ position: 'absolute', right: 10 }}>
-          <Paragraph style={{ fontWeight: 'bold', fontSize: 20 }}>
-            ETHER
-          </Paragraph>
+        <Image source={require('../../assets/images/ethereum.png')} style={{ width: 30, height: 30 }} />
+      </View>
+      <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>1.111 ETH</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
-
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="arrow-up" color={"#fff"} size={28} />
+          <TouchableOpacity onPress={withdraw}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="arrow-down" color={"#fff"} size={28} />
+          <TouchableOpacity onPress={transfer}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
         </View>
-
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={history} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
-            <Icon name="exchange-alt" color={"#fff"} size={28} />
-          </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>History</Text>
-        </View>
-
       </View>
-      {/* <Paragraph
-        style={{
-          fontSize: 21,
-          paddingHorizontal: 10,
-          marginBottom: '10%',
-          color: theme.white,
-          textAlign: 'center',
-        }}>
-        {address}
-      </Paragraph> */}
-
-
     </View >
   );
 };
@@ -623,11 +592,11 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, depos
   return (
     <View style={{
       position: 'relative',
-      backgroundColor: theme.primary,
+      // backgroundColor: theme.primary,
       width: width - width * 0.10,
       height: 200,
-      borderRadius: 25,
-      paddingHorizontal: 20,
+      borderRadius: 5,
+      paddingHorizontal: 10,
       paddingVertical: 20,
       marginTop: width * 0.06,
       // alignItems: 'center',
@@ -647,31 +616,39 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, depos
           right: 0,
           top: 0,
           bottom: 0,
+          height: 200,
+          width: '100%',
+          borderRadius: 5
         }}
-        source={require('../../assets/images/map.png')}
+        source={require('../../assets/images/BG_TUSC.png')}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
-        <Image source={require('../../assets/images/tusc.png')} />
-        <View style={{ position: 'absolute', right: 10 }}>
-          <Paragraph style={{ fontWeight: 'bold', fontSize: 20 }}>
-            TUSC
-          </Paragraph>
+        <Image source={require('../../assets/images/tusc.png')} style={{ width: 50, height: 30 }} />
+      </View>
+      <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>1111 TUSC</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
 
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
+          {/* <TouchableOpacity underlayerColor={'red'} onPress={withdraw} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-up" color={"#fff"} size={28} />
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={withdraw}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
+          {/* <TouchableOpacity onPress={transfer} style={{ backgroundColor: 'darkblue', borderRadius: 70 / 2, height: 70, width: 70, justifyContent: "center", alignItems: "center" }}>
             <Icon name="arrow-down" color={"#fff"} size={28} />
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={transfer}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
           </TouchableOpacity>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
         </View>
 
       </View>
