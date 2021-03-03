@@ -23,7 +23,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AsyncStorage from "@react-native-community/async-storage";
 const { height, width } = Dimensions.get('window');
 
-var privKey = "5KK1f4tVVpMikKbphYjh3Kb9ARh4JdSmgPTSzEkSGSgNN1SvEUp"
+var privKey = "5J3shx1Jkjiu57WFnZPQSnyurp2qFusZyFKVZwfQgnwkX9rfWS9"
 var pKey = PrivateKey.fromWif(privKey);
 
 class TransferTusc extends Component {
@@ -67,7 +67,7 @@ class TransferTusc extends Component {
                 await this.setState({ isError: false })
             }*/
             
-            Apis.instance("wss://tuscapi.gambitweb.com/", true)
+            Apis.instance("wss://node.testnet.bitshares.eu/", true)
             .init_promise.then((res) => {
                 console.log("connected to:", res);
                 console.log("Step I")        
@@ -75,11 +75,11 @@ class TransferTusc extends Component {
                 let memoSender = fromAccount;
                 let memo = "Testing transfer from node.js";
         
-                let toAccount = "marcocastiglionem";
+                let toAccount = "marcocastiglione5";
         
                 let sendAmount = {
                     amount: 10000,
-                    asset: "TUSC"
+                    asset: "TEST"
                 }
         
                 Promise.all([
@@ -127,12 +127,8 @@ class TransferTusc extends Component {
                             tr.add_signer(pKey, pKey.toPublicKey().toPublicKeyString());
                             console.log("serialized transaction:", tr.serialize());
                             tr.broadcast();
-                        }).catch((error) => {
-                            console.error(error);
-                          })
-                    }).catch((error) => {
-                        console.error(error);
-                      });
+                        })
+                    });
             });
 
         }

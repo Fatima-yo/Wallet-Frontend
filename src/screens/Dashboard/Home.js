@@ -233,6 +233,7 @@ const Home = ({ navigation, route }) => {
             cardName="Tusc Card"
             withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}
             transfer={() => navigation.navigate("receiveether")}
+            account={() => navigation.navigate("account")}
           />
 
           { /* <Button style={{ marginTop: "10%" }} text="Snowflake" onPress={() => navigation.navigate("snowflake")} /> */}

@@ -582,7 +582,7 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
 };
 
 
-export const TuscCard = ({ balance, address, cardName, withdraw, transfer, deposit, ...props }) => {
+export const TuscCard = ({ balance, address, cardName, withdraw, transfer, account, deposit, ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
   return (
@@ -615,8 +615,11 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, depos
         }}
         source={require('../../assets/images/BG_TUSC.png')}
       />
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, justifyContent: 'space-between' }}>
         <Image source={require('../../assets/images/tusc.png')} style={{ width: 50, height: 30 }} />
+        <TouchableOpacity onPress={account}>
+          <Text style={{ color: 'white', fontWeight: 'bold', letterSpacing: 0.8 }}>Account</Text>
+        </TouchableOpacity>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
