@@ -22,12 +22,15 @@ import LottieView from 'lottie-react-native';
 import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
+import Web3 from 'web3';
 
 const { height, width } = Dimensions.get('window');
 const Home = ({ navigation, route }) => {
+  const [hydrobalance, setHydrobalance] = React.useState(0);
+  const [etherbalance, setEtherbalance] = React.useState(0);
+
   const snowflakeContext = useContext(SnowflakeContext);
   const { address, hydroId } = route.params;
-  console.log('address---->',address);
   const TxFeed = [
     {
       image: require("../../assets/images/emma.png"),
@@ -102,7 +105,7 @@ const Home = ({ navigation, route }) => {
   const theme = isLightTheme ? lightTheme : darkTheme;
 
   function handleBackButtonClick() {
-    if(navigation.isFocused()) {
+    if (navigation.isFocused()) {
       BackHandler.exitApp();
       return true;
     } else {
@@ -117,6 +120,53 @@ const Home = ({ navigation, route }) => {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
     };
   }, []);
+
+  const handlegetHydroBalance = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@privateKey');
+      let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+      let provider = new ethers.providers.Web3Provider(currentProvider);
+      let wallet = new ethers.Wallet(value, provider)
+      // this.setState({ walletaddress: wallet.address })
+
+      const abi = await w3s.getHydroTokenABI()
+      const hydrotokenaddress = await w3s.getHydroTokenAddress()
+      const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+      let hydrobalance = await contract.balanceOf(wallet.address);
+      hydrobalance = Web3.utils.fromWei(hydrobalance.toString())
+      setHydrobalance(hydrobalance)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handlegetEtherBalance = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@privateKey');
+      let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+      let provider = new ethers.providers.Web3Provider(currentProvider);
+      let wallet = new ethers.Wallet(value, provider)
+      // this.setState({ walletaddress: wallet.address })
+
+      const abi = await w3s.getHydroTokenABI()
+      const hydrotokenaddress = await w3s.getHydroTokenAddress()
+      const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+      let etherbalance = await wallet.getBalance()
+      etherbalance = Web3.utils.fromWei(etherbalance.toString())
+      setEtherbalance(etherbalance)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    handlegetHydroBalance();
+    handlegetEtherBalance();
+  }, [])
 
   return (
     <BgView>
@@ -161,15 +211,15 @@ const Home = ({ navigation, route }) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: width * 0.05 }}>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <HydroCard
-            balance="0"
+            balance={hydrobalance}
             address={address}
             cardName="Hydro Card"
             transfer={() => navigation.navigate("transfer")}
             deposit={() => navigation.navigate("deposits", { walletToken: address })}
-          /> 
+          />
 
           <EtherCard
-            balance="0"
+            balance={etherbalance}
             address={address}
             cardName="Ether Card"
             withdraw={() => navigation.navigate("withdraw", { walletToken: address })}

@@ -495,7 +495,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>1111 HYDRO</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -557,7 +557,7 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>1.111 ETH</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} ETH</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
