@@ -87,7 +87,8 @@ class ReceiveEther extends Component {
         return (
             <BgView>
                 <Header.Back title="Receive" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
-                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ alignItems:'center'}}>
 
                     <View style={{ paddingVertical: width * 0.02 }} />
 
