@@ -25,6 +25,7 @@ import Deposits from "../screens/SharedScreen/Deposits/Deposits";
 import scanqr from "../screens/SharedScreen/Scanqr";
 import Transfer from "../screens/SharedScreen/Transfer/Transfer";
 import ReceiveEther from "../screens/SharedScreen/ReceiveEther/ReceiveEther";
+import ReceiveTusc from "../screens/SharedScreen/ReceiveTusc/ReceiveTusc";
 import Account from "../screens/SharedScreen/Account";
 import TransferTusc from "../screens/SharedScreen/TransferTusc/TransferTusc";
 import EtherHistory from "../screens/SharedScreen/EtherHistory/EtherHistory";
@@ -44,6 +45,7 @@ const MainNavigation = () => {
         <Stack.Screen name="transfertusc" component={TransferTusc} />
         <Stack.Screen name="transfer" component={Transfer} />
         <Stack.Screen name="receiveether" component={ReceiveEther} />
+        <Stack.Screen name="receivetusc" component={ReceiveTusc} />
         <Stack.Screen name="account" component={Account} />
         <Stack.Screen name="etherhistory" component={EtherHistory} />
         <Stack.Screen name="notification" component={Notification} />

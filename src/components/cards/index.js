@@ -359,6 +359,7 @@ export const HydroBalance = ({
     </View>
   );
 };
+
 export const EtherBalance = ({
   hydroAddress,
   onWalletPress,
@@ -409,6 +410,58 @@ export const EtherBalance = ({
     </View>
   );
 };
+
+export const TuscBalance = ({
+  tuscAddress,
+  onWalletPress,
+  onIdPress,
+  onAddPress,
+  customToken,
+  ...props
+}) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View
+      style={{
+        backgroundColor: theme.secondaryCard,
+        width: width - width * 0.1,
+        borderRadius: 10,
+      }}
+      {...props}
+    >
+
+      <View style={{}}>
+        <Lead>Tusc balance</Lead>
+        <TouchableOpacity
+          onPress={onIdPress}
+          style={{
+            padding: 5,
+            backgroundColor: theme.secondary,
+            borderRadius: 5,
+          }}
+        >
+          <Paragraph>{tuscAddress}</Paragraph>
+        </TouchableOpacity>
+      </View>
+      {customToken && Object.keys(customToken).length > 0 &&
+        <View style={{ marginTop: 10 }}>
+          <Lead>Custom Token</Lead>
+          <TouchableOpacity
+            style={{
+              padding: 5,
+              backgroundColor: theme.secondary,
+              borderRadius: 5,
+            }}
+          >
+            <Paragraph>{customToken.symbol}</Paragraph>
+          </TouchableOpacity>
+        </View>
+      }
+    </View>
+  );
+};
+
 export const SettingsItemCard = ({ value, onPress, ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;

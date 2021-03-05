@@ -232,7 +232,7 @@ const Home = ({ navigation, route }) => {
             address={address}
             cardName="Tusc Card"
             withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}
-            transfer={() => navigation.navigate("receiveether")}
+            transfer={() => navigation.navigate("receivetusc")}
             account={() => navigation.navigate("account")}
           />
 

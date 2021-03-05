@@ -41,7 +41,7 @@ class Account extends Component {
     handlesave = async () => {
         await AsyncStorage.setItem('@accountName', this.state.name);
         await AsyncStorage.setItem('@accountprivateKey', this.state.privateKey);
-        console.log('saved--->', name, private_key)
+        console.log('saved--->', this.state.name, this.state.privatekey)
     }
 
     render() {
