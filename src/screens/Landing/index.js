@@ -30,7 +30,7 @@ const slides = [
     id: "3",
 
     body:
-      "Store tokens and transfer Hydro Tokens to friends and family in Bitcon or Ether",
+      "Store tokens and transfer Hydro Tokens to friends and family in Bitcoin or Ether",
     image: require("../../assets/images/transfer.png"),
   },
 ];

@@ -17,8 +17,8 @@ import { CameraKitCameraScreen } from 'react-native-camera-kit';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import QRCode from 'react-native-qrcode-svg';
 import AsyncStorage from "@react-native-community/async-storage";
-import {Apis} from "tuscjs-ws";
-import {ChainStore, FetchChain, PrivateKey, TransactionHelper, Aes, TransactionBuilder, SerializerValidation} from "tuscjs";
+import { Apis } from "tuscjs-ws";
+import { ChainStore, FetchChain, PrivateKey, TransactionHelper, Aes, TransactionBuilder, SerializerValidation } from "tuscjs";
 
 class ReceiveTusc extends Component {
     state = {
@@ -34,27 +34,27 @@ class ReceiveTusc extends Component {
         privateKey: "",
     }
 
-    async componentDidMount() { 
+    async componentDidMount() {
         this.retrieveData()
     }
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@accountprivateKey');    
+            const value = await AsyncStorage.getItem('@accountprivateKey');
 
             if (value !== null) {
                 console.log('PrivateKey-->', value)
-                this.setState({privateKey: value})
+                this.setState({ privateKey: value })
                 let publicKey = PrivateKey.fromWif(value).toPublicKey().toString()
                 console.log('publickey', publicKey)
-                this.setState({walletaddress: publicKey})
+                this.setState({ walletaddress: publicKey })
             }
 
-            const accountName = await AsyncStorage.getItem('@accountName');    
+            const accountName = await AsyncStorage.getItem('@accountName');
 
             if (value !== null) {
                 console.log('accountName-->', accountName)
-                this.setState({accountName: accountName})
+                this.setState({ accountName: accountName })
             }
 
             Apis.instance('wss://node.testnet.bitshares.eu/', true).init_promise.then((res) => {
@@ -64,7 +64,7 @@ class ReceiveTusc extends Component {
                 ]).then(accounts => {
                     Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
                         let tuscbalance = res[0][1]['balances'][0]['balance']
-                        this.setState({tuscbalance: tuscbalance})
+                        this.setState({ tuscbalance: tuscbalance })
                     })
                 })
             })
@@ -81,22 +81,24 @@ class ReceiveTusc extends Component {
         this.setState({ setOpenScanner: false });
     };
 
-    
+
     onSuccess = e => {
-        if ( e.data !== "" ){
+        if (e.data !== "") {
             this.setState({ qrSection: false })
             this.setState({ qrvalue: e.data })
         }
     };
     openqr = () => {
-        this.setState({ qrSection: true }) 
+        this.setState({ qrSection: true })
     };
     render() {
 
         return (
             <BgView>
                 <Header.Back title="Receive" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
-                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                >
 
                     <View style={{ paddingVertical: width * 0.02 }} />
 
@@ -105,7 +107,7 @@ class ReceiveTusc extends Component {
                         onIdPress={this.onCopyToClipboard}
                     />
 
-                    <View style={styles.qrcode}>
+                    <View style={[styles.qrcode, { paddingVertical: 40 }]}>
                         <QRCode
                             value={JSON.stringify(this.state.walletaddress)}
                             size={width * 0.8}

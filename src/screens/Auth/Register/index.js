@@ -29,9 +29,9 @@ const Register = ({ navigation }) => {
 
   }
 
-  const createWallet =  (e) => {
+  const createWallet = (e) => {
     createDefaultAddress()
-      .then(async(walletData) => {
+      .then(async (walletData) => {
         let address = walletData[0].address;
         let key = walletData[0].privateKey;
         console.log('@privateKey =>', key)
@@ -73,12 +73,11 @@ const Register = ({ navigation }) => {
         <Spinner visible={spinner} small={'small'} color={theme.primary} />
 
         <View style={styles.top}>
-        <Image style={styles.logo} source={require("../../../assets/images/wallet.png")} />
+          <Image style={styles.logo} source={require("../../../assets/images/wallet.png")} />
         </View>
-        
+
         <Paragraph style={styles.paragraph}>
-          Create Default Wallet which would be used to create an ethereum
-          Identity Number
+          Create default wallet which would be used to create an Ethereum Identity Number
         </Paragraph>
 
         <View style={styles.buttonContainer}>
@@ -97,16 +96,16 @@ const styles = StyleSheet.create({
   },
 
   top: {
-    justifyContent:'center',
-    alignItems:'center',
-    height: height * 60/100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: height * 60 / 100,
     paddingHorizontal: 25
   },
 
   logo: {
     resizeMode: 'contain',
-    width: '100%', 
-    height: '100%', 
+    width: '100%',
+    height: '100%',
   },
 
   paragraph: {
@@ -114,9 +113,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.05
   },
 
-  
+
   buttonContainer: {
-    position:'absolute', 
+    position: 'absolute',
     width: width,
     bottom: 0,
     justifyContent: 'center',
