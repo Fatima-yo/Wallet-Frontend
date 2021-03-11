@@ -45,8 +45,8 @@ class AddCustomToken extends Component {
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
                         <LabelInput
-                            label="Contact Address"
-                            placeholder="Contact Address"
+                            label="Contract Address"
+                            placeholder="Contract Address"
                             value={this.state.contractAddress}
                             onChangeText={(value) => this.setState({ contractAddress: value })}
                         />

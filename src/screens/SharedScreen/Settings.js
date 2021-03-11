@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { View, Image, Clipboard, ToastAndroid, AsyncStorage, Dimensions, Platform, StatusBar, StyleSheet, ScrollView } from "react-native";
+import { View, Alert, Clipboard, ToastAndroid, AsyncStorage, Dimensions, Platform, Linking, StyleSheet, ScrollView } from "react-native";
 import { SecondaryBgView, SecondaryHeader } from "../../components/Layouts";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Paragraph } from "../../components/Typography";
@@ -9,12 +9,15 @@ import Button from "../../components/Button";
 import { add } from "lodash";
 const { height, width } = Dimensions.get('window');
 
+const GOOGLE_PACKAGE_NAME = 'com.hydrowallet';
+const APPLE_STORE_ID = 'id284882215';
+
 const Settings = ({ navigation, route }) => {
 
   const snowflakeContext = useContext(SnowflakeContext);
 
   const { hydroAddress } = snowflakeContext;
-  console.log(hydroAddress)
+  // console.log(hydroAddress)
 
   const [customToken, setCustomToken] = useState(null)
   //This function generates a random number used for the generation of qr code
@@ -58,6 +61,12 @@ const Settings = ({ navigation, route }) => {
     ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
   };
 
+  const CopyToClipboardPrivateKey = async () => {
+    const value = await AsyncStorage.getItem('@privateKey');
+    await Clipboard.setString(value);
+    ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
+  };
+
 
   const onAddPress = async () => {
     navigation.navigate('addCustomToken')
@@ -65,6 +74,57 @@ const Settings = ({ navigation, route }) => {
   const { toggleTheme } = useContext(ThemeContext);
 
   const { address } = route.params
+
+  const [count, setCount] = useState(5);
+  const [isIntervalRunnig, setIsIntervalRunnig] = useState(false);
+
+  const startRatingCounter = () => {
+    //Initialize count by 5 to start counter for 5 sec
+    setCount(1);
+    let tempcount = 1;
+    if (!isIntervalRunnig) {
+      setIsIntervalRunnig(true);
+      let t = setInterval(() => {
+        tempcount = tempcount - 1;
+        console.log(tempcount);
+        setCount(tempcount);
+        if (tempcount == 0) {
+          clearInterval(t);
+          setIsIntervalRunnig(false);
+          //After 5 second ask for the rate this app
+          Alert.alert(
+            'Rate us',
+            'Would you like to share your review with us? This will help and motivate us a lot.',
+            [
+              { text: 'Sure', onPress: () => openStore() },
+              {
+                text: 'No Thanks!',
+                onPress: () => console.log('No Thanks Pressed'),
+                style: 'cancel',
+              },
+            ],
+            { cancelable: false },
+          );
+        }
+      }, 1000);
+    }
+  };
+
+  const openStore = () => {
+    //This is the main trick
+    if (Platform.OS != 'ios') {
+      Linking.openURL(
+        // `market://details?id=${GOOGLE_PACKAGE_NAME}`,
+        `http://play.google.com/store/apps/details?id=${GOOGLE_PACKAGE_NAME}`
+      ).catch(
+        (err) => alert('Please check for Google Play Store')
+      );
+    } else {
+      Linking.openURL(
+        `itms://itunes.apple.com/in/app/apple-store/${APPLE_STORE_ID}`,
+      ).catch((err) => alert('Please check for the App Store'));
+    }
+  };
 
   return (
     <SecondaryBgView>
@@ -86,12 +146,12 @@ const Settings = ({ navigation, route }) => {
           flexDirection: "row",
           paddingBottom: width * 0.05
         }}>
-        <SettingsItemCard value="Export keys" />
+        <SettingsItemCard value="Export keys" onPress={CopyToClipboardPrivateKey} />
         <SettingsItemCard value="Advanced" />
         <SettingsItemCard value="Change Password" />
         <SettingsItemCard value="Dark Mode" onPress={toggleTheme} />
         <SettingsItemCard value="Contact Card" onPress={() => navigation.navigate('contact')} />
-        <SettingsItemCard value="Rate Us" />
+        <SettingsItemCard value="Rate Us" onPress={startRatingCounter} />
         <SettingsItemCard value="Lending" onPress={() => navigation.navigate('comingSoon')} />
         <SettingsItemCard value="Stacking" onPress={() => navigation.navigate('comingSoon')} />
         <SettingsItemCard value="Borrowing" onPress={() => navigation.navigate('comingSoon')} />

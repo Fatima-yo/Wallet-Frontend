@@ -155,7 +155,8 @@ export const SettingsCard = ({
       style={{
         backgroundColor: theme.secondaryCard,
         paddingVertical: width * 0.05,
-        width: width - width * 0.1,
+        // width: width - 20,
+        width: width - width * 0.05,
         marginTop: width * 0.05,
         paddingHorizontal: width * 0.05,
         borderRadius: 10,
@@ -194,17 +195,17 @@ export const SettingsCard = ({
             <Image source={require("../../assets/images/bitcoin.png")} />
           </TouchableOpacity> */}
           <TouchableOpacity onPress={onWalletPress} style={{ paddingRight: width * 0.02 }} >
-            <Image source={require("../../assets/images/ethereum.png")} />
+            <Image source={require("../../assets/images/ethereum1.png")} style={{ width: 42, height: 42 }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={onWalletPress} style={{ paddingHorizontal: width * 0.02 }}>
-            <Image source={require("../../assets/images/hydro.png")} />
+            <Image source={require("../../assets/images/hydro1.png")} style={{ width: 42, height: 42 }} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onAddPress}
             style={{
-              width: 30,
-              height: 30,
-              borderRadius: 20,
+              width: 40,
+              height: 40,
+              borderRadius: 100,
               marginHorizontal: width * 0.02,
               borderColor: theme.basic,
               borderWidth: 2,
@@ -212,6 +213,7 @@ export const SettingsCard = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              marginTop: 1
             }}
           >
             <Icon name="plus" color={theme.basic} size={12} />
@@ -471,8 +473,9 @@ export const SettingsItemCard = ({ value, onPress, ...props }) => {
       style={{
         backgroundColor: theme.secondaryCard,
         padding: 10,
-        width: (width - width * 0.13) / 2,
-        marginVertical: width * 0.02,
+        // width: (width - 30) / 2,
+        width: (width - width * 0.08) / 2,
+        marginVertical: width * 0.04,
         marginHorizontal: 5,
         borderRadius: 10,
         display: "flex",
@@ -528,6 +531,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
       },
       shadowOpacity: 0.1,
       shadowRadius: 13.35,
+      // backgroundColor:'#000'
     }} {...props}>
       <Image
         style={{
@@ -538,7 +542,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, transfer, depo
           bottom: 0,
           height: 200,
           width: '100%',
-          borderRadius: 5
+          borderRadius: 5,
         }}
         source={require('../../assets/images/BG_HYDRO.png')}
       />
@@ -677,7 +681,7 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, accou
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>1111 TUSC</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} TUSC</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>

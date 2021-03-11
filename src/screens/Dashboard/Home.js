@@ -23,11 +23,13 @@ import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
+import { Apis } from "tuscjs-ws";
 
 const { height, width } = Dimensions.get('window');
 const Home = ({ navigation, route }) => {
   const [hydrobalance, setHydrobalance] = React.useState(0);
   const [etherbalance, setEtherbalance] = React.useState(0);
+  const [tuscbalance, setTuscbalance] = React.useState(0);
 
   const snowflakeContext = useContext(SnowflakeContext);
   const { address, hydroId } = route.params;
@@ -163,9 +165,28 @@ const Home = ({ navigation, route }) => {
     }
   }
 
+  const handlegetTustBalance = async () => {
+    const accountName = await AsyncStorage.getItem('@accountName');
+    Apis.instance('wss://node.testnet.bitshares.eu/', true).init_promise.then((res) => {
+
+      return Apis.instance().db_api().exec("lookup_accounts", [
+        accountName, 100
+      ]).then(accounts => {
+        Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
+          let tuscbalance = res[0][1]['balances'][0]['balance']
+          setTuscbalance(tuscbalance)
+        })
+          .catch(err => {
+            console.log('erro---->', err)
+          })
+      })
+    })
+  }
+
   useEffect(() => {
     handlegetHydroBalance();
     handlegetEtherBalance();
+    handlegetTustBalance();
   }, [])
 
   return (
@@ -228,7 +249,7 @@ const Home = ({ navigation, route }) => {
           />
 
           <TuscCard
-            balance="0"
+            balance={tuscbalance}
             address={address}
             cardName="Tusc Card"
             withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}

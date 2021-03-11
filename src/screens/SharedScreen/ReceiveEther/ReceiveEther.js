@@ -43,11 +43,11 @@ class ReceiveEther extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@privateKey');    
+            const value = await AsyncStorage.getItem('@privateKey');
             let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
             let provider = new ethers.providers.Web3Provider(currentProvider);
             let wallet = new ethers.Wallet(value, provider)
-            this.setState({walletaddress: wallet.address})
+            this.setState({ walletaddress: wallet.address })
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
@@ -58,7 +58,7 @@ class ReceiveEther extends Component {
 
             let etherbalance = await wallet.getBalance()
             etherbalance = Web3.utils.fromWei(etherbalance.toString())
-            this.setState({etherbalance: etherbalance})
+            this.setState({ etherbalance: etherbalance })
 
         } catch (error) {
             console.log(error)
@@ -72,15 +72,15 @@ class ReceiveEther extends Component {
         this.setState({ setOpenScanner: false });
     };
 
-    
+
     onSuccess = e => {
-        if ( e.data !== "" ){
+        if (e.data !== "") {
             this.setState({ qrSection: false })
             this.setState({ qrvalue: e.data })
         }
     };
     openqr = () => {
-        this.setState({ qrSection: true }) 
+        this.setState({ qrSection: true })
     };
     render() {
 
@@ -97,7 +97,7 @@ class ReceiveEther extends Component {
                         onIdPress={this.onCopyToClipboard}
                     />
 
-                    <View style={styles.qrcode}>
+                    <View style={[styles.qrcode, { paddingVertical: 40 }]}>
                         <QRCode
                             value={JSON.stringify(this.state.walletaddress)}
                             size={width * 0.8}
