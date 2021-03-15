@@ -31,7 +31,7 @@ const ShowAnimation = () => {
         }}
       /> */}
 
-      <Text>Welcome!</Text>
+      <Text></Text>
     </View>
   );
 };

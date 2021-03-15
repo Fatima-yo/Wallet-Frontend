@@ -28,8 +28,7 @@ import crypto from 'crypto'
 import { Buffer } from 'buffer'
 import axios from 'axios';
 import { BgView, Header } from "../../components/Layouts";
-const wallet = ethers.Wallet.createRandom();
-
+import CryptoJS from "react-native-crypto-js";
 
 export default class Validate extends React.Component {
   constructor(props) {
@@ -94,24 +93,25 @@ export default class Validate extends React.Component {
 
   generateKeys = async (value) => {
     this.setState({ spinner: true }, async () => {
-      axios.post('http://wallet.hydro.ethernity.live:8080/hdkey/', {
-        mnemonic: value //await bip39.generateMnemonic(128)
-      })
-        .then(response => {
-          if (response.data.status) {
-            console.log(response.data)
-            this.setState({
-              spinner: false,
-              isGenerate: response.data.status,
-              privateKey: wallet.privateKey,
-              publicKey: wallet.address,
-            })
-          }
-        })
-        .catch(error => {
-          this.setState({ spinner: false })
-          alert(error);
-        });
+
+      const wallet = ethers.Wallet.fromMnemonic(value);
+
+      console.log(bip39.mnemonicToSeed)
+      let seed = bip39.mnemonicToSeed(value)
+      let isValid = bip39.validateMnemonic(value);
+      if (isValid == true) {
+          this.setState({
+            spinner: false,
+            isGenerate: true,
+            privateKey: wallet.privateKey,
+            publicKey: wallet.address,
+          })
+        }else {
+          this.setState({
+            spinner:false,
+            isGenerate:false
+          })
+        }
     })
   }
 
@@ -151,24 +151,17 @@ export default class Validate extends React.Component {
     }
 
     this.setState({ spinner: true }, async () => {
-      axios.post('http://wallet.hydro.ethernity.live:8080/passwordkey/', {
-        key: this.state.privateKey,
-        password: this.state.password
+
+      var encryptKey = CryptoJS.AES.encrypt(password, this.state.privateKey).toString(); 
+        
+      var bytes  = CryptoJS.AES.decrypt(encryptKey, this.state.privateKey);
+      var originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+      this.setState({spinner:false,
+        isGenerateKey: true,
+        encKeyFinal: encryptKey
       })
-        .then(response => {
-          if (response.data.status) {
-            console.log(response.data.key)
-            this.setState({
-              spinner: false,
-              isGenerateKey: response.data.status,
-              encKeyFinal: response.data.key
-            })
-          }
-        })
-        .catch(error => {
-          this.setState({ spinner: false })
-          alert(error);
-        });
+
     })
 
   }

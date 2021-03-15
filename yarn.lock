@@ -9495,6 +9495,11 @@
     "prompt" "^0.2.14"
     "semver" "^5.0.3"
 
+"react-native-crypto-js@^1.0.0":
+  "integrity" "sha512-FNbLuG/HAdapQoybeZSoes1PWdOj0w242gb+e1R0hicf3Gyj/Mf8M9NaED2AnXVOX01b2FXomwUiw1xP1K+8sA=="
+  "resolved" "https://registry.npmjs.org/react-native-crypto-js/-/react-native-crypto-js-1.0.0.tgz"
+  "version" "1.0.0"
+
 "react-native-crypto@^2.0.1", "react-native-crypto@^2.2.0":
   "integrity" "sha512-eZu9Y8pa8BN9FU2pIex7MLRAi+Cd1Y6bsxfiufKh7sfraAACJvjQTeW7/zcQAT93WMfM+D0OVk+bubvkrbrUkw=="
   "resolved" "https://registry.npmjs.org/react-native-crypto/-/react-native-crypto-2.2.0.tgz"
