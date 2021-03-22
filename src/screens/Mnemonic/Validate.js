@@ -153,8 +153,9 @@ export default class Validate extends React.Component {
     this.setState({ spinner: true }, async () => {
 
       var encryptKey = CryptoJS.AES.encrypt(password, this.state.privateKey).toString(); 
-        
+
       var bytes  = CryptoJS.AES.decrypt(encryptKey, this.state.privateKey);
+
       var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
       this.setState({spinner:false,

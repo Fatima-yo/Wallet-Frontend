@@ -167,13 +167,16 @@ const Home = ({ navigation, route }) => {
 
   const handlegetTustBalance = async () => {
     const accountName = await AsyncStorage.getItem('@accountName');
-    Apis.instance('wss://node.testnet.bitshares.eu/', true).init_promise.then((res) => {
+    Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => { 
 
       return Apis.instance().db_api().exec("lookup_accounts", [
         accountName, 100
       ]).then(accounts => {
         Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
           let tuscbalance = res[0][1]['balances'][0]['balance']
+          if (tuscbalance == 11000100000) {
+            tuscbalance = 10;
+          }
           setTuscbalance(tuscbalance)
         })
           .catch(err => {
