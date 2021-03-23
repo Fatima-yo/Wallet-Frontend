@@ -23,14 +23,13 @@ export default class Mnemonic extends React.Component {
         }
         
     }
-    
+
     generateString = async () => {
-        var mnemonic = await bip39.generateMnemonic(128);
+        var mnemonic = await AsyncStorage.getItem('@mnemonic');
         this.setState({
             mnemonic: mnemonic
         })
     }
-
 
     set_Text_Into_Clipboard = async () => {
         await Clipboard.setString(this.state.mnemonic);
@@ -50,7 +49,6 @@ export default class Mnemonic extends React.Component {
             <BgView>
                 <View style={styles.container}>
                     <Header.Back onBackPress={() => this.props.navigation.goBack()} title="Mnemonic Code" containerStyle={styles.header} />
-
 
                     <View style={styles.main}>
                         <View style={styles.topContainer}>

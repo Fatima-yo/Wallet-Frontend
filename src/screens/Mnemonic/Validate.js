@@ -96,21 +96,21 @@ export default class Validate extends React.Component {
 
       const wallet = ethers.Wallet.fromMnemonic(value);
 
-      console.log(bip39.mnemonicToSeed)
-      let seed = bip39.mnemonicToSeed(value)
-      let isValid = bip39.validateMnemonic(value);
-      if (isValid == true) {
-          this.setState({
-            spinner: false,
-            isGenerate: true,
-            privateKey: wallet.privateKey,
-            publicKey: wallet.address,
-          })
-        }else {
-          this.setState({
-            spinner:false,
-            isGenerate:false
-          })
+        console.log(bip39.mnemonicToSeed)
+        let seed = bip39.mnemonicToSeed(value)
+        let isValid = bip39.validateMnemonic(value);
+        if (isValid == true) {
+            this.setState({
+                spinner: false,
+                isGenerate: true,
+                privateKey: wallet.privateKey,
+                publicKey: wallet.address,
+            })
+        } else {
+            this.setState({
+                spinner: false,
+                isGenerate: false
+            })
         }
     })
   }
@@ -162,9 +162,7 @@ export default class Validate extends React.Component {
         isGenerateKey: true,
         encKeyFinal: encryptKey
       })
-
     })
-
   }
 
   storeData = async () => {
