@@ -42,7 +42,7 @@ const App = ({ navigation, route }) => {
   useEffect(async () => {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
-        `https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27`
+        `https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27`
       )
     );
 
