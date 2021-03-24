@@ -27,7 +27,7 @@ import { DepositCard, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
- 
+
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
 class Withdraw extends Component {
@@ -48,8 +48,6 @@ class Withdraw extends Component {
         this.retrieveData()
     }
 
-
-
     retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('@privateKey');    
@@ -62,6 +60,13 @@ class Withdraw extends Component {
         }
     }
 
+    setSuccess = async () => {
+        try {
+            this.setState({ isSuccess: true })
+        } catch (error) {
+
+        }
+    }
 
     withdraw = async () => {
 
@@ -80,7 +85,7 @@ class Withdraw extends Component {
             } else {
                 await this.setState({ isError: false })
             }
-            
+
             let web3 = await new Web3('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
 
             let privateKey = this.state.privatekeyValue;
@@ -95,7 +100,7 @@ class Withdraw extends Component {
             let transaction = {
                 to: this.state.hydroaddress,
                 value: ethers.utils.parseEther(this.state.amount),
-                chainId: 1,
+                chainId: 4,
                 nonce: txCount,
                 gasPrice: gasPrice
             }
@@ -105,16 +110,17 @@ class Withdraw extends Component {
             web3.eth.estimateGas(transaction).then(function (estimate) {
                 transaction.gasLimit = estimate;
                 console.log('estimate: ' + estimate);
-                
+
                 var signPromise = wallet.sign(transaction);
-              
+
                 signPromise.then((signedTransaction) => {
                     console.log(signedTransaction);
-    
+
                     // let provider = new ethers.providers.Web3Provider(currentProvider);
                     // let provider = ethers.getDefaultProvider()
                     web3.eth.sendSignedTransaction(signedTransaction).then((tx) => {
                         console.log(tx);
+
                         // {
                         //    // These will match the above values (excluded properties are zero)
                         //    "nonce", "gasLimit", "gasPrice", "to", "value", "data", "chainId"
