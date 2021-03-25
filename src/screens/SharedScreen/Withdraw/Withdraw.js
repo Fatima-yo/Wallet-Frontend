@@ -53,7 +53,7 @@ class Withdraw extends Component {
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
-            let currentProvider = await new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
             let provider = new ethers.providers.Web3Provider(currentProvider);
             let wallet = new ethers.Wallet(value, provider)
             this.setState({ walletaddress: wallet.address })
@@ -91,7 +91,7 @@ class Withdraw extends Component {
                 await this.setState({ isError: false })
             }
 
-            let web3 = await new Web3('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let web3 = await new Web3('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
 
             let privateKey = this.state.privatekeyValue;
             let wallet = new ethers.Wallet(privateKey)
