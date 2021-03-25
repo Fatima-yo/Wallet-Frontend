@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import {
     View,
-    ScrollView,
-    KeyboardAvoidingView,
     Text,
     Dimensions,
-    Linking,
-    TouchableHighlight,
-    PermissionsAndroid,
     Platform,
     StatusBar, StyleSheet, SafeAreaView, Clipboard, ToastAndroid,
 } from "react-native";

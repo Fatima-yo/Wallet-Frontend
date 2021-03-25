@@ -12,13 +12,10 @@ import {
   BackHandler
 } from "react-native";
 import { BgView, Header } from "../../components/Layouts";
-import { Paragraph, Lead } from "../../components/Typography";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import { TxFeedCard, HydroCard, EtherCard, TuscCard } from "../../components/cards";
+import { HydroCard, EtherCard, TuscCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
-import Button from "../../components/Button";
-import LottieView from 'lottie-react-native';
 import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
