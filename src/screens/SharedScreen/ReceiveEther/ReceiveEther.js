@@ -4,8 +4,6 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Text,
-    Clipboard,
-    ToastAndroid,
     Dimensions,
     Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView,
     Clipboard, ToastAndroid
@@ -82,17 +80,14 @@ class ReceiveEther extends Component {
             this.setState({ qrvalue: e.data })
         }
     };
-
     openqr = () => {
         this.setState({ qrSection: true })
     };
-
 
     onCopyToClipboard = async () => {
         await Clipboard.setString(this.state.walletaddress);
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
-
     
     render() {
 

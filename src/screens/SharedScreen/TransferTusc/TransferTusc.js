@@ -14,7 +14,8 @@ import {
 
 import {Apis} from "tuscjs-ws";
 import {ChainStore, FetchChain, PrivateKey, TransactionHelper, Aes, TransactionBuilder, SerializerValidation} from "tuscjs";
-import {TuscBalance } from "../../../components/cards"; 
+
+
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/Button/index";
@@ -22,8 +23,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AsyncStorage from "@react-native-community/async-storage";
 const { height, width } = Dimensions.get('window');
 
-//var privKey = "5KK1f4tVVpMikKbphYjh3Kb9ARh4JdSmgPTSzEkSGSgNN1SvEUp"
-//var pKey = PrivateKey.fromWif(privKey);
+var privKey = "5KK1f4tVVpMikKbphYjh3Kb9ARh4JdSmgPTSzEkSGSgNN1SvEUp"
+var pKey = PrivateKey.fromWif(privKey);
 
 class TransferTusc extends Component {
     state = {
@@ -34,9 +35,7 @@ class TransferTusc extends Component {
         isError: false,
         isSuccess: false,
         error: "",
-        privatekeyValue: '',
-        tuscbalance: '',
-        accountname: ''
+        privatekeyValue: ''
     }
 
     async componentDidMount() {
@@ -45,53 +44,17 @@ class TransferTusc extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@accountprivateKey');
-            const accountname = await AsyncStorage.getItem('@accountName')
-
-            if (value !== null) {
-                console.log('PrivateKey-->', value)
-                this.setState({ privatekeyValue: value })
-                let publicKey = PrivateKey.fromWif(value).toPublicKey().toString()
-                console.log('publickey', publicKey)
-                this.setState({ walletaddress: publicKey })
-                this.setState({accountname: accountname})
-                console.log('account name', accountname)
-            }
-
-            const accountName = await AsyncStorage.getItem('@accountName');
-
-            if (value !== null) {
-                console.log('accountName-->', accountName)
-                this.setState({ accountName: accountName })
-            }
-
-            Apis.instance('wss://node.testnet.bitshares.eu/', true).init_promise.then((res) => {
-
-                return Apis.instance().db_api().exec("lookup_accounts", [
-                    this.state.accountName, 100
-                ]).then(accounts => {
-                    Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
-                        let tuscbalance = res[0][1]['balances'][0]['balance']
-                        this.setState({ tuscbalance: tuscbalance })
-                        return
-                    })
-                })
-            })
-
+            this.setState({ privatekeyValue: pKey })
         } catch (error) {
-            console.log(error)
+
         }
-
-
-
-
     }
 
     transfer = async () => {
 
         try {
-            if (!this.state.tuscaddress) {
-                await this.setState({ isError: true, error: "Tusc Address Required" })
+            /* if (!this.state.tuscaddress) {
+                await this.setState({ isError: true, error: "Hydro Address Required" })
                 return
             } else {
                 await this.setState({ isError: false })
@@ -102,25 +65,25 @@ class TransferTusc extends Component {
                 return
             } else {
                 await this.setState({ isError: false })
-            }
-            
+            }*/
+            console.log("hello")
             Apis.instance("wss://tuscapi.gambitweb.com/", true)
             .init_promise.then((res) => {
                 console.log("connected to:", res, "network");
             
                 //ChainStore.init().then(() => {
-
-                    let fromAccount = this.state.accountname;
+            
+                    let fromAccount = "marcocastiglionem";
                     let memoSender = fromAccount;
                     let memo = "Testing transfer from node.js";
             
-                    let toAccount = this.state.tuscaddress;
+                    let toAccount = "marcocastiglione5";
             
                     let sendAmount = {
-                        amount: this.state.amount,
+                        amount: 10000,
                         asset: "TUSC"
                     }
-
+            
                     Promise.all([
                             FetchChain("getAccount", fromAccount),
                             FetchChain("getAccount", toAccount),
@@ -128,9 +91,26 @@ class TransferTusc extends Component {
                             FetchChain("getAsset", sendAmount.asset),
                             FetchChain("getAsset", sendAmount.asset)
                         ]).then((res)=> {
+                            // console.log("got data:", res);
                             let [fromAccount, toAccount, memoSender, sendAsset, feeAsset] = res;
-
+            
+                            // Memos are optional, but if you have one you need to encrypt it here
+                            //let memoFromKey = memoSender.getIn(["options","memo_key"]);
+                            //console.log("memo pub key:", memoFromKey);
+                            //let memoToKey = toAccount.getIn(["options","memo_key"]);
                             let nonce = TransactionHelper.unique_nonce_uint64();
+            
+                            //let memo_object = {
+                            //    from: memoFromKey,
+                            //    to: memoToKey,
+                            //    nonce,
+                            //    message: Aes.encrypt_with_checksum(
+                            //        pKey,
+                            //        memoToKey,
+                            //        nonce,
+                            //        memo
+                            //    )
+                            //}
             
                             let tr = new TransactionBuilder()
             
@@ -146,30 +126,16 @@ class TransferTusc extends Component {
                             } )
             
                             tr.set_required_fees().then(() => {
-                                let pKey = PrivateKey.fromWif(this.state.privatekeyValue)
                                 tr.add_signer(pKey, pKey.toPublicKey().toPublicKeyString());
                                 console.log("serialized transaction:", tr.serialize());
                                 console.log("Now I will broadcast")
-                                tr.broadcast().then(() => {
-                                    this.setState({isSuccess: true})
-                                }).catch(function (err) {
-                                    console.log('err...\n' + err);
-                                    console.log('hello')
-                                    this.setState({isError:true})
-                                    this.setState({error:err})
-                                });
-                                
-                            }).catch(function (err) {
-                                console.log('err1...\n' + err);
-                            });
-                        }).catch(function (err) {
-                            console.log('err2...\n' + err);
+                                tr.broadcast();
+                            })
                         });
                 //});
-            }).catch(function (err) {
-                console.log('err3...\n' + err);
-
             });
+            
+
 
         }
         catch (ex) {
@@ -201,10 +167,6 @@ class TransferTusc extends Component {
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
 
-                        <TuscBalance
-                        tuscAddress={this.state.tuscbalance}
-                        />
-
                         <LabelInput
                             label="Tusc Address"
                             placeholder="Enter Tusc Address" 
@@ -227,15 +189,14 @@ class TransferTusc extends Component {
                         // }}
                         />
 
-                        {this.state.isSuccess &&
-                            <Text style={{ color: 'green' }}>
-                                Transfer Success!
-                            </Text>
-                        }
-
                         {this.state.isError &&
                             <Text style={{ color: 'red' }}>
                                 Error : {this.state.error}
+                            </Text>
+                        }
+                        {this.state.isSuccess &&
+                            <Text style={{ color: 'green' }}>
+                                Transfer Success!
                             </Text>
                         }
 

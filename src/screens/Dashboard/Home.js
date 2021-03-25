@@ -12,10 +12,13 @@ import {
   BackHandler
 } from "react-native";
 import { BgView, Header } from "../../components/Layouts";
+import { Paragraph, Lead } from "../../components/Typography";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import { HydroCard, EtherCard, TuscCard } from "../../components/cards";
+import { TxFeedCard, HydroCard, EtherCard, TuscCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
+import Button from "../../components/Button";
+import LottieView from 'lottie-react-native';
 import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
@@ -163,15 +166,16 @@ const Home = ({ navigation, route }) => {
   }
 
   const handlegetTustBalance = async () => {
+    console.log('handlegetTustbalance')
     const accountName = await AsyncStorage.getItem('@accountName');
-    Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => { 
-
+    Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
+      console.log("connected to:", res[0].network);
       return Apis.instance().db_api().exec("lookup_accounts", [
         accountName, 100
       ]).then(accounts => {
         Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
           let tuscbalance = res[0][1]['balances'][0]['balance']
-          if (tuscbalance == 11000100000) {
+          if (tuscbalance === 11000100000) {
             tuscbalance = 10;
           }
           setTuscbalance(tuscbalance)
@@ -184,10 +188,16 @@ const Home = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    handleGetAllBalances();
+  }, [])
+
+  const handleGetAllBalances = () => {
+    console.log('calling handleGetAllBalances')
+    setTimeout(handleGetAllBalances, 30000);
     handlegetHydroBalance();
     handlegetEtherBalance();
     handlegetTustBalance();
-  }, [])
+  }
 
   return (
     <BgView>
@@ -256,8 +266,6 @@ const Home = ({ navigation, route }) => {
             transfer={() => navigation.navigate("receivetusc")}
             account={() => navigation.navigate("account")}
           />
-
-          { /* <Button style={{ marginTop: "10%" }} text="Snowflake" onPress={() => navigation.navigate("snowflake")} /> */}
         </View>
 
         {/* {identityAddress !== null ? (
