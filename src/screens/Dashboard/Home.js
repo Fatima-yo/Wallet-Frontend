@@ -126,9 +126,10 @@ const Home = ({ navigation, route }) => {
   const handlegetHydroBalance = async () => {
     try {
       const value = await AsyncStorage.getItem('@privateKey');
-      let currentProvider = await new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+      let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
+      // this.setState({ walletaddress: wallet.address })
 
       const abi = await w3s.getHydroTokenABI()
       const hydrotokenaddress = await w3s.getHydroTokenAddress()
@@ -146,7 +147,7 @@ const Home = ({ navigation, route }) => {
   const handlegetEtherBalance = async () => {
     try {
       const value = await AsyncStorage.getItem('@privateKey');
-      let currentProvider = await new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+      let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
       // this.setState({ walletaddress: wallet.address })
@@ -174,7 +175,7 @@ const Home = ({ navigation, route }) => {
         Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
           let tuscbalance = res[0][1]['balances'][0]['balance']
           if (tuscbalance == 11000100000) {
-            tuscbalance = 0;
+            tuscbalance = 10;
           }
           setTuscbalance(tuscbalance)
         })
@@ -298,6 +299,7 @@ const Home = ({ navigation, route }) => {
           </View>
           )} */}
 
+
         {/*<Lead style={{ paddingVertical: width * 0.05 }}>Tx Feed</Lead>*/}
         { /*<View
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -337,6 +339,7 @@ const Home = ({ navigation, route }) => {
     </BgView>
   );
 };
+
 
 const styles = StyleSheet.create({
   nav: {
