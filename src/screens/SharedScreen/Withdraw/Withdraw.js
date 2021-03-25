@@ -23,7 +23,7 @@ import { ThemeProvider } from '@react-navigation/native';
 import { ethers, } from 'ethers';
 import { Value } from 'react-native-reanimated';
 import AsyncStorage from "@react-native-community/async-storage";
-import { DepositCard, } from "../../../components/cards";
+import { EtherBalance, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
@@ -31,6 +31,7 @@ const { height, width } = Dimensions.get('window');
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
 class Withdraw extends Component {
+
     state = {
         from: "",
         hydroaddress: "",
@@ -38,6 +39,8 @@ class Withdraw extends Component {
         comments: "",
         isError: false,
         isSuccess: false,
+        isTxSent: false,
+        isTxConfirmed: false,
         error: "",
         qrvalue: '',
         privatekeyValue: '',
@@ -55,14 +58,21 @@ class Withdraw extends Component {
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
-        } catch (error) {
+            let currentProvider = await new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({ walletaddress: wallet.address })
+            if (value !== null) {
+                console.log('PrivateKey-->', value)
+            }
 
-        }
-    }
+            const abi = await w3s.getHydroTokenABI()
+            const hydrotokenaddress = await w3s.getHydroTokenAddress()
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
 
-    setSuccess = async () => {
-        try {
-            this.setState({ isSuccess: true })
+            let etherbalance = await wallet.getBalance()
+            etherbalance = Web3.utils.fromWei(etherbalance.toString())
+            this.setState({ etherbalance: etherbalance })
         } catch (error) {
 
         }
@@ -80,7 +90,7 @@ class Withdraw extends Component {
             }
 
             if (!this.state.amount) {
-                await this.setState({ isError: true, error: "uint256 must required!" })
+                await this.setState({ isError: true, error: "amount is required!" })
                 return
             } else {
                 await this.setState({ isError: false })
@@ -106,36 +116,36 @@ class Withdraw extends Component {
             }
 
             console.log(transaction)
+            
+            let estimate = await web3.eth.estimateGas(transaction)
 
-            web3.eth.estimateGas(transaction).then(function (estimate) {
-                transaction.gasLimit = estimate;
-                console.log('estimate: ' + estimate);
+            transaction.gasLimit = estimate;
+            console.log('estimate: ' + estimate);
 
-                var signPromise = wallet.sign(transaction);
+            var signPromise = wallet.sign(transaction);
 
-                signPromise.then((signedTransaction) => {
-                    console.log(signedTransaction);
-
-                    // let provider = new ethers.providers.Web3Provider(currentProvider);
-                    // let provider = ethers.getDefaultProvider()
-                    web3.eth.sendSignedTransaction(signedTransaction).then((tx) => {
-                        console.log(tx);
-
-                        // {
-                        //    // These will match the above values (excluded properties are zero)
-                        //    "nonce", "gasLimit", "gasPrice", "to", "value", "data", "chainId"
-                        //
-                        //    // These will now be present
-                        //    "from", "hash", "r", "s", "v"
-                        //  }
-                        // Hash:
-                    })
-                    .catch((e)=>{
-                        console.log(e.message)
-                    })
+            signPromise.then((signedTransaction) => {
+                console.log(signedTransaction);
+                this.setState({isTxSent: true})
+                // let provider = new ethers.providers.Web3Provider(currentProvider);
+                // let provider = ethers.getDefaultProvider()
+                web3.eth.sendSignedTransaction(signedTransaction).then((tx) => {
+                    console.log(tx);
+                    this.setState({isTxConfirmed:true}); 
+                    this.retrieveData();
+                    // {
+                    //    // These will match the above values (excluded properties are zero)
+                    //    "nonce", "gasLimit", "gasPrice", "to", "value", "data", "chainId"
+                    //
+                    //    // These will now be present
+                    //    "from", "hash", "r", "s", "v"
+                    //  }
+                    // Hash:
                 })
                 .catch((e)=>{
                     console.log(e.message)
+                    this.setState({isError:true})
+                    this.setState({error: e.message})
                 })
 
             })
@@ -149,7 +159,6 @@ class Withdraw extends Component {
             if (ex.message)
                 await this.setState({ error: ex.message })
         }
-
 
     };
 
@@ -167,12 +176,17 @@ class Withdraw extends Component {
     render() {
         console.log(this.props.route.params.walletToken, "Props")
         return (
-
+ 
             <BgView>
                 <Header.Back title="Transfer Ether" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
+
+                        <EtherBalance
+                        hydroAddress={this.state.etherbalance}
+                        onIdPress={this.onCopyToClipboard}
+                        />
 
                         <LabelInput
                             label="Ether Address"
@@ -196,14 +210,22 @@ class Withdraw extends Component {
                         // }}
                         />
 
+                        {this.state.isTxSent &&
+                            <Text style={{ color: 'green' }}>
+                                Transaction has been sent to the blockchain and will be available soon!
+                            </Text>
+                        }
+
+                        {this.state.isTxConfirmed &&
+                            <Text style={{ color: 'green' }}>
+                                Transaction confirmed!
+                            </Text>
+                        }
+
+
                         {this.state.isError &&
                             <Text style={{ color: 'red' }}>
                                 Error : {this.state.error}
-                            </Text>
-                        }
-                        {this.state.isSuccess &&
-                            <Text style={{ color: 'green' }}>
-                                Transfer Success!
                             </Text>
                         }
 

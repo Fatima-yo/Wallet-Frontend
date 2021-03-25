@@ -23,7 +23,7 @@ import { ThemeProvider } from '@react-navigation/native';
 import { ethers, } from 'ethers';
 import { Value } from 'react-native-reanimated';
 import AsyncStorage from "@react-native-community/async-storage";
-import { DepositCard, } from "../../../components/cards";
+import { HydroBalance, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
@@ -58,6 +58,22 @@ class Deposits extends Component {
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
+            let currentProvider = await new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({ walletaddress: wallet.address })
+            if (value !== null) {
+                console.log('PrivateKey-->', value)
+            }
+
+            const abi = await w3s.getHydroTokenABI()
+            const hydrotokenaddress = await w3s.getHydroTokenAddress()
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+            let hydrobalance = await contract.balanceOf(wallet.address);
+            hydrobalance = Web3.utils.fromWei(hydrobalance.toString())
+            this.setState({ hydrobalance: hydrobalance })
+
         } catch (error) {
 
         }
@@ -86,7 +102,8 @@ class Deposits extends Component {
             const abi = await w3s.getHydroTokenABI();
             const hydrotokenaddress = await w3s.getHydroTokenAddress();
 
-            const provider = ethers.getDefaultProvider()
+            //const provider = ethers.getDefaultProvider()
+            const provider = new ethers.providers.EtherscanProvider("rinkeby")
             const wallet = new ethers.Wallet(privateKey, provider)
 
             const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
@@ -98,9 +115,13 @@ class Deposits extends Component {
             async function sendTokens() {
                 await contract.transfer(receiverWallet, howMuchTokens) 
                 console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
+                return true
             }
-            sendTokens()
-
+            let result = await sendTokens()
+            if (result) {
+                this.setState({isSuccess:true})
+                this.retrieveData()
+            }
 
         }
         catch (ex) {
@@ -110,12 +131,11 @@ class Deposits extends Component {
                 await this.setState({ error: ex.message })
         }
 
-
     };
 
 
     onCopyToClipboard = async () => {
-        await Clipboard.setString(this.props.route.params.walletToken);
+        await Clipboard.setString(this.state.hydrobalance);
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     onChange = (value) => {
@@ -133,6 +153,10 @@ class Deposits extends Component {
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
+
+                        <HydroBalance
+                            hydroAddress={this.state.hydrobalance}
+                        /> 
 
                         <LabelInput
                             label="Hydro Address"
@@ -160,7 +184,7 @@ class Deposits extends Component {
                         }
                         {this.state.isSuccess &&
                             <Text style={{ color: 'green' }}>
-                                Deposit Successfully !
+                                Transfer successful!
                             </Text>
                         }
 
