@@ -103,7 +103,7 @@ class TransferTusc extends Component {
             } else {
                 await this.setState({ isError: false })
             }
-
+            
             Apis.instance("wss://tuscapi.gambitweb.com/", true)
             .init_promise.then((res) => {
                 console.log("connected to:", res, "network");
@@ -120,7 +120,7 @@ class TransferTusc extends Component {
                         amount: this.state.amount,
                         asset: "TUSC"
                     }
-            
+
                     Promise.all([
                             FetchChain("getAccount", fromAccount),
                             FetchChain("getAccount", toAccount),
@@ -150,13 +150,25 @@ class TransferTusc extends Component {
                                 tr.add_signer(pKey, pKey.toPublicKey().toPublicKeyString());
                                 console.log("serialized transaction:", tr.serialize());
                                 console.log("Now I will broadcast")
-                                tr.broadcast()
-                                this.setState({isSuccess: true})
+                                tr.broadcast().then(() => {
+                                    this.setState({isSuccess: true})
+                                }).catch(function (err) {
+                                    console.log('err...\n' + err);
+                                    console.log('hello')
+                                    this.setState({isError:true})
+                                    this.setState({error:err})
+                                });
+                                
                             }).catch(function (err) {
-                                console.log('err...\n' + err);
+                                console.log('err1...\n' + err);
                             });
+                        }).catch(function (err) {
+                            console.log('err2...\n' + err);
                         });
                 //});
+            }).catch(function (err) {
+                console.log('err3...\n' + err);
+
             });
 
         }
@@ -215,14 +227,15 @@ class TransferTusc extends Component {
                         // }}
                         />
 
-                        {this.state.isError &&
-                            <Text style={{ color: 'red' }}>
-                                Error : {this.state.error}
-                            </Text>
-                        }
                         {this.state.isSuccess &&
                             <Text style={{ color: 'green' }}>
                                 Transfer Success!
+                            </Text>
+                        }
+
+                        {this.state.isError &&
+                            <Text style={{ color: 'red' }}>
+                                Error : {this.state.error}
                             </Text>
                         }
 

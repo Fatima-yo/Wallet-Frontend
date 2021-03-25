@@ -52,7 +52,7 @@ const App = ({ navigation, route }) => {
   }, []);
   setTimeout(() => {
     setAnimationTime(true);
-  }, 5200);
+  }, 1000);
   return (
     <ThemeContextProvider>
       <SnowflakeState>
