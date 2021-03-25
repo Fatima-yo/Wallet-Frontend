@@ -183,10 +183,16 @@ const Home = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    handleGetAllBalances();
+  }, [])
+
+  const handleGetAllBalances = () => {
+    console.log('calling handleGetAllBalances')
+    setTimeout(handleGetAllBalances, 30000);
     handlegetHydroBalance();
     handlegetEtherBalance();
     handlegetTustBalance();
-  }, [])
+  }
 
   return (
     <BgView>

@@ -13,7 +13,7 @@ const providerURL = "https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a
 const snowflakeAddress = '0xB0D5a36733886a4c5597849a05B315626aF5222E'
 
 //const hydroAddress = '0xebbdf302c940c6bfd49c6b165f457fdb324649bc'
-const hydroAddress = '0x4959c7f62051d6b2ed6eaed3aaee1f961b145f20'
+const hydroAddress = '0x946112efab61c3636cbd52de2e1392d7a75a6f01'
 
 const identityRegistryAddress = '0xa7ba71305bE9b2DFEad947dc0E5730BA2ABd28EA'
 
