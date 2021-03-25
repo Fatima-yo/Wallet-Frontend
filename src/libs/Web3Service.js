@@ -22,7 +22,6 @@ const oldClientRaindropAddress = '0xb29778Cf8abFFF8BF245b9060CD2299ADb358040'
 
 const protectedWalletFactoryAddress = '0xF834224699b6c1Fd5a9dF0DBbe7674Ba7C31db49'
 
-
 class Web3Service {
     web3 = "";
 

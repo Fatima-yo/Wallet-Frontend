@@ -4,6 +4,8 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Text,
+    Clipboard,
+    ToastAndroid,
     Dimensions,
     Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView,
     Clipboard, ToastAndroid
@@ -73,6 +75,10 @@ class Transfer extends Component {
         this.setState({ setOpenScanner: false });
     };
 
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.state.walletaddress);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
+    };
 
     onSuccess = e => {
         if (e.data !== "") {
