@@ -167,24 +167,37 @@ const Home = ({ navigation, route }) => {
 
   const handlegetTustBalance = async () => {
     console.log('handlegetTustbalance')
-    const accountName = await AsyncStorage.getItem('@accountName');
-    Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
-      console.log("connected to:", res[0].network);
-      return Apis.instance().db_api().exec("lookup_accounts", [
-        accountName, 100
-      ]).then(accounts => {
-        Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
-          let tuscbalance = res[0][1]['balances'][0]['balance']
-          if (tuscbalance === 11000100000) {
-            tuscbalance = 10;
-          }
-          setTuscbalance(tuscbalance)
-        })
-          .catch(err => {
-            console.log('erro---->', err)
+    let socket = new WebSocket('wss://tuscapi.gambitweb.com');
+    socket.onopen = async () => {
+      console.log('open')
+      const accountName = await AsyncStorage.getItem('@accountName');
+      Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
+        console.log("connected to:", res[0].network);
+        return Apis.instance().db_api().exec("lookup_accounts", [
+          accountName, 100
+        ]).then(accounts => {
+          console.log('success')
+          Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
+            let tuscbalance = res[0][1]['balances'][0]['balance']
+            if (tuscbalance === 11000100000) {
+              tuscbalance = 10;
+            }
+            setTuscbalance(tuscbalance)
           })
+            .catch(err => {
+              console.log('erro---->', err)
+            })
+        }).catch((err) => {
+          console.log('failed')
+        })
       })
-    })
+
+    }
+    socket.onclose = (e) => {
+      console.log('close');
+    };
+    socket.close();
+    socket.CLOSED;
   }
 
   useEffect(() => {
@@ -193,7 +206,7 @@ const Home = ({ navigation, route }) => {
 
   const handleGetAllBalances = () => {
     console.log('calling handleGetAllBalances')
-    setTimeout(handleGetAllBalances, 30000);
+    setTimeout(handleGetAllBalances, 3000);
     handlegetHydroBalance();
     handlegetEtherBalance();
     handlegetTustBalance();
