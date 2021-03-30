@@ -58,6 +58,25 @@ class Deposits extends Component {
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
+<<<<<<< HEAD
+            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({ walletaddress: wallet.address })
+            if (value !== null) {
+                console.log('PrivateKey-->', value)
+            }
+
+            const abi = await w3s.getHydroTokenABI()
+            const hydrotokenaddress = await w3s.getHydroTokenAddress()
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+            let hydrobalance = await contract.balanceOf(wallet.address);
+            hydrobalance = Web3.utils.fromWei(hydrobalance.toString())
+            this.setState({ hydrobalance: hydrobalance })
+
+=======
+>>>>>>> dev
         } catch (error) {
 
         }
@@ -87,6 +106,7 @@ class Deposits extends Component {
             const hydrotokenaddress = await w3s.getHydroTokenAddress();
 
             const provider = ethers.getDefaultProvider()
+            //const provider = new ethers.providers.EtherscanProvider("rinkeby")
             const wallet = new ethers.Wallet(privateKey, provider)
 
             const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)

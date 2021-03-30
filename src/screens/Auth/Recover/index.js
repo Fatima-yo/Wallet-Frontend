@@ -44,7 +44,7 @@ export default class Recover extends React.Component {
     }
   }
 
-  check = () => {
+  check = async () => {
     const { connection, mnemonicValue } = this.state;
     if (!connection) {
       this.connectToInternet();
@@ -63,16 +63,14 @@ export default class Recover extends React.Component {
       const wallet = ethers.Wallet.fromMnemonic(mnemonicValue);
       console.log(bip39.mnemonicToSeed)
 
-      wallet.privateKey
-      wallet.address
-
-      this.storeData(mnemonicValue, wallet.privateKey)
+      await AsyncStorage.setItem('@mnemonic', mnemonicValue)
+      await AsyncStorage.setItem('@privateKey', wallet.privateKey)
 
       let address = wallet.address
       let hydroId = ''
       this.props.navigation.navigate("app", { screen: "home", params: { address, hydroId  } });
     } else {
-      this.setState({ errorMessage: 'Invalid BIP39 Mnemonic' })
+      this.setState({ errorMessage: 'Invalid Mnemonic' })
       setTimeout(() => {
         this.props.navigation.navigate('recover');
       }, 500)
@@ -81,8 +79,7 @@ export default class Recover extends React.Component {
 
   storeData = async (mnemonic, privateKey) => {
     try {
-      await AsyncStorage.setItem('@mnemonic', mnemonic)
-      await AsyncStorage.setItem('@privateKey', privateKey)
+      
     } catch (e) {
       console.log(e)
     }
@@ -138,7 +135,7 @@ export default class Recover extends React.Component {
 
 
                 <View style={{
-                  position: 'absolute', right: width * 0.05, bottom: 0, flexDirection: 'row'
+                  position: 'absolute', right: width * 0.05, bottom: 1, flexDirection: 'row'
                 }}>
                   <Button
                     title={'Paste'}

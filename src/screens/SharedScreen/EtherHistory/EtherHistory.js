@@ -78,9 +78,11 @@ class EtherHistory extends Component {
         try {
             let privateKey = this.state.privatekeyValue;
             const provider = ethers.getDefaultProvider()
+            //const provider = new ethers.providers.EtherscanProvider("rinkeby")
             const wallet = new ethers.Wallet(privateKey, provider)
             const tableData = [];
 
+            //let etherscanProvider = new ethers.providers.EtherscanProvider("rinkeby");
             let etherscanProvider = new ethers.providers.EtherscanProvider();
 
             etherscanProvider.getHistory(wallet.address).then((history) => {

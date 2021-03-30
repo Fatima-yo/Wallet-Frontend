@@ -57,6 +57,21 @@ class Withdraw extends Component {
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
+            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({ walletaddress: wallet.address })
+            if (value !== null) {
+                console.log('PrivateKey-->', value)
+            }
+
+            const abi = await w3s.getHydroTokenABI()
+            const hydrotokenaddress = await w3s.getHydroTokenAddress()
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+            let etherbalance = await wallet.getBalance()
+            etherbalance = Web3.utils.fromWei(etherbalance.toString())
+            this.setState({ etherbalance: etherbalance })
         } catch (error) {
 
         }
@@ -80,7 +95,11 @@ class Withdraw extends Component {
             } else {
                 await this.setState({ isError: false })
             }
+<<<<<<< HEAD
+
+=======
             
+>>>>>>> dev
             let web3 = await new Web3('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
 
             let privateKey = this.state.privatekeyValue;
