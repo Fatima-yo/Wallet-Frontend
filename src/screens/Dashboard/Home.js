@@ -205,8 +205,8 @@ const Home = ({ navigation, route }) => {
   }, [])
 
   const handleGetAllBalances = () => {
-    console.log('calling handleGetAllBalances')
-    setTimeout(handleGetAllBalances, 3000);
+    // console.log('calling handleGetAllBalances')
+    // setTimeout(handleGetAllBalances, 30000);
     handlegetHydroBalance();
     handlegetEtherBalance();
     handlegetTustBalance();

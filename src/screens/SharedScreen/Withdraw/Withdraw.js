@@ -95,11 +95,8 @@ class Withdraw extends Component {
             } else {
                 await this.setState({ isError: false })
             }
-<<<<<<< HEAD
 
-=======
             
->>>>>>> dev
             let web3 = await new Web3('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
 
             let privateKey = this.state.privatekeyValue;
