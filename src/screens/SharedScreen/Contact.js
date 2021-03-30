@@ -16,15 +16,17 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import Button from "../../components/Button";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
-
+import AsyncStorage from "@react-native-community/async-storage";
 
 const Contact = ({ navigation }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
 
-  const hydroAddress = "0x9F1CA7955D40FF9798472a4b9b621d8e";
+  const getHydroAddress = async () => {
+    return await AsyncStorage.getItem('@mnemonic')
+  }
 
-  const btcAddress = "38ECqrDguHdy1GZ5V2hSP3dt3HZSFfXZrM";
+  const hydroAddress = 'asd'
 
   const ethAddress = "0x931D387731bBbC988B312206c74F77D0";
 
@@ -65,22 +67,6 @@ const Contact = ({ navigation }) => {
               onPress={CopyHydroAddressToClipboard}
             >
               <Paragraph>{hydroAddress}</Paragraph>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.box}>
-            <Lead>BTC</Lead>
-            <TouchableOpacity
-              style={{
-                padding: 7,
-                backgroundColor: theme.secondary,
-                borderRadius: 5,
-                marginVertical: width * 0.01
-              }}
-              onPress={CopyBtcAddressToClipboard}
-            >
-              <Paragraph style={{ textAlign: "center", fontSize: 14 }}>
-                {btcAddress}
-              </Paragraph>
             </TouchableOpacity>
           </View>
 

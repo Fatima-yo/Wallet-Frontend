@@ -134,8 +134,13 @@ android {
         applicationId "com.hydrowallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+<<<<<<< HEAD
         versionCode 8
         versionName "1.0.7"
+=======
+        versionCode 5
+        versionName "1.0.4"
+>>>>>>> dev
         missingDimensionStrategy "react-native-camera", "general"
     }
 

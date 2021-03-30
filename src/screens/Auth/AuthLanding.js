@@ -22,10 +22,6 @@ const AuthLanding = ({ navigation }) => {
     }
   };
 
-  const recover = async () => {
-      navigation.navigate("recover");
-  };
-
 
   return (
     <BgView>
@@ -45,7 +41,7 @@ const AuthLanding = ({ navigation }) => {
         </View>
         <View style={styles.bottom}>
           <Button text="Get Started" onPress={onSubmit} />
-          <Button text="Recover" style={styles.recover} onPress={recover} /> 
+          <Button text="Recover" style={styles.recover} />
         </View>
       </View>
     </BgView>

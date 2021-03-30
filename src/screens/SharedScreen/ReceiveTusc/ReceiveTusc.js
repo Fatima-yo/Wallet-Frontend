@@ -4,10 +4,9 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Text,
-    Clipboard,
-    ToastAndroid,
     Dimensions,
-    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView
+    Platform, StatusBar, StyleSheet,
+    Clipboard, ToastAndroid
 } from "react-native";
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
@@ -39,6 +38,11 @@ class ReceiveTusc extends Component {
     async componentDidMount() {
         this.retrieveData()
     }
+
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.state.walletaddress);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
+    };
 
     retrieveData = async () => {
         try {
@@ -83,10 +87,6 @@ class ReceiveTusc extends Component {
         this.setState({ setOpenScanner: false });
     };
 
-    onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.walletaddress);
-        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
-    };
 
     onSuccess = e => {
         if (e.data !== "") {

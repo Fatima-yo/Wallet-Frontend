@@ -4,10 +4,9 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Text,
-    Clipboard,
-    ToastAndroid,
     Dimensions,
-    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView
+    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView,
+    Clipboard, ToastAndroid
 } from "react-native";
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
@@ -74,10 +73,6 @@ class Transfer extends Component {
         this.setState({ setOpenScanner: false });
     };
 
-    onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.walletaddress);
-        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
-    };
 
     onSuccess = e => {
         if (e.data !== "") {
@@ -87,6 +82,11 @@ class Transfer extends Component {
     };
     openqr = () => {
         this.setState({ qrSection: true })
+    };
+
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.state.walletaddress);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     render() {
 

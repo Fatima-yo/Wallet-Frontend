@@ -12,10 +12,13 @@ import {
   BackHandler
 } from "react-native";
 import { BgView, Header } from "../../components/Layouts";
+import { Paragraph, Lead } from "../../components/Typography";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import { HydroCard, EtherCard, TuscCard } from "../../components/cards";
+import { TxFeedCard, HydroCard, EtherCard, TuscCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
+import Button from "../../components/Button";
+import LottieView from 'lottie-react-native';
 import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
@@ -126,6 +129,7 @@ const Home = ({ navigation, route }) => {
       let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
+      // this.setState({ walletaddress: wallet.address })
 
       const abi = await w3s.getHydroTokenABI()
       const hydrotokenaddress = await w3s.getHydroTokenAddress()
@@ -162,24 +166,38 @@ const Home = ({ navigation, route }) => {
   }
 
   const handlegetTustBalance = async () => {
-    const accountName = await AsyncStorage.getItem('@accountName');
-    Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => { 
-
-      return Apis.instance().db_api().exec("lookup_accounts", [
-        accountName, 100
-      ]).then(accounts => {
-        Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
-          let tuscbalance = res[0][1]['balances'][0]['balance']
-          if (tuscbalance == 11000100000) {
-            tuscbalance = 0;
-          }
-          setTuscbalance(tuscbalance)
-        })
-          .catch(err => {
-            console.log('erro---->', err)
+    console.log('handlegetTustbalance')
+    let socket = new WebSocket('wss://tuscapi.gambitweb.com');
+    socket.onopen = async () => {
+      console.log('open')
+      const accountName = await AsyncStorage.getItem('@accountName');
+      Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
+        console.log("connected to:", res[0].network);
+        return Apis.instance().db_api().exec("lookup_accounts", [
+          accountName, 100
+        ]).then(accounts => {
+          console.log('success')
+          Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
+            let tuscbalance = res[0][1]['balances'][0]['balance']
+            if (tuscbalance === 11000100000) {
+              tuscbalance = 10;
+            }
+            setTuscbalance(tuscbalance)
           })
+            .catch(err => {
+              console.log('erro---->', err)
+            })
+        }).catch((err) => {
+          console.log('failed')
+        })
       })
-    })
+
+    }
+    socket.onclose = (e) => {
+      console.log('close');
+    };
+    socket.close();
+    socket.CLOSED;
   }
 
   useEffect(() => {
@@ -261,8 +279,6 @@ const Home = ({ navigation, route }) => {
             transfer={() => navigation.navigate("receivetusc")}
             account={() => navigation.navigate("account")}
           />
-
-          { /* <Button style={{ marginTop: "10%" }} text="Snowflake" onPress={() => navigation.navigate("snowflake")} /> */}
         </View>
 
         {/* {identityAddress !== null ? (
@@ -300,6 +316,7 @@ const Home = ({ navigation, route }) => {
             />
           </View>
           )} */}
+
 
         {/*<Lead style={{ paddingVertical: width * 0.05 }}>Tx Feed</Lead>*/}
         { /*<View
@@ -340,6 +357,7 @@ const Home = ({ navigation, route }) => {
     </BgView>
   );
 };
+
 
 const styles = StyleSheet.create({
   nav: {
