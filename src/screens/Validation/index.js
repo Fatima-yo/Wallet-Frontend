@@ -5,8 +5,9 @@ import LoadingView from 'react-native-loading-view'
 
 const Landing = ({ navigation }) => {
   useEffect(async () => {
+    let hydroId = await AsyncStorage.getItem('@hydro_id_key');
     const address = await AsyncStorage.getItem('@walletAddress');
-    const hydroId = await AsyncStorage.getItem('@privateKey');
+    // const hydroId = await AsyncStorage.getItem('@privateKey');
     if (address, hydroId !== null) {
       navigation.navigate("app", { screen: "home", params: { address, hydroId } })
     }

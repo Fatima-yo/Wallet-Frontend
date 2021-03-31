@@ -32,8 +32,6 @@ const Contact = ({ navigation }) => {
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
       setHydroaddress(wallet.address)
-      console.log('wallet.address--->', value)
-
     } catch (error) {
       console.log(error)
     }
@@ -41,7 +39,7 @@ const Contact = ({ navigation }) => {
 
   const setHydroIdFunc = async () => {
     let hydroId = await AsyncStorage.getItem('@hydro_id_key');
-    setHydroId(hydroId); 
+    setHydroId(hydroId);
   }
 
   useEffect(() => {
