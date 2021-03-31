@@ -704,6 +704,83 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, accou
 };
 
 
+export const UsdtCard = ({ handleChangeRightBalance, handleChangeLeftBalance, balance, balanceFlag, address, cardName, withdraw, transfer, history, account, deposit, ...props }) => {
+  return (
+    <View style={{
+      position: 'relative',
+      width: width - width * 0.10,
+      height: 200,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      paddingVertical: 20,
+      marginTop: width * 0.06,
+      shadowColor: '#56D5D0',
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 13.35,
+    }} {...props}>
+      <Image
+        style={{
+          position: 'absolute',
+          left: 10,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          height: 200,
+          width: '100%',
+          borderRadius: 5
+        }}
+        source={require('../../assets/images/BG_ETH.png')}
+      />
+      <View style={{ flexDirection: 'row', paddingTop: 15, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 }}>
+        <View>
+          <TouchableOpacity onPress={handleChangeLeftBalance}>
+            <Icon
+              name="arrow-left"
+              color={'gray'}
+              size={23}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} {balanceFlag}</Text>
+        </View>
+        <View>
+          <TouchableOpacity onPress={handleChangeRightBalance}>
+            <Icon
+              name="arrow-right"
+              color={'#000'}
+              size={23}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={withdraw}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={history}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>History</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={transfer}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View >
+  );
+};
+
+
 export const ComingSoonCard = ({ ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
