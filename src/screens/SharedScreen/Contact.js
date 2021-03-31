@@ -39,10 +39,14 @@ const Contact = ({ navigation }) => {
     }
   }
 
-  useEffect(async () => {
-    retrieveData();
+  const setHydroIdFunc = async () => {
     let hydroId = await AsyncStorage.getItem('@hydro_id_key');
     setHydroId(hydroId); 
+  }
+
+  useEffect(() => {
+    retrieveData();
+    setHydroIdFunc();
   }, [])
 
 
