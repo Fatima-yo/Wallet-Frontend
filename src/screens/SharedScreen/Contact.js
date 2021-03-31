@@ -41,8 +41,8 @@ const Contact = ({ navigation }) => {
 
   useEffect(async () => {
     retrieveData();
-    let hydroId = await AsyncStorage.getItem('@privateKey');
-    setHydroId(hydroId);
+    let hydroId = await AsyncStorage.getItem('@hydro_id_key');
+    setHydroId(hydroId); 
   }, [])
 
 
