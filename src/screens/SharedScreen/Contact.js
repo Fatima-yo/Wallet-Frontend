@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   Image,
@@ -8,27 +8,43 @@ import {
   Dimensions,
   Platform, StatusBar, StyleSheet
 } from "react-native";
-import { LabelInput } from "../../components/Forms";
 import { BgView, Header } from "../../components/Layouts";
 import { Paragraph, Lead } from "../../components/Typography";
 import { ThemeContext } from "../../hooks/useTheme";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import Button from "../../components/Button";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-const { height, width } = Dimensions.get('window');
+import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
+const { width } = Dimensions.get('window');
 import AsyncStorage from "@react-native-community/async-storage";
+import Web3 from 'web3';
+import { ethers, } from 'ethers';
 
 const Contact = ({ navigation }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
 
-  const getHydroAddress = async () => {
-    return await AsyncStorage.getItem('@mnemonic')
+  const [hydroAddress, setHydroaddress] = React.useState('');
+  const [hydroid, setHydroId] = React.useState('');
+
+  const retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@privateKey');
+      let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+      let provider = new ethers.providers.Web3Provider(currentProvider);
+      let wallet = new ethers.Wallet(value, provider)
+      setHydroaddress(wallet.address)
+      console.log('wallet.address--->', value)
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  const hydroAddress = 'asd'
+  useEffect(async () => {
+    retrieveData();
+    let hydroId = await AsyncStorage.getItem('@privateKey');
+    setHydroId(hydroId);
+  }, [])
 
-  const ethAddress = "0x931D387731bBbC988B312206c74F77D0";
 
   const CopyHydroAddressToClipboard = async () => {
     await Clipboard.setString(hydroAddress);
@@ -52,38 +68,36 @@ const Contact = ({ navigation }) => {
         <TouchableOpacity>
           <Image source={require("../../assets/images/emma.png")} style={{ borderRadius: 50, width: 100, height: 100 }} />
         </TouchableOpacity>
-        <Lead style={styles.name}>Emmanuel Njoku</Lead>
+        {/* <Lead style={styles.name}>Hydro ID</Lead> */}
 
         <View style={styles.box}>
           <View style={styles.box}>
-            <Lead>HYDRO</Lead>
+            <Lead>Hydro ID</Lead>
+            <View
+              style={{
+                padding: 7,
+                backgroundColor: theme.secondary,
+                borderRadius: 5,
+                marginVertical: width * 0.01,
+              }}
+            >
+              <Paragraph>{hydroid}</Paragraph>
+            </View>
+          </View>
+        </View>
+        <View style={styles.box}>
+          <View style={styles.box}>
+            <Lead>Wallet Address</Lead>
             <TouchableOpacity
               style={{
                 padding: 7,
                 backgroundColor: theme.secondary,
                 borderRadius: 5,
-                marginVertical: width * 0.01
+                marginVertical: width * 0.01,
               }}
               onPress={CopyHydroAddressToClipboard}
             >
               <Paragraph>{hydroAddress}</Paragraph>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.box}>
-            <Lead>ETH</Lead>
-            <TouchableOpacity
-              style={{
-                padding: 7,
-                backgroundColor: theme.secondary,
-                borderRadius: 5,
-                marginVertical: width * 0.01
-              }}
-              onPress={CopyEthAddressToClipboard}
-            >
-              <Paragraph style={{ textAlign: "center", fontSize: 14 }}>
-                {ethAddress}
-              </Paragraph>
             </TouchableOpacity>
           </View>
         </View>
@@ -139,7 +153,8 @@ const styles = StyleSheet.create({
   },
 
   box: {
-    paddingTop: width * 0.03
+    paddingTop: width * 0.03,
+    marginHorizontal: width * 0.02
   }
 
 })
