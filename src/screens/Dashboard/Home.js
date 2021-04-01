@@ -289,17 +289,6 @@ const Home = ({ navigation, route }) => {
             account={() => navigation.navigate("account")}
           />
 
-          <UsdtCard
-            balance={usdtbalance}
-            balanceFlag={balanceFlag}
-            address={address}
-            cardName="Usdt Card"
-            withdraw={() => console.log('cardName')}
-            transfer={() => console.log('transfer')}
-            history={() => console.log('history')}
-            handleChangeLeftBalance={handleChangeLeftBalance}
-            handleChangeRightBalance={handleChangeRightBalance}
-          />
         </View>
 
         {/* {identityAddress !== null ? (

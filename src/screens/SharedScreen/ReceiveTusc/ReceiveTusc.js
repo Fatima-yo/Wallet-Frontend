@@ -70,6 +70,9 @@ class ReceiveTusc extends Component {
                 ]).then(accounts => {
                     Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
                         let tuscbalance = res[0][1]['balances'][0]['balance']
+                        if (tuscbalance == "11000100000") {
+                            tuscbalance = 0
+                        }
                         this.setState({ tuscbalance: tuscbalance })
                     })
                 })
