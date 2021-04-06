@@ -15,11 +15,15 @@ import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/Button/index";
 import w3s from '../../../libs/Web3Service';
+import { toWei } from '../../../libs/format';
 import Web3 from 'web3';
+import HydroToken from '../../../contracts/HydroToken.json'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { ThemeProvider } from '@react-navigation/native';
 import { ethers, } from 'ethers';
+import { Value } from 'react-native-reanimated';
 import AsyncStorage from "@react-native-community/async-storage";
-import { HydroBalance, } from "../../../components/cards";
+import { DepositCard, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
@@ -111,13 +115,9 @@ class Deposits extends Component {
             async function sendTokens() {
                 await contract.transfer(receiverWallet, howMuchTokens) 
                 console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
-                return true
             }
-            let result = await sendTokens()
-            if (result) {
-                this.setState({isSuccess:true})
-                this.retrieveData()
-            }
+            sendTokens()
+
 
         }
         catch (ex) {
@@ -127,11 +127,12 @@ class Deposits extends Component {
                 await this.setState({ error: ex.message })
         }
 
+
     };
 
 
     onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.hydrobalance);
+        await Clipboard.setString(this.props.route.params.walletToken);
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     onChange = (value) => {
@@ -149,10 +150,6 @@ class Deposits extends Component {
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
-
-                        <HydroBalance
-                            hydroAddress={this.state.hydrobalance}
-                        /> 
 
                         <LabelInput
                             label="Hydro Address"
@@ -180,7 +177,7 @@ class Deposits extends Component {
                         }
                         {this.state.isSuccess &&
                             <Text style={{ color: 'green' }}>
-                                Transfer successful!
+                                Deposit Successfully !
                             </Text>
                         }
 

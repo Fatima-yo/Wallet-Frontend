@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
 import {
     View,
-    ScrollView,
-    KeyboardAvoidingView,
-    Text,
-    Clipboard,
-    ToastAndroid,
     Dimensions,
-    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView
+    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView,
+    Clipboard, ToastAndroid
 } from "react-native";
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
-import Button from "../../../components/TwoButton/index";
 import { DepositCard, HydroBalance } from "../../../components/cards";
 import w3s from '../../../libs/Web3Service';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
-import { CameraKitCameraScreen } from 'react-native-camera-kit';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import QRCode from 'react-native-qrcode-svg';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
-
 
 class Transfer extends Component {
     state = {
@@ -74,10 +66,6 @@ class Transfer extends Component {
         this.setState({ setOpenScanner: false });
     };
 
-    onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.walletaddress);
-        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
-    };
 
     onSuccess = e => {
         if (e.data !== "") {
@@ -87,6 +75,11 @@ class Transfer extends Component {
     };
     openqr = () => {
         this.setState({ qrSection: true })
+    };
+
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.state.walletaddress);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     render() {
 

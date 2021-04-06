@@ -4,10 +4,9 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Text,
-    Clipboard,
-    ToastAndroid,
     Dimensions,
-    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView
+    Platform, StatusBar, StyleSheet,
+    Clipboard, ToastAndroid
 } from "react-native";
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
@@ -40,6 +39,11 @@ class ReceiveTusc extends Component {
         this.retrieveData()
     }
 
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.state.walletaddress);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
+    };
+
     retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('@accountprivateKey');
@@ -66,6 +70,9 @@ class ReceiveTusc extends Component {
                 ]).then(accounts => {
                     Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
                         let tuscbalance = res[0][1]['balances'][0]['balance']
+                        if (tuscbalance === 11000100000) {
+                            tuscbalance = 0;
+                        }
                         this.setState({ tuscbalance: tuscbalance })
                     })
                 })
@@ -83,10 +90,6 @@ class ReceiveTusc extends Component {
         this.setState({ setOpenScanner: false });
     };
 
-    onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.walletaddress);
-        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
-    };
 
     onSuccess = e => {
         if (e.data !== "") {

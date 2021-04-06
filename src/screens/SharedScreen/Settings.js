@@ -61,10 +61,10 @@ const Settings = ({ navigation, route }) => {
     ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
   };
 
-  const CopyToClipboardMnemonic = async () => {
-    const value = await AsyncStorage.getItem('@mnemonic');
+  const CopyToClipboardPrivateKey = async () => {
+    const value = await AsyncStorage.getItem('@privateKey');
     await Clipboard.setString(value);
-    ToastAndroid.show("Mnemonic copied To Clipboard!", ToastAndroid.SHORT);
+    ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
   };
 
 
@@ -146,7 +146,7 @@ const Settings = ({ navigation, route }) => {
           flexDirection: "row",
           paddingBottom: width * 0.05
         }}>
-        <SettingsItemCard value="Export keys" onPress={CopyToClipboardMnemonic} />
+        <SettingsItemCard value="Export keys" onPress={CopyToClipboardPrivateKey} />
         <SettingsItemCard value="Advanced" />
         <SettingsItemCard value="Change Password" />
         <SettingsItemCard value="Dark Mode" onPress={toggleTheme} />

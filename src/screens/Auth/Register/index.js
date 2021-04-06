@@ -10,7 +10,6 @@ import Button from "../../../components/Button";
 import { Paragraph, Lead } from "../../../components/Typography";
 import AsyncStorage from "@react-native-community/async-storage";
 import bip39 from 'react-native-bip39'
-import { ethers } from 'ethers';
 
 const Register = ({ navigation }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
@@ -30,26 +29,26 @@ const Register = ({ navigation }) => {
 
   }
 
-  const createWallet = async (e) => {
-
-    var mnemonic = await bip39.generateMnemonic(128);
-
-    const wallet = ethers.Wallet.fromMnemonic(mnemonic);
-    let address = wallet.address
-    let key = wallet.privateKey
-    
-    console.log("@walletAddress =>", address)
-    console.log("@privateKey =>", key)
-    console.log("@mnemonic  =>", mnemonic)
-    setSpinner(false);
-    try {
-      await AsyncStorage.setItem('@privateKey', key);
-      await AsyncStorage.setItem('@walletAddress', address);
-      await AsyncStorage.setItem('@mnemonic', mnemonic);
-    } catch (error) {
-      console.log(error)
-    }
-    navigation.navigate("mnemonic", { address, key });
+  const createWallet = (e) => {
+    createDefaultAddress()
+      .then(async (walletData) => {
+        let address = walletData[0].address;
+        let key = walletData[0].privateKey;
+        console.log('@privateKey =>', key)
+        console.log('@walletAddress =>', address)
+        setSpinner(false);
+        try {
+          await AsyncStorage.setItem('@privateKey', key);
+          await AsyncStorage.setItem('@walletAddress', address);
+        } catch (error) {
+          console.log(error)
+        }
+        navigation.navigate("mnemonic", { address, key });
+      })
+      .catch((err) => {
+        setSpinner(false);
+        Alert.alert(err.message);
+      });
 
   };
 
