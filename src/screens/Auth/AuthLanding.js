@@ -12,7 +12,7 @@ const AuthLanding = ({ navigation }) => {
   const [wallet_address_Value, setwallet_address_Value] = useState('');
   const onSubmit = async () => {
     const address = await AsyncStorage.getItem('@walletAddress');
-    const hydroId = await AsyncStorage.getItem('@privateKey');
+    const hydroId = await AsyncStorage.getItem('@hydro_id_key');
      
    // setwallet_address_Value(address);
     if (address, hydroId !== null) {

@@ -68,54 +68,23 @@ export default class Validate extends React.Component {
     this._netSubscription();
   }
 
-  // generateKeys = async (value) => {                              
-  //   this.setState({ spinner: true }, async () => {
-  //     axios.post('http://wallet.hydro.ethernity.live:8080/hdkey', {
-  //       mnemonic: value //await bip39.generateMnemonic(128)
-  //     })
-  //       .then(response => {
-  //         if (response.data.status) {
-  //           console.log(response.data)
-  //           this.setState({
-  //             spinner: false,
-  //             isGenerate: response.data.status,
-  //             privateKey: response.data.root.xpriv,
-  //             publicKey: response.data.root.xpub
-  //           })
-  //         }
-  //       })
-  //       .catch(error => {
-  //         this.setState({ spinner: false })
-  //         alert(error);
-  //       });
-  //   })
-  // }
-
   generateKeys = async (value) => {
     this.setState({ spinner: true }, async () => {
-
-      const wallet = ethers.Wallet.fromMnemonic(value);
-
-      console.log(bip39.mnemonicToSeed)
-      let seed = bip39.mnemonicToSeed(value)
-      let isValid = bip39.validateMnemonic(value);
-      if (isValid == true) {
-          this.setState({
-            spinner: false,
-            isGenerate: true,
-            privateKey: wallet.privateKey,
-            publicKey: wallet.address,
-          })
-        }else {
-          this.setState({
-            spinner:false,
-            isGenerate:false
-          })
-        }
+      const privateKey = await AsyncStorage.getItem('@privateKey');
+      const walletAddress = await AsyncStorage.getItem('@walletAddress');
+      console.log(privateKey)
+      console.log(walletAddress)
+      
+      this.setState({
+        spinner: false,
+        isGenerate: true,
+        privateKey: privateKey,
+        publicKey: walletAddress,
+      })
     })
   }
 
-  check = () => {
+  check = async () => {
     const { connection, mnemonicValue } = this.state;
     if (!connection) {
       this.connectToInternet();
@@ -127,15 +96,21 @@ export default class Validate extends React.Component {
       return;
     }
 
-    var validate = bip39.validateMnemonic(mnemonicValue)
-    if (validate) {
+    var mnemonic = await AsyncStorage.getItem('@mnemonic');
+
+    if (!mnemonic) {
+      navigation.navigate("register");
+    }
+
+    if (mnemonicValue == mnemonic) {
       this.generateKeys(mnemonicValue);
     } else {
       this.setState({ errorMessage: 'Invalid BIP39 Mnemonic' })
       setTimeout(() => {
         this.props.navigation.navigate('mnemonic');
       }, 500)
-    }
+    }  
+    
   }
 
   generateENCKeys = () => {
@@ -170,8 +145,11 @@ export default class Validate extends React.Component {
   storeData = async () => {
     try {
       await AsyncStorage.setItem('@encrypted_Key', this.state.encKeyFinal)
+      const address = await AsyncStorage.getItem('@walletAddress');
+      const hydroId = await AsyncStorage.getItem('@hydro_id_key');
       setTimeout(() => {
-        this.props.navigation.navigate("permissions", { address: this.props.route.params.address });
+        this.props.navigation.navigate("app", { screen: "home", params: { address, hydroId } });
+        //this.props.navigation.navigate("permissions", { address: this.props.route.params.address });
       }, 1000)
     } catch (e) {
       console.log(e)
