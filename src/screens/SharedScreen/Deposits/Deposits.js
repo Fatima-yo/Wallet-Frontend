@@ -23,7 +23,7 @@ import { ThemeProvider } from '@react-navigation/native';
 import { ethers, } from 'ethers';
 import { Value } from 'react-native-reanimated';
 import AsyncStorage from "@react-native-community/async-storage";
-import { DepositCard, } from "../../../components/cards";
+import { HydroBalance, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
@@ -113,12 +113,22 @@ class Deposits extends Component {
             const howMuchTokens = ethers.utils.parseUnits(this.state.amount, 18)
             console.log("Before sending!")
             async function sendTokens() {
-                await contract.transfer(receiverWallet, howMuchTokens) 
-                console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
+                try {
+                    await contract.transfer(receiverWallet, howMuchTokens) 
+                    console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
+                    return true, ''
+                } catch (error) {
+                    return false, error
+                }                
             }
-            sendTokens()
-
-
+            let result, error = await sendTokens()
+            if (result) {
+                this.setState({isSuccess:true})
+                this.retrieveData()
+            } else {
+                this.setState({isError:true})
+                this.setState({error:error.message})
+            }
         }
         catch (ex) {
             console.log(ex)
@@ -132,7 +142,7 @@ class Deposits extends Component {
 
 
     onCopyToClipboard = async () => {
-        await Clipboard.setString(this.props.route.params.walletToken);
+        await Clipboard.setString(this.state.hydrobalance);
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     onChange = (value) => {
@@ -150,6 +160,10 @@ class Deposits extends Component {
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
+
+                        <HydroBalance
+                            hydroAddress={this.state.hydrobalance}
+                        />
 
                         <LabelInput
                             label="Hydro Address"
@@ -177,7 +191,7 @@ class Deposits extends Component {
                         }
                         {this.state.isSuccess &&
                             <Text style={{ color: 'green' }}>
-                                Deposit Successfully !
+                                Transfer successful!
                             </Text>
                         }
 
