@@ -12,7 +12,7 @@ import {
 import { BgView, Header } from "../../components/Layouts";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import {HydroCard, EtherCard, TuscCard } from "../../components/cards";
+import {AllHydroCard, HydroCard, HydroBNBCard, EtherCard, BNBCard, TuscCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
 import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
@@ -25,6 +25,8 @@ const Home = ({ navigation, route }) => {
   const [hydrobalance, setHydrobalance] = React.useState(0);
   const [etherbalance, setEtherbalance] = React.useState(0);
   const [tuscbalance, setTuscbalance] = React.useState(0);
+  const [hydrobalanceb, setHydrobalanceb] = React.useState(0);
+  const [balanceFlag, setBalanceflag] = React.useState('USDT');
 
   const snowflakeContext = useContext(SnowflakeContext);
   const { address, hydroId } = route.params;
@@ -90,8 +92,8 @@ const Home = ({ navigation, route }) => {
     }
   }
 
-  const handlegetTustBalance = async () => {
-    console.log('handlegetTustbalance')
+  const handlegetTuscBalance = async () => {
+    console.log('handlegetTuscBalance')
     let socket = new WebSocket('wss://tuscapi.gambitweb.com');
     socket.onopen = async () => {
       console.log('open')
@@ -125,16 +127,27 @@ const Home = ({ navigation, route }) => {
     socket.CLOSED;
   }
 
-  useEffect(() => {
+  useEffect(() => {  
     handleGetAllBalances();
   }, [])
 
   const handleGetAllBalances = () => {
-    console.log('calling handleGetAllBalances')
-    setTimeout(handleGetAllBalances, 30000);
     handlegetHydroBalance();
     handlegetEtherBalance();
-    handlegetTustBalance();
+    handlegetTuscBalance();
+    setTimeout(handleGetAllBalances, 1000000);
+  }
+
+  const handleChangeLeftBalance = () => {
+    console.log('left')
+    setHydrobalanceb(100);
+    setBalanceflag('HYDRO (BNB)')
+  }
+
+  const handleChangeRightBalance = () => {
+    console.log('right')
+    setHydrobalanceb(200);
+    setBalanceflag('HYDRO (ETH)')
   }
 
   return (
@@ -178,13 +191,35 @@ const Home = ({ navigation, route }) => {
       />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: width * 0.05 }}>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <HydroCard
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 30 }}>
+
+
+          <AllHydroCard
+            balance={hydrobalanceb}
+            balanceFlag={balanceFlag}
+            address={address}
+            cardName="Usdt Card"
+            withdraw={() => console.log('cardName')}
+            transfer={() => console.log('transfer')}
+            history={() => console.log('history')}
+            handleChangeLeftBalance={handleChangeLeftBalance}
+            handleChangeRightBalance={handleChangeRightBalance}
+          />
+
+          <HydroBNBCard
             balance={hydrobalance}
             address={address}
             cardName="Hydro Card"
-            transfer={() => navigation.navigate("transfer")}
-            deposit={() => navigation.navigate("deposits", { walletToken: address })}
+            receive={() => navigation.navigate("receivebnbhydro")}
+            transfer={() => navigation.navigate("transferbnbhydro", { walletToken: address })}
+          />
+
+          <BNBCard
+            balance={etherbalance}
+            address={address}
+            cardName="Ether Card"
+            send={() => navigation.navigate("sendbnb", { walletToken: address })}
+            transfer={() => navigation.navigate("receivebnb")}
           />
 
           <EtherCard
@@ -194,6 +229,14 @@ const Home = ({ navigation, route }) => {
             withdraw={() => navigation.navigate("withdraw", { walletToken: address })}
             transfer={() => navigation.navigate("receiveether")}
             history={() => navigation.navigate("etherhistory", { walletToken: address })}
+          />
+
+          <HydroCard
+            balance={hydrobalance}
+            address={address}
+            cardName="Hydro Card"
+            receive={() => navigation.navigate("receivehydro")}
+            transfer={() => navigation.navigate("deposits", { walletToken: address })}
           />
 
           <TuscCard

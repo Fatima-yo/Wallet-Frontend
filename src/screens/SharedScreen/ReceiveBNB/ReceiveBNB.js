@@ -5,23 +5,25 @@ import {
     KeyboardAvoidingView,
     Text,
     Dimensions,
-    Platform, StatusBar, StyleSheet,
+    Platform, StatusBar, StyleSheet, PermissionsAndroid, SafeAreaView,
     Clipboard, ToastAndroid
 } from "react-native";
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/TwoButton/index";
-import { DepositCard, TuscBalance } from "../../../components/cards";
+import { DepositCard, BNBBalance } from "../../../components/cards";
+import w3s from '../../../libs/Web3Service';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
 import { CameraKitCameraScreen } from 'react-native-camera-kit';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import QRCode from 'react-native-qrcode-svg';
 import AsyncStorage from "@react-native-community/async-storage";
-import { Apis } from "tuscjs-ws";
-import { ChainStore, FetchChain, PrivateKey, TransactionHelper, Aes, TransactionBuilder, SerializerValidation } from "tuscjs";
+import { ethers, } from 'ethers';
+import Web3 from 'web3';
 
-class ReceiveTusc extends Component {
+
+class ReceiveBNB extends Component {
     state = {
         addressTo: "",
         amount: "",
@@ -31,52 +33,33 @@ class ReceiveTusc extends Component {
         qrvalue: "",
         qrSection: false,
         walletaddress: "",
-        tuscbalance: "",
+        etherbalance: "",
         privateKey: "",
     }
 
     async componentDidMount() {
+        await w3s.initContract()
         this.retrieveData()
     }
 
-    onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.walletaddress);
-        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
-    };
-
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@accountprivateKey');
-
+            const value = await AsyncStorage.getItem('@privateKey');
+            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({ walletaddress: wallet.address })
             if (value !== null) {
                 console.log('PrivateKey-->', value)
-                this.setState({ privateKey: value })
-                let publicKey = PrivateKey.fromWif(value).toPublicKey().toString()
-                console.log('publickey', publicKey)
-                this.setState({ walletaddress: publicKey })
             }
 
-            const accountName = await AsyncStorage.getItem('@accountName');
+            const abi = await w3s.getHydroTokenABI()
+            const hydrotokenaddress = await w3s.getHydroTokenAddress()
+            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
 
-            if (value !== null) {
-                console.log('accountName-->', accountName)
-                this.setState({ accountName: accountName })
-            }
-
-            Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
-
-                return Apis.instance().db_api().exec("lookup_accounts", [
-                    this.state.accountName, 100
-                ]).then(accounts => {
-                    Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
-                        let tuscbalance = res[0][1]['balances'][0]['balance']
-                        if (tuscbalance === 11000100000) {
-                            tuscbalance = 0;
-                        }
-                        this.setState({ tuscbalance: tuscbalance })
-                    })
-                })
-            })
+            let etherbalance = await wallet.getBalance()
+            etherbalance = Web3.utils.fromWei(etherbalance.toString())
+            this.setState({ etherbalance: etherbalance })
 
         } catch (error) {
             console.log(error)
@@ -100,6 +83,12 @@ class ReceiveTusc extends Component {
     openqr = () => {
         this.setState({ qrSection: true })
     };
+
+    onCopyToClipboard = async () => {
+        await Clipboard.setString(this.state.walletaddress);
+        ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
+    };
+    
     render() {
 
         return (
@@ -128,8 +117,8 @@ class ReceiveTusc extends Component {
                         />
                     </View>
 
-                    <TuscBalance
-                        tuscAddress={this.state.tuscbalance}
+                    <BNBBalance
+                        hydroAddress={this.state.etherbalance}
                         onIdPress={this.onCopyToClipboard}
                     />
                 </KeyboardAwareScrollView>
@@ -161,4 +150,4 @@ const styles = StyleSheet.create({
     }
 
 });
-export default ReceiveTusc;
+export default ReceiveBNB;

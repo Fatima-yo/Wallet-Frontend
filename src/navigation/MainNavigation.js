@@ -25,10 +25,15 @@ import Deposits from "../screens/SharedScreen/Deposits/Deposits";
 import scanqr from "../screens/SharedScreen/Scanqr";
 import Transfer from "../screens/SharedScreen/Transfer/Transfer";
 import ReceiveEther from "../screens/SharedScreen/ReceiveEther/ReceiveEther";
+import ReceiveBNB from "../screens/SharedScreen/ReceiveBNB/ReceiveBNB";
 import ReceiveTusc from "../screens/SharedScreen/ReceiveTusc/ReceiveTusc";
 import Account from "../screens/SharedScreen/Account";
 import TransferTusc from "../screens/SharedScreen/TransferTusc/TransferTusc";
 import EtherHistory from "../screens/SharedScreen/EtherHistory/EtherHistory";
+import ReceiveHydro from "../screens/SharedScreen/ReceiveHydro/ReceiveHydro";
+import ReceiveBNBHydro from "../screens/SharedScreen/ReceiveBNBHydro/ReceiveBNBHydro";
+import TransferBNBHydro from "../screens/SharedScreen/TransferBNBHydro/TransferBNBHydro";
+import SendBNB from "../screens/SharedScreen/SendBNB/SendBNB";
 
 const Stack = createStackNavigator();
 
@@ -44,8 +49,13 @@ const MainNavigation = () => {
         <Stack.Screen name="home" component={Home} />
         <Stack.Screen name="transfertusc" component={TransferTusc} />
         <Stack.Screen name="transfer" component={Transfer} />
+        <Stack.Screen name="receivehydro" component={ReceiveHydro} />
+        <Stack.Screen name="receivebnb" component={ReceiveBNB} />
+        <Stack.Screen name="transferbnbhydro" component={TransferBNBHydro} />
+        <Stack.Screen name="sendbnb" component={SendBNB} />
         <Stack.Screen name="receiveether" component={ReceiveEther} />
         <Stack.Screen name="receivetusc" component={ReceiveTusc} />
+        <Stack.Screen name="receivebnbhydro" component={ReceiveBNBHydro} />
         <Stack.Screen name="account" component={Account} />
         <Stack.Screen name="etherhistory" component={EtherHistory} />
         <Stack.Screen name="notification" component={Notification} />

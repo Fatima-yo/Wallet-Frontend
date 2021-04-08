@@ -14,6 +14,7 @@ const snowflakeAddress = '0xB0D5a36733886a4c5597849a05B315626aF5222E'
 
 //const hydroAddress = '0xebbdf302c940c6bfd49c6b165f457fdb324649bc'
 const hydroAddress = '0x946112efab61c3636cbd52de2e1392d7a75a6f01'
+const hydroBNBAddress = '0xf3dbb49999b25c9d6641a9423c7ad84168d00071'
 
 const identityRegistryAddress = '0xa7ba71305bE9b2DFEad947dc0E5730BA2ABd28EA'
 
@@ -47,6 +48,10 @@ class Web3Service {
 
     async getHydroTokenAddress() {
         return hydroAddress;
+    }
+
+    async getHydroTokenBNBAddress() {
+        return hydroBNBAddress;
     }
 
     async createIdentityRegistryContract() {

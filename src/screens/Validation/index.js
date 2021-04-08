@@ -7,7 +7,8 @@ const Landing = ({ navigation }) => {
   useEffect(async () => {
     const address = await AsyncStorage.getItem('@walletAddress');
     const hydroId = await AsyncStorage.getItem('@hydro_id_key');
-    if (address, hydroId !== null) {
+
+    if (address !== null) {
       navigation.navigate("app", { screen: "home", params: { address, hydroId } })
     }
     else

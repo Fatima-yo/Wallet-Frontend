@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 import LottieView from "lottie-react-native";
 import ThemeContextProvider from "./hooks/useTheme";
 import SnowflakeState from "./context/SnowFlake/SnowflakeState";
-import Web3 from "web3";
 import MainNavigation from "./navigation/MainNavigation";
 import Home from './screens/Dashboard/Home'
 import { Alert } from "react-native";
@@ -40,11 +39,6 @@ const App = ({ navigation, route }) => {
   const [animationTime, setAnimationTime] = useState(false);
 
   useEffect(async () => {
-    const web3 = new Web3(
-      new Web3.providers.HttpProvider(
-        `https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27`
-      )
-    );
 
     // console.log(web3)
     SplashScreen.hide();

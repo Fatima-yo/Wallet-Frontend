@@ -6,7 +6,8 @@ import {
     StatusBar,
     StyleSheet,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    ToastAndroid
 } from "react-native";
 import { BgView, Header } from "../../../components/Layouts";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -36,12 +37,14 @@ class Account extends Component {
 
         await AsyncStorage.setItem('@accountName', '');
         await AsyncStorage.setItem('@accountprivateKey', '');
+        ToastAndroid.show("Reset successfully!", ToastAndroid.SHORT);
     }
 
     handlesave = async () => {
         await AsyncStorage.setItem('@accountName', this.state.name);
         await AsyncStorage.setItem('@accountprivateKey', this.state.privateKey);
         console.log('saved--->', this.state.name, this.state.privatekey)
+        ToastAndroid.show("Saved!", ToastAndroid.SHORT);
     }
 
     render() {
