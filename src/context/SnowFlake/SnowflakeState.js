@@ -2,8 +2,6 @@ import React, { useReducer, useEffect } from "react";
 import SnowflakeContext from "./snowflakeContext";
 import snowflakeReducer from "./snowflakeReducer";
 import IdentityRegistry from "../../contracts/IdentityRegistry.json";
-import Web3 from "web3";
-import AsyncStorage from '@react-native-community/async-storage'
 import Snowflake from "../../contracts/Snowflake.json";
 import w3s from "../../libs/Web3Service";
 import {

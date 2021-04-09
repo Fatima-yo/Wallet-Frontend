@@ -66,10 +66,10 @@ const Contact = ({ navigation }) => {
         <TouchableOpacity>
           <Image source={require("../../assets/images/emma.png")} style={{ borderRadius: 50, width: 100, height: 100 }} />
         </TouchableOpacity>
-        { <Lead style={styles.name}>Hydro ID</Lead> }
+        {/* <Lead style={styles.name}>Hydro ID</Lead> */}
 
         <View style={styles.box}>
-          <View style={styles.box}>
+          {/*<View style={styles.box}>
             <Lead>Hydro ID</Lead>
             <View
               style={{
@@ -82,7 +82,7 @@ const Contact = ({ navigation }) => {
             >
               <Paragraph>{hydroid}</Paragraph>
             </View>
-          </View>
+            </View>*/}
 
           <View style={styles.box}>
             <Lead>Wallet Address</Lead>

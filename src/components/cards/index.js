@@ -788,7 +788,7 @@ export const BNBCard = ({ balance, address, cardName, send, transfer, deposit, h
         source={require('../../assets/images/BG_ETH.png')}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15 }}>
-        <Image source={require('../../assets/images/ethereum.png')} style={{ width: 30, height: 30 }} />
+        <Image source={require('../../assets/images/binance-coin-logo.png')} style={{ width: 30, height: 30 }} />
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>

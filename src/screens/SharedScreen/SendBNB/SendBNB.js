@@ -104,7 +104,7 @@ class SendBNB extends Component {
             let wallet = new ethers.Wallet(privateKey, provider)
 
             wallet.sendTransaction({to: this.state.hydroaddress, value: ethers.utils.parseEther(this.state.amount)}).then((error) => {
-                this.setState({isTxConfirmed:true});
+                this.setState({isSuccess:true});
             }).catch((error) => {
                 this.setState({ isError: true })
                 this.setState({ error: error.message })
