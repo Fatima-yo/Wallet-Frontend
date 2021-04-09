@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { Text } from "react-native";
-import AsyncStorage from "@react-native-community/async-storage"
+import * as SecureStore from 'expo-secure-store';
 import LoadingView from 'react-native-loading-view'
 
 const Landing = ({ navigation }) => {
   useEffect(async () => {
-    const address = await AsyncStorage.getItem('@walletAddress');
-    const hydroId = await AsyncStorage.getItem('@hydro_id_key');
+    console.log(SecureStore.isAvailableAsync())
+    const address = await SecureStore.getItemAsync('walletAddress');
+    const hydroId = await SecureStore.getItemAsync('hydro_id_key');
 
     if (address !== null) {
       navigation.navigate("app", { screen: "home", params: { address, hydroId } })

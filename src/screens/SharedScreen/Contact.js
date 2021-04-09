@@ -13,7 +13,7 @@ import { Paragraph, Lead } from "../../components/Typography";
 import { ThemeContext } from "../../hooks/useTheme";
 import Icon from "react-native-vector-icons/FontAwesome5";
 const { width } = Dimensions.get('window');
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import Web3 from 'web3';
 import { ethers, } from 'ethers';
 
@@ -27,7 +27,7 @@ const Contact = ({ navigation }) => {
 
   const retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('@privateKey');
+      const value = await SecureStore.getItemAsync('privateKey');
       let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
@@ -40,7 +40,7 @@ const Contact = ({ navigation }) => {
   }
 
   const setHydroIdFunc = async () => {
-    let hydroId = await AsyncStorage.getItem('@hydro_id_key');
+    let hydroId = await SecureStore.getItemAsync('hydro_id_key');
     setHydroId(hydroId); 
   }
 

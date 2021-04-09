@@ -19,7 +19,7 @@ import bip39 from 'react-native-bip39'
 import { Button, Input } from "react-native-elements";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import NetInfo from "@react-native-community/netinfo";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message';
@@ -48,7 +48,7 @@ export default class Validate extends React.Component {
   }
 
   async componentDidMount() {
-    const value = await AsyncStorage.getItem('@encrypted_Key');
+    const value = await SecureStore.getItemAsync('encrypted_Key');
 
     this._netSubscription = NetInfo.addEventListener(state => {
       console.log(
@@ -70,8 +70,8 @@ export default class Validate extends React.Component {
 
   generateKeys = async (value) => {
     this.setState({ spinner: true }, async () => {
-      const privateKey = await AsyncStorage.getItem('@privateKey');
-      const walletAddress = await AsyncStorage.getItem('@walletAddress');
+      const privateKey = await SecureStore.getItemAsync('privateKey');
+      const walletAddress = await SecureStore.getItemAsync('walletAddress');
       console.log(privateKey)
       console.log(walletAddress)
       
@@ -96,7 +96,7 @@ export default class Validate extends React.Component {
       return;
     }
 
-    var mnemonic = await AsyncStorage.getItem('@mnemonic');
+    var mnemonic = await SecureStore.getItemAsync('mnemonic');
 
     if (!mnemonic) {
       navigation.navigate("register");
@@ -144,9 +144,9 @@ export default class Validate extends React.Component {
 
   storeData = async () => {
     try {
-      await AsyncStorage.setItem('@encrypted_Key', this.state.encKeyFinal)
-      const address = await AsyncStorage.getItem('@walletAddress');
-      const hydroId = await AsyncStorage.getItem('@hydro_id_key');
+      await SecureStore.setItemAsync('encrypted_Key', this.state.encKeyFinal)
+      const address = await SecureStore.getItemAsync('walletAddress');
+      const hydroId = await SecureStore.getItemAsync('hydro_id_key');
       setTimeout(() => {
         this.props.navigation.navigate("app", { screen: "home", params: { address, hydroId } });
         //this.props.navigation.navigate("permissions", { address: this.props.route.params.address });

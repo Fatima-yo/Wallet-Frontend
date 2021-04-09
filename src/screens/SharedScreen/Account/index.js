@@ -10,7 +10,7 @@ import {
     ToastAndroid
 } from "react-native";
 import { BgView, Header } from "../../../components/Layouts";
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 
 
 class Account extends Component {
@@ -20,7 +20,7 @@ class Account extends Component {
     }
 
     async componentDidMount() {
-        this.setState({ name: await AsyncStorage.getItem('@accountName') });
+        this.setState({ name: await SecureStore.getItemAsync('accountName') });
     }
 
     handleChangename = (text) => {
@@ -35,14 +35,14 @@ class Account extends Component {
         this.setState({ name: '' })
         this.setState({ privateKey: '' })
 
-        await AsyncStorage.setItem('@accountName', '');
-        await AsyncStorage.setItem('@accountprivateKey', '');
+        await SecureStore.setItemAsync('accountName', '');
+        await SecureStore.setItemAsync('accountprivateKey', '');
         ToastAndroid.show("Reset successfully!", ToastAndroid.SHORT);
     }
 
     handlesave = async () => {
-        await AsyncStorage.setItem('@accountName', this.state.name);
-        await AsyncStorage.setItem('@accountprivateKey', this.state.privateKey);
+        await SecureStore.setItemAsync('accountName', this.state.name);
+        await SecureStore.setItemAsync('accountprivateKey', this.state.privateKey);
         console.log('saved--->', this.state.name, this.state.privatekey)
         ToastAndroid.show("Saved!", ToastAndroid.SHORT);
     }

@@ -9,7 +9,7 @@ import {
     Clipboard, StatusBar
 } from 'react-native';
 var { width, height } = Dimensions.get('window');
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import bip39 from 'react-native-bip39'
 import { Button } from "react-native-elements";
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -25,7 +25,7 @@ export default class Mnemonic extends React.Component {
     }
 
     generateString = async () => {
-        var mnemonic = await AsyncStorage.getItem('@mnemonic');
+        var mnemonic = await SecureStore.getItemAsync('mnemonic');
         this.setState({
             mnemonic: mnemonic
         })

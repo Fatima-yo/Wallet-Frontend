@@ -12,7 +12,7 @@ import w3s from '../../../libs/Web3Service';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
 import QRCode from 'react-native-qrcode-svg';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
 
@@ -37,7 +37,7 @@ class ReceiveHydro extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@privateKey');
+            const value = await SecureStore.getItemAsync('privateKey');
             let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
             let provider = new ethers.providers.Web3Provider(currentProvider);
             let wallet = new ethers.Wallet(value, provider)

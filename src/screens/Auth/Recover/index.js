@@ -19,7 +19,7 @@ import bip39 from 'react-native-bip39'
 import { Button, Input } from "react-native-elements";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import NetInfo from "@react-native-community/netinfo";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message';
@@ -63,9 +63,9 @@ export default class Recover extends React.Component {
       const wallet = ethers.Wallet.fromMnemonic(mnemonicValue);
       console.log(bip39.mnemonicToSeed)
 
-      await AsyncStorage.setItem('@mnemonic', mnemonicValue)
-      await AsyncStorage.setItem('@privateKey', wallet.privateKey)
-      await AsyncStorage.setItem('@walletAddress', wallet.address)
+      await SecureStore.setItemAsync('mnemonic', mnemonicValue)
+      await SecureStore.setItemAsync('privateKey', wallet.privateKey)
+      await SecureStore.setItemAsync('walletAddress', wallet.address)
       
 
       let address = wallet.address

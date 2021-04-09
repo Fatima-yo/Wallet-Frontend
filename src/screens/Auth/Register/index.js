@@ -8,7 +8,7 @@ import { BgView, Header } from "../../../components/Layouts";
 import { ThemeContext } from "../../../hooks/useTheme";
 import Button from "../../../components/Button";
 import { Paragraph, Lead } from "../../../components/Typography";
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import bip39 from 'react-native-bip39'
 import {ethers} from 'ethers';
 
@@ -36,9 +36,9 @@ const Register = ({ navigation }) => {
         const wallet = ethers.Wallet.fromMnemonic(mnemonic);
         let privateKey = wallet.privateKey;
         let walletAddress = wallet.address;
-        await AsyncStorage.setItem('@mnemonic', mnemonic);
-        await AsyncStorage.setItem('@privateKey', privateKey);
-        await AsyncStorage.setItem('@walletAddress', walletAddress);
+        await SecureStore.setItemAsync('mnemonic', mnemonic);
+        await SecureStore.setItemAsync('privateKey', privateKey);
+        await SecureStore.setItemAsync('walletAddress', walletAddress);
         setSpinner(false);
         navigation.navigate("mnemonic", { walletAddress, privateKey });
     } catch (error) {

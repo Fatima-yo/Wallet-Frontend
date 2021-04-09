@@ -12,6 +12,7 @@ import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/Button";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import * as SecureStore from 'expo-secure-store';
 const { height, width } = Dimensions.get('window');
 
 
@@ -33,7 +34,7 @@ class AddCustomToken extends Component {
             decimals: this.state.decimals,
             symbol: this.state.symbol
         }
-        await AsyncStorage.setItem("customToken", JSON.stringify(objCustomToken))
+        await SecureStore.setItemAsync("customToken", JSON.stringify(objCustomToken))
         this.props.navigation.goBack()
 
     }

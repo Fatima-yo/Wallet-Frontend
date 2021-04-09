@@ -7,6 +7,8 @@ import { SettingsCard, SettingsItemCard } from "../../components/cards";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
 import Button from "../../components/Button";
 import { add } from "lodash";
+import * as SecureStore from 'expo-secure-store';
+
 const { height, width } = Dimensions.get('window');
 
 const GOOGLE_PACKAGE_NAME = 'com.hydrowallet';
@@ -49,7 +51,7 @@ const Settings = ({ navigation, route }) => {
   }, [navigation]);
 
   const getCustomToken = async () => {
-    let customToken = await AsyncStorage.getItem("customToken")
+    let customToken = await SecureStore.getItemAsync("customToken")
     if (customToken) {
       customToken = JSON.parse(customToken)
       setCustomToken(customToken)
@@ -62,7 +64,7 @@ const Settings = ({ navigation, route }) => {
   };
 
   const CopyToClipboardMnemonic = async () => {
-    const value = await AsyncStorage.getItem('@mnemonic');
+    const value = await SecureStore.getItemAsync('mnemonic');
     await Clipboard.setString(value);
     ToastAndroid.show("Mnemonic copied to clipboard!", ToastAndroid.SHORT);
   };

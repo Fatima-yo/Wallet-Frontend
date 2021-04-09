@@ -5,14 +5,14 @@ import { BgView } from "../../components/Layouts";
 import { Paragraph, Lead } from "../../components/Typography";
 import Button from "../../components/Button";
 import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 
 const AuthLanding = ({ navigation }) => {
 
   const [wallet_address_Value, setwallet_address_Value] = useState('');
   const onSubmit = async () => {
-    const address = await AsyncStorage.getItem('@walletAddress');
-    const hydroId = await AsyncStorage.getItem('@hydro_id_key');
+    const address = await SecureStore.getItemAsync('walletAddress');
+    const hydroId = await SecureStore.getItemAsync('hydro_id_key');
      
    // setwallet_address_Value(address);
     if (address, hydroId !== null) {

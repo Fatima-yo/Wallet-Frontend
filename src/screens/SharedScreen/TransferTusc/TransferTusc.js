@@ -19,7 +19,7 @@ import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/Button/index";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 const { height, width } = Dimensions.get('window');
 
 //var privKey = "5KK1f4tVVpMikKbphYjh3Kb9ARh4JdSmgPTSzEkSGSgNN1SvEUp"
@@ -45,8 +45,8 @@ class TransferTusc extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@accountprivateKey');
-            const accountname = await AsyncStorage.getItem('@accountName')
+            const value = await SecureStore.getItemAsync('accountprivateKey');
+            const accountname = await SecureStore.getItemAsync('accountName')
 
             if (value !== null) {
                 console.log('PrivateKey-->', value)
@@ -58,7 +58,7 @@ class TransferTusc extends Component {
                 console.log('account name', accountname)
             }
 
-            const accountName = await AsyncStorage.getItem('@accountName');
+            const accountName = await SecureStore.getItemAsync('accountName');
 
             if (value !== null) {
                 console.log('accountName-->', accountName)

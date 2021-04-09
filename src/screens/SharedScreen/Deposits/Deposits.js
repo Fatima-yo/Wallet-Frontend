@@ -22,7 +22,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { ThemeProvider } from '@react-navigation/native';
 import { ethers, } from 'ethers';
 import { Value } from 'react-native-reanimated';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import { HydroBalance, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
@@ -53,7 +53,7 @@ class Deposits extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@privateKey');    
+            const value = await SecureStore.getItemAsync('privateKey');    
             this.setState({ privatekeyValue: value })
             if (value !== null) {
                 console.log('PrivateKey-->', value)

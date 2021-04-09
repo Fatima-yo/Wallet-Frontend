@@ -6,7 +6,7 @@ import AppIntroSlider from "react-native-app-intro-slider";
 import Icon from "react-native-vector-icons/Ionicons";
 import LottieView from "lottie-react-native";
 import { ThemeContext } from "../../hooks/useTheme";
-import AsyncStorage from "@react-native-community/async-storage"
+import * as SecureStore from 'expo-secure-store';
 import { styles } from "./style";
 const { height, width } = Dimensions.get('window');
 

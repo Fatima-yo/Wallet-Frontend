@@ -18,7 +18,7 @@ const { height, width } = Dimensions.get('window');
 import { CameraKitCameraScreen } from 'react-native-camera-kit';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import QRCode from 'react-native-qrcode-svg';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
 
@@ -44,7 +44,7 @@ class ReceiveBNB extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@privateKey');
+            const value = await SecureStore.getItemAsync('privateKey');
             let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
             let provider = new ethers.providers.Web3Provider(currentProvider);
             let wallet = new ethers.Wallet(value, provider)

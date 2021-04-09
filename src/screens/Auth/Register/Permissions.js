@@ -9,7 +9,7 @@ import { Paragraph, Lead } from "../../../components/Typography";
 import Button from "../../../components/Button";
 import w3s from "../../../libs/Web3Service";
 import Toast from 'react-native-toast-message';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const Permissions = ({ route, navigation }) => {
@@ -70,7 +70,7 @@ const Permissions = ({ route, navigation }) => {
 
   const storeData = async () => {
       try {
-        await AsyncStorage.setItem('@hydro_id_key', hydroId)
+        await SecureStore.setItemAsync('hydro_id_key', hydroId)
         console.log('addresssss------>', hydroId)
       } catch (error) {
         console.log(error)
@@ -79,7 +79,7 @@ const Permissions = ({ route, navigation }) => {
 
   const retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('@privateKey');  
+      const value = await SecureStore.getItemAsync('privateKey');  
       if (value !== null) {
         console.log('p----', value)
       }

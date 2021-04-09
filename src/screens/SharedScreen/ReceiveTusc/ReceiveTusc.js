@@ -17,7 +17,7 @@ const { height, width } = Dimensions.get('window');
 import { CameraKitCameraScreen } from 'react-native-camera-kit';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import QRCode from 'react-native-qrcode-svg';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import { Apis } from "tuscjs-ws";
 import { ChainStore, FetchChain, PrivateKey, TransactionHelper, Aes, TransactionBuilder, SerializerValidation } from "tuscjs";
 
@@ -46,7 +46,7 @@ class ReceiveTusc extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('@accountprivateKey');
+            const value = await SecureStore.getItemAsync('accountprivateKey');
 
             if (value !== null) {
                 console.log('PrivateKey-->', value)
@@ -56,7 +56,7 @@ class ReceiveTusc extends Component {
                 this.setState({ walletaddress: publicKey })
             }
 
-            const accountName = await AsyncStorage.getItem('@accountName');
+            const accountName = await SecureStore.getItemAsync('accountName');
 
             if (value !== null) {
                 console.log('accountName-->', accountName)

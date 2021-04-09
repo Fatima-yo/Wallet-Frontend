@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
 import {AllHydroCard, HydroCard, HydroBNBCard, EtherCard, BNBCard, TuscCard } from "../../components/cards";
 import w3s from '../../libs/Web3Service';
-import AsyncStorage from "@react-native-community/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
 import { Apis } from "tuscjs-ws";
@@ -94,7 +94,7 @@ const Home = ({ navigation, route }) => {
 
   const handlegetHydroBalance = async () => {
     try {
-      const value = await AsyncStorage.getItem('@privateKey');
+      const value = await SecureStore.getItemAsync('privateKey');
       let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
@@ -114,7 +114,7 @@ const Home = ({ navigation, route }) => {
 
   const handlegetHydroBNBBalance = async () => {
     try {
-      const value = await AsyncStorage.getItem('@privateKey');
+      const value = await SecureStore.getItemAsync('privateKey');
       let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
@@ -134,7 +134,7 @@ const Home = ({ navigation, route }) => {
 
   const handlegetEtherBalance = async () => {
     try {
-      const value = await AsyncStorage.getItem('@privateKey');
+      const value = await SecureStore.getItemAsync('privateKey');
       let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
@@ -154,7 +154,7 @@ const Home = ({ navigation, route }) => {
 
   const handlegetBnbBalance = async () => {
     try {
-      const value = await AsyncStorage.getItem('@privateKey');
+      const value = await SecureStore.getItemAsync('privateKey');
       let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
       let provider = new ethers.providers.Web3Provider(currentProvider);
       let wallet = new ethers.Wallet(value, provider)
@@ -173,7 +173,7 @@ const Home = ({ navigation, route }) => {
     let socket = new WebSocket('wss://tuscapi.gambitweb.com');
     socket.onopen = async () => {
       console.log('open')
-      const accountName = await AsyncStorage.getItem('@accountName');
+      const accountName = await SecureStore.getItemAsync('accountName');
       Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
         console.log("connected to:", res[0].network);
         return Apis.instance().db_api().exec("lookup_accounts", [
