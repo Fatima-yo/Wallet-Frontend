@@ -604,7 +604,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, receive, trans
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO (ETH)</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO (ERC20)</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -668,7 +668,7 @@ export const HydroBNBCard = ({ balance, address, cardName, withdraw, receive, tr
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO (BNB)</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO (BEP20)</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -952,7 +952,7 @@ export const ComingSoonCard = ({ ...props }) => {
   );
 };
 
-export const AllHydroCard = ({ handleChangeRightBalance, handleChangeLeftBalance, balance, balanceFlag, address, cardName, withdraw, transfer, history, account, deposit, ...props }) => {
+export const AllHydroCard = ({leftColor, rightColor, handleChangeRightBalance, handleChangeLeftBalance, balance, balanceFlag, address, cardName, receive, transfer, history, account, deposit, ...props }) => {
   return (
     <View style={{
       position: 'relative',
@@ -969,6 +969,7 @@ export const AllHydroCard = ({ handleChangeRightBalance, handleChangeLeftBalance
       },
       shadowOpacity: 0.1,
       shadowRadius: 13.35,
+      // backgroundColor:'#000'
     }} {...props}>
       <Image
         style={{
@@ -979,17 +980,20 @@ export const AllHydroCard = ({ handleChangeRightBalance, handleChangeLeftBalance
           bottom: 0,
           height: 200,
           width: '100%',
-          borderRadius: 5
+          borderRadius: 5,
         }}
-        source={require('../../assets/images/BG_ETH.png')}
+        source={require('../../assets/images/BG_HYDRO.png')}
       />
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15 }}>
+        <Image source={require('../../assets/images/hydro.png')} style={{ width: 30, height: 30 }} />
+      </View>
       <View style={{ flexDirection: 'row', paddingTop: 15, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 }}>
         <View>
           <TouchableOpacity onPress={handleChangeLeftBalance}>
             <Icon
               name="arrow-left"
-              color={'gray'}
-              size={23}
+              color={leftColor}
+              size={30}
             />
           </TouchableOpacity>
         </View>
@@ -1001,15 +1005,15 @@ export const AllHydroCard = ({ handleChangeRightBalance, handleChangeLeftBalance
           <TouchableOpacity onPress={handleChangeRightBalance}>
             <Icon
               name="arrow-right"
-              color={'#000'}
-              size={23}
+              color={rightColor}
+              size={30}
             />
           </TouchableOpacity>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={withdraw}>
+          <TouchableOpacity onPress={transfer}>
             <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
           </TouchableOpacity>
         </View>
@@ -1019,7 +1023,7 @@ export const AllHydroCard = ({ handleChangeRightBalance, handleChangeLeftBalance
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={transfer}>
+          <TouchableOpacity onPress={receive}>
             <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
           </TouchableOpacity>
         </View>

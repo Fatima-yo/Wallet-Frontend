@@ -65,6 +65,8 @@ export default class Recover extends React.Component {
 
       await AsyncStorage.setItem('@mnemonic', mnemonicValue)
       await AsyncStorage.setItem('@privateKey', wallet.privateKey)
+      await AsyncStorage.setItem('@walletAddress', wallet.address)
+      
 
       let address = wallet.address
       let hydroId = ''

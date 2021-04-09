@@ -13,7 +13,6 @@ import { BgView, Header } from "../../components/Layouts";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
 import {AllHydroCard, HydroCard, HydroBNBCard, EtherCard, BNBCard, TuscCard } from "../../components/cards";
-import SnowflakeContext from "../../context/SnowFlake/snowflakeContext";
 import w3s from '../../libs/Web3Service';
 import AsyncStorage from "@react-native-community/async-storage";
 import { ethers, } from 'ethers';
@@ -22,13 +21,20 @@ import { Apis } from "tuscjs-ws";
 
 const { height, width } = Dimensions.get('window');
 const Home = ({ navigation, route }) => {
-  const [hydrobalance, setHydrobalance] = React.useState(0);
+  
   const [etherbalance, setEtherbalance] = React.useState(0);
+  const [bnbbalance, setBnbbalance] = React.useState(0);
   const [tuscbalance, setTuscbalance] = React.useState(0);
-  const [hydrobalanceb, setHydrobalanceb] = React.useState(0);
-  const [balanceFlag, setBalanceflag] = React.useState('USDT');
+  
+  const [allHydroBalanceFlag, setAllHydroBalanceFlag] = React.useState('HYDRO (BEP20)');
+  const [currentToken, setCurrentToken] = React.useState('BEP20')
+  
+  const [leftColor, setLeftColor] = React.useState('gray');
+  const [rightColor, setRightColor] = React.useState('#000');
+  const [BEP20Balance, setBEP20Balance] = React.useState(0)
+  const [ERC20Balance, setERC20Balance] = React.useState(0)
+  const [hydrobalance, setHydrobalance] = React.useState(0);
 
-  const snowflakeContext = useContext(SnowflakeContext);
   const { address, hydroId } = route.params;
 
   const { isLightTheme, lightTheme, darkTheme, toggleTheme } = useContext(
@@ -53,6 +59,39 @@ const Home = ({ navigation, route }) => {
     };
   }, []);
 
+  const getHydroBalance = () => { 
+    if (currentToken == 'BEP20') {
+      return BEP20Balance
+    }  else {
+      return ERC20Balance
+    }
+  }
+
+  const sendHydro = async () => {
+    if (currentToken == 'BEP20') {
+      navigation.navigate("transferbnbhydro", { walletToken: address })
+    } else {
+      navigation.navigate("deposits", { walletToken: address })
+    }
+  }
+
+  const hydroHistory = async () => {
+    if (currentToken == 'BEP20') {
+      console.log('BEP20 HISTORY')
+    } else {
+      console.log('ERC20 HISTORY')
+    }
+  }
+
+  const receiveHydro = async () => {
+    if (currentToken == 'BEP20') {
+      navigation.navigate("receivebnbhydro")
+    } else {
+      navigation.navigate("receivehydro")
+    }
+  }
+
+
   const handlegetHydroBalance = async () => {
     try {
       const value = await AsyncStorage.getItem('@privateKey');
@@ -64,9 +103,30 @@ const Home = ({ navigation, route }) => {
       const hydrotokenaddress = await w3s.getHydroTokenAddress()
       const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
 
-      let hydrobalance = await contract.balanceOf(wallet.address);
-      hydrobalance = Web3.utils.fromWei(hydrobalance.toString())
-      setHydrobalance(hydrobalance)
+      let hydrobalance_aux = await contract.balanceOf(wallet.address);
+      hydrobalance_aux = Web3.utils.fromWei(hydrobalance_aux.toString())
+      setERC20Balance(hydrobalance_aux)
+      return hydrobalance_aux
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handlegetHydroBNBBalance = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@privateKey');
+      let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
+      let provider = new ethers.providers.Web3Provider(currentProvider);
+      let wallet = new ethers.Wallet(value, provider)
+
+      const abi = await w3s.getHydroTokenABI()
+      const hydrotokenaddress = await w3s.getHydroTokenBNBAddress()
+      const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
+
+      let hydrobalance_aux = await contract.balanceOf(wallet.address);
+      hydrobalance_aux = Web3.utils.fromWei(hydrobalance_aux.toString())
+      setBEP20Balance(hydrobalance_aux)
+      return hydrobalance_aux
     } catch (error) {
       console.log(error)
     }
@@ -86,6 +146,22 @@ const Home = ({ navigation, route }) => {
       let etherbalance = await wallet.getBalance()
       etherbalance = Web3.utils.fromWei(etherbalance.toString())
       setEtherbalance(etherbalance)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handlegetBnbBalance = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@privateKey');
+      let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
+      let provider = new ethers.providers.Web3Provider(currentProvider);
+      let wallet = new ethers.Wallet(value, provider)
+
+      let etherbalance = await wallet.getBalance()
+      etherbalance = Web3.utils.fromWei(etherbalance.toString())
+      setBnbbalance(etherbalance)
 
     } catch (error) {
       console.log(error)
@@ -127,27 +203,55 @@ const Home = ({ navigation, route }) => {
     socket.CLOSED;
   }
 
-  useEffect(() => {  
+  const setHydroCardBalance = async () => {
+    console.log('setHydroCardBalance +')
+    console.log(currentToken, BEP20Balance, ERC20Balance)
+    console.log('setHydroCardBalance -')
+    try {
+      if (currentToken == 'BEP20') {
+        await setHydrobalance(BEP20Balance)
+      } else {
+        await setHydrobalance(ERC20Balance)
+      }
+    } catch (error) {
+      console.log(error.message)
+    }}
+
+  useEffect(() => {
     handleGetAllBalances();
+    handlegetTuscBalance();
   }, [])
 
-  const handleGetAllBalances = () => {
-    handlegetHydroBalance();
+  const handleGetAllBalances = async () => {
+    handlegetBnbBalance();
+
+    let hydrobnbbalance = await handlegetHydroBNBBalance();
+    setBEP20Balance(hydrobnbbalance);
+
+    let hydroercbalance = await handlegetHydroBalance();
+    setERC20Balance(hydroercbalance);
+
+    setHydroCardBalance()
     handlegetEtherBalance();
-    handlegetTuscBalance();
-    setTimeout(handleGetAllBalances, 1000000);
+    setTimeout(handleGetAllBalances, 10000);
   }
 
   const handleChangeLeftBalance = () => {
     console.log('left')
-    setHydrobalanceb(100);
-    setBalanceflag('HYDRO (BNB)')
+    setCurrentToken('BEP20')
+    setHydrobalance(BEP20Balance)
+    setAllHydroBalanceFlag('HYDRO (BEP20)')
+    setLeftColor('gray')
+    setRightColor('#000')
   }
 
   const handleChangeRightBalance = () => {
     console.log('right')
-    setHydrobalanceb(200);
-    setBalanceflag('HYDRO (ETH)')
+    setCurrentToken('ERC20')
+    setHydrobalance(ERC20Balance)
+    setAllHydroBalanceFlag('HYDRO (ERC20)')
+    setRightColor('gray')
+    setLeftColor('#000')
   }
 
   return (
@@ -195,27 +299,21 @@ const Home = ({ navigation, route }) => {
 
 
           <AllHydroCard
-            balance={hydrobalanceb}
-            balanceFlag={balanceFlag}
-            address={address}
-            cardName="Usdt Card"
-            withdraw={() => console.log('cardName')}
-            transfer={() => console.log('transfer')}
-            history={() => console.log('history')}
-            handleChangeLeftBalance={handleChangeLeftBalance}
-            handleChangeRightBalance={handleChangeRightBalance}
-          />
-
-          <HydroBNBCard
-            balance={hydrobalance}
+            balance={getHydroBalance()}
+            balanceFlag={allHydroBalanceFlag}
             address={address}
             cardName="Hydro Card"
-            receive={() => navigation.navigate("receivebnbhydro")}
-            transfer={() => navigation.navigate("transferbnbhydro", { walletToken: address })}
+            receive={receiveHydro}
+            transfer={sendHydro}
+            history={hydroHistory}
+            handleChangeLeftBalance={handleChangeLeftBalance}
+            handleChangeRightBalance={handleChangeRightBalance}
+            rightColor={rightColor}
+            leftColor={leftColor}
           />
 
           <BNBCard
-            balance={etherbalance}
+            balance={bnbbalance}
             address={address}
             cardName="Ether Card"
             send={() => navigation.navigate("sendbnb", { walletToken: address })}
@@ -229,14 +327,6 @@ const Home = ({ navigation, route }) => {
             withdraw={() => navigation.navigate("withdraw", { walletToken: address })}
             transfer={() => navigation.navigate("receiveether")}
             history={() => navigation.navigate("etherhistory", { walletToken: address })}
-          />
-
-          <HydroCard
-            balance={hydrobalance}
-            address={address}
-            cardName="Hydro Card"
-            receive={() => navigation.navigate("receivehydro")}
-            transfer={() => navigation.navigate("deposits", { walletToken: address })}
           />
 
           <TuscCard

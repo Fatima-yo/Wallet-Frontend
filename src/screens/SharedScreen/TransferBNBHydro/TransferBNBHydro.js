@@ -117,16 +117,20 @@ class TransferBNBHydro extends Component {
                 try {
                     await contract.transfer(receiverWallet, howMuchTokens) 
                     console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
-                    return true, ''
+                    let error = ''
+                    return error
                 } catch (error) {
-                    return false, error
+                    return error
                 }                
             }
-            let result, error = await sendTokens()
-            if (result) {
+            let error = await sendTokens()
+            
+            if (!error) {
+                console.log('hi')
                 this.setState({isSuccess:true})
                 this.retrieveData()
             } else {
+                console.log('ho')
                 this.setState({isError:true})
                 this.setState({error:error.message})
             }

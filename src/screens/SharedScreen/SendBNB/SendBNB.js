@@ -57,7 +57,7 @@ class SendBNB extends Component {
             const value = await AsyncStorage.getItem('@privateKey');    
             this.setState({ privatekeyValue: value })
             if (value !== null) {
-                console.log('PrivateKey-->', value)
+                console.log('PrivateKey-->', this.state.privatekeyValue)
             }
             let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
             let provider = new ethers.providers.Web3Provider(currentProvider);
@@ -93,63 +93,21 @@ class SendBNB extends Component {
             } else {
                 await this.setState({ isError: false })
             }
+            
             let web3 = await new Web3('https://bsc-dataseed.binance.org/');
 
             let privateKey = this.state.privatekeyValue;
-            let wallet = new ethers.Wallet(privateKey)
-            console.log(privateKey)
 
-            var txCount = await web3.eth.getTransactionCount(wallet.address)
+            let currentProvider = await new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
 
-            var gasPrice = await web3.eth.getGasPrice()
-            // gasPrice += 1
+            let wallet = new ethers.Wallet(privateKey, provider)
 
-            let transaction = {
-                to: this.state.hydroaddress,
-                value: ethers.utils.parseEther(this.state.amount),
-                chainId: 56,
-                nonce: txCount,
-                gasPrice: gasPrice
-            }
-
-            console.log(transaction)
-
-            let estimate = await web3.eth.estimateGas(transaction)
-
-            transaction.gasLimit = estimate;
-            console.log('estimate: ' + estimate);
-
-            var signPromise = wallet.sign(transaction);
-
-            signPromise.then((signedTransaction) => {
-                console.log(signedTransaction);
-                this.setState({isTxSent: true})
-                // let provider = new ethers.providers.Web3Provider(currentProvider);
-                // let provider = ethers.getDefaultProvider()
-                web3.eth.sendSignedTransaction(signedTransaction).then((tx) => {
-                    console.log(tx);
-                    this.setState({isTxConfirmed:true}); 
-                    this.retrieveData();
-                    // {
-                    //    // These will match the above values (excluded properties are zero)
-                    //    "nonce", "gasLimit", "gasPrice", "to", "value", "data", "chainId"
-                    //
-                    //    // These will now be present
-                    //    "from", "hash", "r", "s", "v"
-                    //  }
-                    // Hash:
-                })
-                .catch((e)=>{
-                    console.log(e.message)
-                    this.setState({isError:true})
-                    this.setState({error: e.message})
-                })
-
-            })
-            .catch((e)=>{
-                console.log(e.message)
-                this.setState({isError:true})
-                this.setState({error: e.message})
+            wallet.sendTransaction({to: this.state.hydroaddress, value: ethers.utils.parseEther(this.state.amount)}).then((error) => {
+                this.setState({isTxConfirmed:true});
+            }).catch((error) => {
+                this.setState({ isError: true })
+                this.setState({ error: error.message })
             })
         }
         catch (ex) {
