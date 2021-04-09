@@ -46,21 +46,15 @@ class ReceiveTusc extends Component {
 
     retrieveData = async () => {
         try {
-            const value = await SecureStore.getItemAsync('accountprivateKey');
-
-            if (value !== null) {
-                console.log('PrivateKey-->', value)
-                this.setState({ privateKey: value })
-                let publicKey = PrivateKey.fromWif(value).toPublicKey().toString()
-                console.log('publickey', publicKey)
-                this.setState({ walletaddress: publicKey })
-            }
 
             const accountName = await SecureStore.getItemAsync('accountName');
 
-            if (value !== null) {
+            if (accountName !== null) {
                 console.log('accountName-->', accountName)
                 this.setState({ accountName: accountName })
+            } else {
+                this.setState({tuscbalance: 0})
+                return
             }
 
             Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
@@ -70,9 +64,11 @@ class ReceiveTusc extends Component {
                 ]).then(accounts => {
                     Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
                         let tuscbalance = res[0][1]['balances'][0]['balance']
+                        console.log('tusbalanace', tuscbalance)
                         if (tuscbalance === 11000100000) {
                             tuscbalance = 0;
                         }
+                        tuscbalance = tuscbalance / 100000 
                         this.setState({ tuscbalance: tuscbalance })
                     })
                 })
@@ -111,13 +107,13 @@ class ReceiveTusc extends Component {
                     <View style={{ paddingVertical: width * 0.02 }} />
 
                     <DepositCard
-                        hydroAddress={this.state.walletaddress}
+                        hydroAddress={this.state.accountName}
                         onIdPress={this.onCopyToClipboard}
                     />
 
                     <View style={[styles.qrcode, { paddingVertical: 40 }]}>
                         <QRCode
-                            value={JSON.stringify(this.state.walletaddress)}
+                            value={JSON.stringify(this.state.accountName)}
                             size={width * 0.8}
                             color="white"
                             backgroundColor="black"

@@ -64,9 +64,26 @@ const Settings = ({ navigation, route }) => {
   };
 
   const CopyToClipboardMnemonic = async () => {
-    const value = await SecureStore.getItemAsync('mnemonic');
-    await Clipboard.setString(value);
-    ToastAndroid.show("Mnemonic copied to clipboard!", ToastAndroid.SHORT);
+    
+    Alert.alert(
+      'Copy Mnemonic',
+      'Would you like to copy your Mnemonic to the clipboard?',
+      [
+        { text: 'Sure', onPress: async () => {
+          const value = await SecureStore.getItemAsync('mnemonic');
+          await Clipboard.setString(value);
+          ToastAndroid.show("Mnemonic copied to clipboard!", ToastAndroid.SHORT);
+        }},
+        {
+          text: 'No Thanks!',
+          onPress: () => console.log('No Thanks pressed'),
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false },
+    );
+
+    
   };
 
 

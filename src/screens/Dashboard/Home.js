@@ -174,6 +174,10 @@ const Home = ({ navigation, route }) => {
     socket.onopen = async () => {
       console.log('open')
       const accountName = await SecureStore.getItemAsync('accountName');
+      if (!accountName) {
+        setTuscbalance(0)
+        return
+      }
       Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
         console.log("connected to:", res[0].network);
         return Apis.instance().db_api().exec("lookup_accounts", [
@@ -185,6 +189,7 @@ const Home = ({ navigation, route }) => {
             if (tuscbalance === 11000100000) {
               tuscbalance = 0;
             }
+            tuscbalance = tuscbalance / 100000 
             setTuscbalance(tuscbalance)
           })
             .catch(err => {
@@ -201,12 +206,11 @@ const Home = ({ navigation, route }) => {
     };
     socket.close();
     socket.CLOSED;
+
+    setTimeout(handleGetAllBalances, 100000);
   }
 
   const setHydroCardBalance = async () => {
-    console.log('setHydroCardBalance +')
-    console.log(currentToken, BEP20Balance, ERC20Balance)
-    console.log('setHydroCardBalance -')
     try {
       if (currentToken == 'BEP20') {
         await setHydrobalance(BEP20Balance)

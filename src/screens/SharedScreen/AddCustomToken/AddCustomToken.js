@@ -22,6 +22,7 @@ class AddCustomToken extends Component {
         decimals: "",
         symbol: ""
     }
+
     addCustomToken = async () => {
         if (!this.state.contractAddress)
             return ToastAndroid.show("Contract Address Is Required", ToastAndroid.LONG);

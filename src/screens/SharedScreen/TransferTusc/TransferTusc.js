@@ -45,33 +45,33 @@ class TransferTusc extends Component {
 
     retrieveData = async () => {
         try {
+            const accountname = await SecureStore.getItemAsync('accountName');
             const value = await SecureStore.getItemAsync('accountprivateKey');
-            const accountname = await SecureStore.getItemAsync('accountName')
-
-            if (value !== null) {
+            
+            if (value && accountname) {
                 console.log('PrivateKey-->', value)
                 this.setState({ privatekeyValue: value })
-                let publicKey = PrivateKey.fromWif(value).toPublicKey().toString()
-                console.log('publickey', publicKey)
-                this.setState({ walletaddress: publicKey })
+                this.setState({ walletaddress: accountname })
                 this.setState({accountname: accountname})
                 console.log('account name', accountname)
+            } else {
+                console.log('hola')
+                this.setState({tuscbalance: 0 })
+                return
             }
 
-            const accountName = await SecureStore.getItemAsync('accountName');
 
-            if (value !== null) {
-                console.log('accountName-->', accountName)
-                this.setState({ accountName: accountName })
-            }
-
-            Apis.instance('wss://node.testnet.bitshares.eu/', true).init_promise.then((res) => {
+            Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
 
                 return Apis.instance().db_api().exec("lookup_accounts", [
-                    this.state.accountName, 100
+                    this.state.accountname, 100
                 ]).then(accounts => {
                     Apis.instance().db_api().exec("get_full_accounts", [accounts[0], false]).then(res => {
                         let tuscbalance = res[0][1]['balances'][0]['balance']
+                        if (tuscbalance === 11000100000) {
+                            tuscbalance = 0;
+                        }
+                        tuscbalance = tuscbalance / 100000
                         this.setState({ tuscbalance: tuscbalance })
                         return
                     })
