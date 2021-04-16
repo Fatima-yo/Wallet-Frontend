@@ -25,7 +25,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Toast from 'react-native-toast-message';
 import { ethers } from 'ethers';
 import { BgView, Header } from "../../../components/Layouts";
-
+import CryptoJS from "react-native-crypto-js";
 
 export default class Recover extends React.Component {
   constructor(props) {
@@ -45,11 +45,7 @@ export default class Recover extends React.Component {
   }
 
   check = async () => {
-    const { connection, mnemonicValue } = this.state;
-    if (!connection) {
-      this.connectToInternet();
-      return;
-    }
+    const { mnemonicValue } = this.state;
 
     if (mnemonicValue == '') {
       this.setState({ errorMessage: 'Enter BIP39 Mnemonic' });
@@ -61,16 +57,15 @@ export default class Recover extends React.Component {
       
 
       const wallet = ethers.Wallet.fromMnemonic(mnemonicValue);
-      console.log(bip39.mnemonicToSeed)
 
       await SecureStore.setItemAsync('mnemonic', mnemonicValue)
       await SecureStore.setItemAsync('privateKey', wallet.privateKey)
       await SecureStore.setItemAsync('walletAddress', wallet.address)
-      
 
       let address = wallet.address
       let hydroId = ''
-      this.props.navigation.navigate("app", { screen: "home", params: { address, hydroId  } });
+      this.setState({privateKey: wallet.privateKey, publicKey: wallet.address, isGenerate:true})
+      //this.props.navigation.navigate("app", { screen: "home", params: { address, hydroId  } });
     } else {
       this.setState({ errorMessage: 'Invalid Mnemonic' })
       setTimeout(() => {
@@ -79,9 +74,35 @@ export default class Recover extends React.Component {
     }
   }
 
+  generateENCKeys = () => {
+    const { password } = this.state;
+
+    if (password == '') {
+      this.setState({ errorPasswordMessage: 'Enter Password' });
+      return;
+    }
+
+    this.setState({ spinner: true }, async () => {
+
+      var encryptKey = CryptoJS.AES.encrypt(password, this.state.privateKey).toString(); 
+      this.setState({spinner:false,
+        isGenerateKey: true,
+        encKeyFinal: encryptKey
+      })
+
+    })
+
+  }
+
   storeData = async (mnemonic, privateKey) => {
     try {
-      
+      await SecureStore.setItemAsync('encrypted_Key', this.state.encKeyFinal)
+      const address = await SecureStore.getItemAsync('walletAddress');
+      const hydroId = await SecureStore.getItemAsync('hydro_id_key');''
+      setTimeout(() => {
+        this.props.navigation.navigate("app", { screen: "home", params: { address, hydroId } });
+        //this.props.navigation.navigate("permissions", { address: this.props.route.params.address });
+      }, 1000)
     } catch (e) {
       console.log(e)
     }
@@ -155,6 +176,91 @@ export default class Recover extends React.Component {
                 </View>
               </View>
             }
+
+            <View style={styles.main}>
+              {isGenerate &&
+                <View>
+                  <View style={styles.seprate} />
+                  <Text style={styles.title}>Private Key</Text>
+                  <TouchableOpacity style={styles.boxgray} onPress={() => this.CopyToClipboard(privateKey)}>
+                    <Text style={styles.subtitle}>{this.state.privateKey}</Text>
+                  </TouchableOpacity>
+
+                  <View style={styles.seprate} />
+                  <Text style={styles.title}>Public Key</Text>
+                  <TouchableOpacity style={styles.boxgray} onPress={() => this.CopyToClipboard(publicKey)}>
+                    <Text style={styles.subtitle}>{this.state.publicKey}</Text>
+                  </TouchableOpacity>
+
+                  <View style={{ marginTop: width * 0.05 }}>
+                    <Text style={styles.label}>Password</Text>
+                    <View style={styles.inputContainer}>
+                      <View style={{ flex: 1 }}>
+                          <TextInput
+                            placeholder='Password'
+                            placeholderTextColor={'#7777'}
+                            secureTextEntry={this.state.secureTextEntry}
+                            style={styles.input}
+                            returnKeyType={'done'}
+                            onChangeText={value => this.setState({ password: value })}
+                            onFocus={() => this.setState({ errorPasswordMessage: null })}
+                            value={password}
+                          />
+                      </View>
+
+                      <View style={{ flex: 0.2, height: 45, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => this.setState({ secureTextEntry: !this.state.secureTextEntry })}>
+                          <Icon name={!secureTextEntry ? 'visibility-off' : 'visibility'} size={width * 0.07} color={'#9e9e9e'} />
+                        </TouchableOpacity>
+                      </View>
+
+                      
+                    </View>
+                    {this.state.errorPasswordMessage &&
+                      <Text style={styles.error}>{this.state.errorPasswordMessage}</Text>
+                      }                    
+                  </View>
+
+                </View>
+              }
+
+              {isGenerateKey &&
+                <View style={{ marginTop: 10 }}>
+                  <View style={styles.seprate} />
+                  <Text style={styles.title}>Encrypted Key</Text>
+                  <TouchableOpacity style={styles.boxgray} onPress={() => this.CopyToClipboard(encKeyFinal)}>
+                    <Text style={styles.subtitle}>{encKeyFinal}</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+
+            <View style={styles.bottom}>
+
+              <View style={[styles.box, {
+                backgroundColor: isGenerate && password ? '#2960CA' : '#e0e0e0',
+                borderColor: isGenerate && password ? '#2960CA' : '#e0e0e0'
+              }]}>
+              {isGenerateKey &&
+                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}
+                  onPress={() => this.storeData()}>
+                  <Text style={[styles.next, { color: isGenerateKey ? '#FFFFFF' : '#757575' }]}>Save Encrypted Key</Text>
+                  <Icon name='forward' size={width * 0.05} color={isGenerateKey ? '#FFFFFF' : '#757575'} style={styles.icon} />
+                </TouchableOpacity>
+              }
+              {(!isGenerateKey && isGenerate) &&
+                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}
+                  onPress={isGenerate ? () => this.generateENCKeys() : () => { }}>
+                  <Text style={[styles.next, {
+                    color: isGenerate && password ? '#FFFFFF' : '#757575'
+                  }]}>Generate Encrypted Key</Text>
+                  <Icon name='forward' size={width * 0.05} color={isGenerate && password ? '#FFFFFF' : '#757575'} style={styles.icon} />
+                </TouchableOpacity>
+              }
+              </View>
+            </View>
+
+
+            </View>
 
 
             <Toast ref={(ref) => Toast.setRef(ref)} />

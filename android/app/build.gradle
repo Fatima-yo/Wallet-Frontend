@@ -131,11 +131,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.hydrowallet"
+        applicationId "com.aegirwallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.0.9"
+        versionCode 13
+        versionName "1.0.12"
         missingDimensionStrategy "react-native-camera", "general"
     }
 

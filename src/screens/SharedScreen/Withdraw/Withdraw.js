@@ -15,17 +15,12 @@ import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/Button/index";
 import w3s from '../../../libs/Web3Service';
-import { toWei } from '../../../libs/format';
 import Web3 from 'web3';
-import HydroToken from '../../../contracts/HydroToken.json'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { ThemeProvider } from '@react-navigation/native';
 import { ethers, } from 'ethers';
-import { Value } from 'react-native-reanimated';
 import * as SecureStore from 'expo-secure-store';
 import { EtherBalance, } from "../../../components/cards";
-import QRCode from 'react-native-qrcode-svg';
-const { height, width } = Dimensions.get('window');
+const {width } = Dimensions.get('window');
 //const Web3 = require("web3")
  
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";

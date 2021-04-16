@@ -1,4 +1,4 @@
-package com.hydrowallet;
+package com.aegirwallet;
 
 import android.os.Bundle;
 

@@ -13,16 +13,16 @@ const Claim = ({ route, navigation }) => {
   const snowflakeContext = useContext(SnowflakeContext);
 
   const { createIdentity, ein } = snowflakeContext;
-  console.log(signature);
-  console.log(ein);
-  console.log(hydroId);
-  console.log(timestamp);
+  //console.log(signature);
+  //console.log(ein);
+  //console.log(hydroId);
+  //console.log(timestamp);
 
   const onSubmit = (e) => {
     e.preventDefault();
     createIdentity(timestamp, signature, hydroId, address);
     navigation.navigate("app", { screen: "home", params: { address, hydroId } });
-    console.log(address);
+    //console.log(address);
   };
 
   return (

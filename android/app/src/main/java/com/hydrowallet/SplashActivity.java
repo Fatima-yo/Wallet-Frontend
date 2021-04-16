@@ -1,4 +1,4 @@
-package com.hydrowallet; // Change this to your package name.
+package com.aegirwallet; // Change this to your package name.
 
 import android.content.Intent;
 import android.os.Bundle;

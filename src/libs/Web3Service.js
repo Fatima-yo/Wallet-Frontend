@@ -7,7 +7,8 @@ import ProtectedWalletFactory from '../contracts/ProtectedWalletFactory.json'
 import ProtectedWallet from '../contracts/ProtectedWallet.json'
 import Web3 from 'web3';
 import Contract from 'web3-eth-contract';
- 
+import ERC20Token from "../contracts/ERC20Token.json" 
+
 const providerURL = "https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27";
 
 const snowflakeAddress = '0xB0D5a36733886a4c5597849a05B315626aF5222E'
@@ -44,6 +45,10 @@ class Web3Service {
 
     async getHydroTokenABI() {  
         return HydroToken.abi;
+    }
+
+    async getCustomTokenABI() {
+        return ERC20Token.abi;
     }
 
     async getHydroTokenAddress() {

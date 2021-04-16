@@ -11,7 +11,7 @@ import * as SecureStore from 'expo-secure-store';
 
 const { height, width } = Dimensions.get('window');
 
-const GOOGLE_PACKAGE_NAME = 'com.hydrowallet';
+const GOOGLE_PACKAGE_NAME = 'com.aegirwallet';
 const APPLE_STORE_ID = 'id284882215';
 
 const Settings = ({ navigation, route }) => {

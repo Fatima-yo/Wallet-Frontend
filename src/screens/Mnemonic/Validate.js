@@ -303,7 +303,7 @@ export default class Validate extends React.Component {
                       <Icon name='forward' size={width * 0.05} color={isGenerateKey ? '#FFFFFF' : '#757575'} style={styles.icon} />
                     </TouchableOpacity>
                   }
-                  {!isGenerateKey &&
+                  {(!isGenerateKey && isGenerate) &&
                     <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}
                       onPress={isGenerate ? () => this.generateENCKeys() : () => { }}>
                       <Text style={[styles.next, {

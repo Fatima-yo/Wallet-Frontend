@@ -1,4 +1,4 @@
-package com.hydrowallet.generated;
+package com.aegirwallet.generated;
 
 import java.util.Arrays;
 import java.util.List;

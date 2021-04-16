@@ -12,7 +12,7 @@ import {
 import { BgView, Header } from "../../components/Layouts";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ThemeContext } from "../../hooks/useTheme";
-import {AllHydroCard, HydroCard, HydroBNBCard, EtherCard, BNBCard, TuscCard } from "../../components/cards";
+import {AllHydroCard, CustomTokenCard, EtherCard, BNBCard, TuscCard } from "../../components/cards";
 import w3s from '../../libs/Web3Service';
 import * as SecureStore from 'expo-secure-store';
 import { ethers, } from 'ethers';
@@ -34,6 +34,10 @@ const Home = ({ navigation, route }) => {
   const [BEP20Balance, setBEP20Balance] = React.useState(0)
   const [ERC20Balance, setERC20Balance] = React.useState(0)
   const [hydrobalance, setHydrobalance] = React.useState(0);
+  const [customtokenbalance, setcustomtokenbalance] = React.useState(0);
+  const [customtokensymbol, setcustomtokensymbol] = React.useState('');
+  const [customtokenaddress, setcustomtokenaddress] = React.useState('');
+  const [customtokendecimals, setcustomtokendecimals] = React.useState(0);
 
   const { address, hydroId } = route.params;
 
@@ -170,14 +174,14 @@ const Home = ({ navigation, route }) => {
 
   const handlegetTuscBalance = async () => {
     console.log('handlegetTuscBalance')
-    let socket = new WebSocket('wss://tuscapi.gambitweb.com');
-    socket.onopen = async () => {
-      console.log('open')
-      const accountName = await SecureStore.getItemAsync('accountName');
+    const accountName = await SecureStore.getItemAsync('accountName');
       if (!accountName) {
         setTuscbalance(0)
         return
       }
+    let socket = new WebSocket('wss://tuscapi.gambitweb.com');
+    socket.onopen = async () => {
+      console.log('open')
       Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
         console.log("connected to:", res[0].network);
         return Apis.instance().db_api().exec("lookup_accounts", [
@@ -210,6 +214,37 @@ const Home = ({ navigation, route }) => {
     setTimeout(handleGetAllBalances, 100000);
   }
 
+  const handleGetCustomToken = async () => {
+    let customToken = await SecureStore.getItemAsync("customToken")
+    customToken = JSON.parse(customToken)
+    let symbol = customToken.symbol
+    let decimals = customToken.decimals
+    let address = customToken.contractAddress
+
+    setcustomtokensymbol(symbol)
+    setcustomtokenaddress(address)
+    setcustomtokendecimals(decimals)
+
+  }
+
+  const handleGetCustomTokenBalance = async () => {
+
+    const value = await SecureStore.getItemAsync('privateKey');
+    let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+    let provider = new ethers.providers.Web3Provider(currentProvider);
+    let wallet = new ethers.Wallet(value, provider)
+
+    const abi = await w3s.getCustomTokenABI()
+    const contract = new ethers.Contract(customtokenaddress, abi, wallet)
+
+    let tokenbalance = await contract.balanceOf(wallet.address);
+    tokenbalance = tokenbalance / (10**customtokendecimals)
+
+    setcustomtokenbalance(tokenbalance)
+
+  }
+
+
   const setHydroCardBalance = async () => {
     try {
       if (currentToken == 'BEP20') {
@@ -224,6 +259,7 @@ const Home = ({ navigation, route }) => {
   useEffect(() => {
     handleGetAllBalances();
     handlegetTuscBalance();
+    handleGetCustomToken();
   }, [])
 
   const handleGetAllBalances = async () => {
@@ -237,6 +273,8 @@ const Home = ({ navigation, route }) => {
 
     setHydroCardBalance()
     handlegetEtherBalance();
+
+    handleGetCustomTokenBalance();
     setTimeout(handleGetAllBalances, 10000);
   }
 
@@ -316,14 +354,6 @@ const Home = ({ navigation, route }) => {
             leftColor={leftColor}
           />
 
-          <BNBCard
-            balance={bnbbalance}
-            address={address}
-            cardName="Ether Card"
-            send={() => navigation.navigate("sendbnb", { walletToken: address })}
-            transfer={() => navigation.navigate("receivebnb")}
-          />
-
           <EtherCard
             balance={etherbalance}
             address={address}
@@ -333,10 +363,25 @@ const Home = ({ navigation, route }) => {
             history={() => navigation.navigate("etherhistory", { walletToken: address })}
           />
 
+          <CustomTokenCard
+            balance={customtokenbalance}
+            symbol={customtokensymbol}
+            receive={() => navigation.navigate("receivecustomtoken", { symbol: customtokensymbol })}
+            transfer={() => navigation.navigate("transfercustomtoken", { symbol: customtokensymbol })}
+          />
+
+          <BNBCard
+            balance={bnbbalance}
+            address={address}
+            cardName="Ether Card"
+            send={() => navigation.navigate("sendbnb", { walletToken: address })}
+            transfer={() => navigation.navigate("receivebnb")}
+          />
+
           <TuscCard
             balance={tuscbalance}
             address={address}
-            cardName="Tusc Card"
+            cardName="TUSC Card"
             withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}
             transfer={() => navigation.navigate("receivetusc")}
             account={() => navigation.navigate("account")}

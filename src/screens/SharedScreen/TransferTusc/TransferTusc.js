@@ -93,7 +93,7 @@ class TransferTusc extends Component {
 
         try {
             if (!this.state.tuscaddress) {
-                await this.setState({ isError: true, error: "Tusc Address Required" })
+                await this.setState({ isError: true, error: "TUSC Address Required" })
                 return
             } else {
                 await this.setState({ isError: false })
@@ -197,7 +197,7 @@ class TransferTusc extends Component {
         return (
 
             <BgView>
-                <Header.Back title="Transfer Tusc" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <Header.Back title="Transfer TUSC" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
@@ -207,8 +207,8 @@ class TransferTusc extends Component {
                         />
 
                         <LabelInput
-                            label="Tusc Address"
-                            placeholder="Enter Tusc Address" 
+                            label="TUSC Address"
+                            placeholder="Enter TUSC Address" 
                             // keyboardType={'number-pad'}
                             value={this.state.tuscaddress}
                             onChangeText={(value) => {

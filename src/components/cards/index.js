@@ -289,20 +289,6 @@ export const DepositCard = ({
           <Paragraph>{hydroAddress}</Paragraph>
         </TouchableOpacity>
       </View>
-      {customToken && Object.keys(customToken).length > 0 &&
-        <View style={{ marginTop: 10 }}>
-          <Lead>Custom Token</Lead>
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              backgroundColor: theme.secondary,
-              borderRadius: 5,
-            }}
-          >
-            <Paragraph>{customToken.symbol}</Paragraph>
-          </TouchableOpacity>
-        </View>
-      }
     </View>
   );
 };
@@ -344,20 +330,49 @@ export const HydroBalance = ({
           <Paragraph>{hydroAddress}</Paragraph>
         </TouchableOpacity>
       </View>
-      {customToken && Object.keys(customToken).length > 0 &&
-        <View style={{ marginTop: 10 }}>
-          <Lead>Custom Token</Lead>
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              backgroundColor: theme.secondary,
-              borderRadius: 5,
-            }}
-          >
-            <Paragraph>{customToken.symbol}</Paragraph>
-          </TouchableOpacity>
-        </View>
-      }
+    </View>
+  );
+};
+
+export const CustomTokenBalance = ({
+  balance,
+  onWalletPress,
+  onIdPress,
+  onAddPress,
+  customToken,
+  titletext,
+  ...props
+}) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View
+      style={{
+        backgroundColor: theme.secondaryCard,
+        // paddingVertical: width * 0.05,
+        width: width - width * 0.1,
+        //marginTop: width * 0.05,
+        //paddingHorizontal: width * 0.05,
+        borderRadius: 10,
+        //  marginBottom: width * 0.05,
+      }}
+      {...props}
+    >
+
+      <View style={{}}>
+        <Lead>{titletext}</Lead>
+        <TouchableOpacity
+          onPress={onIdPress}
+          style={{
+            padding: 5,
+            backgroundColor: theme.secondary,
+            borderRadius: 5,
+            // marginTop: 5
+          }}
+        >
+          <Paragraph>{balance}</Paragraph>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -395,20 +410,6 @@ export const EtherBalance = ({
           <Paragraph>{hydroAddress}</Paragraph>
         </TouchableOpacity>
       </View>
-      {customToken && Object.keys(customToken).length > 0 &&
-        <View style={{ marginTop: 10 }}>
-          <Lead>Custom Token</Lead>
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              backgroundColor: theme.secondary,
-              borderRadius: 5,
-            }}
-          >
-            <Paragraph>{customToken.symbol}</Paragraph>
-          </TouchableOpacity>
-        </View>
-      }
     </View>
   );
 };
@@ -446,20 +447,6 @@ export const BNBBalance = ({
           <Paragraph>{hydroAddress}</Paragraph>
         </TouchableOpacity>
       </View>
-      {customToken && Object.keys(customToken).length > 0 &&
-        <View style={{ marginTop: 10 }}>
-          <Lead>Custom Token</Lead>
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              backgroundColor: theme.secondary,
-              borderRadius: 5,
-            }}
-          >
-            <Paragraph>{customToken.symbol}</Paragraph>
-          </TouchableOpacity>
-        </View>
-      }
     </View>
   );
 };
@@ -485,7 +472,7 @@ export const TuscBalance = ({
     >
 
       <View style={{}}>
-        <Lead>Tusc balance</Lead>
+        <Lead>TUSC balance</Lead>
         <TouchableOpacity
           onPress={onIdPress}
           style={{
@@ -497,20 +484,6 @@ export const TuscBalance = ({
           <Paragraph>{tuscAddress}</Paragraph>
         </TouchableOpacity>
       </View>
-      {customToken && Object.keys(customToken).length > 0 &&
-        <View style={{ marginTop: 10 }}>
-          <Lead>Custom Token</Lead>
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              backgroundColor: theme.secondary,
-              borderRadius: 5,
-            }}
-          >
-            <Paragraph>{customToken.symbol}</Paragraph>
-          </TouchableOpacity>
-        </View>
-      }
     </View>
   );
 };
@@ -621,6 +594,65 @@ export const HydroCard = ({ balance, address, cardName, withdraw, receive, trans
           </TouchableOpacity>
         </View>
 
+      </View>
+
+    </View >
+  );
+};
+
+export const CustomTokenCard = ({ symbol, balance, address, cardName, withdraw, receive, transfer, ...props }) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View style={{
+      position: 'relative',
+      width: width - width * 0.10,
+      height: 200,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      paddingVertical: 20,
+      marginTop: width * 0.06,
+      shadowColor: '#56D5D0',
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 13.35,
+      // backgroundColor:'#000'
+    }} {...props}>
+      <Image
+        style={{
+          position: 'absolute',
+          left: 10,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          height: 200,
+          width: '100%',
+          borderRadius: 5,
+        }}
+        source={require('../../assets/images/BG_HYDRO.png')}
+      />
+      <View style={{ flexDirection: 'row', paddingTop: 15 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} {symbol}</Text>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={transfer}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={receive}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
     </View >
@@ -785,7 +817,7 @@ export const BNBCard = ({ balance, address, cardName, send, transfer, deposit, h
           width: '100%',
           borderRadius: 5
         }}
-        source={require('../../assets/images/BG_ETH.png')}
+        source={require('../../assets/images/bnb.png')}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15 }}>
         <Image source={require('../../assets/images/binance-coin-logo.png')} style={{ width: 30, height: 30 }} />

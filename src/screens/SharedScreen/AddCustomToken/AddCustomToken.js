@@ -3,24 +3,51 @@ import {
     View,
     ScrollView,
     KeyboardAvoidingView,
-    AsyncStorage,
+    TouchableOpacity,
     ToastAndroid,
     Dimensions,
     Platform, StatusBar, StyleSheet
 } from "react-native";
+
+import {useContext} from "react"
+
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/Button";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as SecureStore from 'expo-secure-store';
 const { height, width } = Dimensions.get('window');
-
+import ERC20Token from "../../../contracts/ERC20Token.json"
+import { Contract, ethers } from 'ethers';
 
 class AddCustomToken extends Component {
+
     state = {
         contractAddress: "",
         decimals: "",
         symbol: ""
+    }
+
+    getTokenSymbolAndDecimals = async() => {
+        if (!this.state.contractAddress)
+            return ToastAndroid.show("Contract Address Is Required", ToastAndroid.LONG);
+        const contractAddress = this.state.contractAddress
+        const abi = ERC20Token.abi
+
+        const provider = ethers.getDefaultProvider();
+        const erc20 = new ethers.Contract(contractAddress, abi, provider)
+
+        const decimals = await erc20.decimals()
+        console.log(typeof(decimals))
+        const symbol = await erc20.symbol()
+        console.log(symbol)
+
+        await this.setState({
+            symbol: symbol,
+            decimals: String(decimals)
+        })
+
+
     }
 
     addCustomToken = async () => {
@@ -39,7 +66,9 @@ class AddCustomToken extends Component {
         this.props.navigation.goBack()
 
     }
+
     render() {
+
         return (
             <BgView>
                 <Header.Back title="Add Custom Token" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
@@ -52,17 +81,20 @@ class AddCustomToken extends Component {
                             value={this.state.contractAddress}
                             onChangeText={(value) => this.setState({ contractAddress: value })}
                         />
+
+                        <View style={styles.button}>
+                            <Button text="Get token data" onPress={this.getTokenSymbolAndDecimals} />
+                        </View>
+
                         <LabelInput
                             label="Symbol"
-                            placeholder="Symbol"
+                            placeholder=""
                             value={this.state.symbol}
-                            onChangeText={(value) => this.setState({ symbol: value })}
                         />
                         <LabelInput
                             label="Decimals"
-                            placeholder="Decimals"
+                            placeholder=""
                             value={this.state.decimals}
-                            onChangeText={(value) => this.setState({ decimals: value })}
                         />
 
                         <View style={styles.button}>
@@ -95,4 +127,5 @@ const styles = StyleSheet.create({
     }
 
 })
+
 export default AddCustomToken;
