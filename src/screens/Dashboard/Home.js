@@ -439,7 +439,7 @@ const Home = ({ navigation, route }) => {
   const customTokenHandleChangeRightBalance = async () => {
     let index = customTokenIndex + 1
     var customtokens_list = await SecureStore.getItemAsync("customToken")
-    
+    console.log('customtokens_list', customtokens_list)
     if (!customtokens_list) {
         console.log('no custom token')
         return
@@ -447,12 +447,19 @@ const Home = ({ navigation, route }) => {
 
     customtokens_list = JSON.parse(customtokens_list)
 
-    if (typeof customtokens_list['tokens'][index] === 'undefined') {
+    /*if (typeof customtokens_list['tokens'][index] === 'undefined') {
       console.log('custom token index + 1 undefined')
       return
+    }*/
+
+    let token = '';
+    try {
+      let token = customtokens_list['tokens'][index];
+    } catch {
+
     }
 
-    let token = customtokens_list['tokens'][index];
+    
     setCustomTokenIndex(index);
 
     setcustomtokensymbol(token.symbol);
@@ -460,7 +467,7 @@ const Home = ({ navigation, route }) => {
     setcustomtokendecimals(token.decimals);
     handleGetCustomTokenBalance();
 
-    }
+  }
 
 
   return (
