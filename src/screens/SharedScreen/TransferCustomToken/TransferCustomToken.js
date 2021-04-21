@@ -33,7 +33,7 @@ const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 class TransferCustomToken extends Component {
     state = {
         from: "",
-        hydroaddress: "",
+        receiveraddress: "",
         amount: "",
         comments: "",
         isError: false,
@@ -45,6 +45,8 @@ class TransferCustomToken extends Component {
         balance: "",
         qrSection: false,
         symbol:'',
+        contractAddress: '',
+        decimals: 0,
         title:'',
         balancetext: ''
     }
@@ -52,40 +54,40 @@ class TransferCustomToken extends Component {
     async componentDidMount() {
         w3s.initContract()
         this.retrieveData()
-        let symbol = this.props.route.params.symbol
-        let title = 'Transfer ' + symbol
 
-        this.setState({symbol:symbol, title: title})
     }
 
     retrieveData = async () => {
         try {
+
+            let symbol = this.props.route.params.symbol;
+            let contractAddress = this.props.route.params.contractAddress;
+            let decimals = this.props.route.params.decimals;
+            
+            let title = 'Transfer ' + symbol;
+            let balancetext = symbol + ' Balance'
+            /* To do add provider param   */ 
+    
             const value = await SecureStore.getItemAsync('privateKey');
-            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
-            let provider = new ethers.providers.Web3Provider(currentProvider);
-            let wallet = new ethers.Wallet(value, provider)
-            this.setState({ walletaddress: wallet.address })
             if (value !== null) {
                 console.log('PrivateKey-->', value)
             }
 
-            let customToken = await SecureStore.getItemAsync("customToken")
-            customToken = JSON.parse(customToken)
-            let symbol = customToken.symbol
-            let balancetext = symbol + " Balance"
+            this.setState({symbol:symbol, contractAddress: contractAddress, decimals: decimals, title: title, balancetext: balancetext, privatekeyValue: value})
 
-            let title = "Receive " + symbol
-
-            let decimals = customToken.decimals
+            
+            let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
+            let provider = new ethers.providers.Web3Provider(currentProvider);
+            let wallet = new ethers.Wallet(value, provider)
+            this.setState({ walletaddress: wallet.address })
+            
 
             const abi = await w3s.getCustomTokenABI()
-            const customtokenaddress = customToken.contractAddress
-            const contract = new ethers.Contract(customtokenaddress, abi, wallet)
+            const contract = new ethers.Contract(contractAddress, abi, wallet)
 
             let tokenbalance = await contract.balanceOf(wallet.address);
             tokenbalance = tokenbalance / (10**decimals)
-            //tokenbalance = Web3.utils.fromWei(tokenbalance.toString())
-            this.setState({ balance: tokenbalance, balancetext: balancetext, title: title})
+            this.setState({ balance: tokenbalance})
 
         } catch (error) {
             console.log(error)
@@ -96,7 +98,7 @@ class TransferCustomToken extends Component {
 
         try {
 
-            if (!this.state.hydroaddress) {
+            if (!this.state.receiveraddress) {
                 await this.setState({ isError: true, error: "Receiver Address Required" })
                 return
             } else {
@@ -112,27 +114,26 @@ class TransferCustomToken extends Component {
 
             let privateKey = this.state.privatekeyValue;
 
-            const abi = await w3s.getHydroTokenABI();
-            const hydrotokenaddress = await w3s.getHydroTokenAddress();
+            const abi = await w3s.getCustomTokenABI();
+            const customtokenaddress = this.state.contractAddress
+            const decimals = this.state.decimals;
 
             const provider = ethers.getDefaultProvider()
             //const provider = new ethers.providers.EtherscanProvider("rinkeby")
             const wallet = new ethers.Wallet(privateKey, provider)
+            const contract = new ethers.Contract(customtokenaddress, abi, wallet)
+            const receiverWallet = this.state.receiveraddress
+            const howMuchTokens = ethers.utils.parseUnits(this.state.amount, decimals)
 
-            const contract = new ethers.Contract(hydrotokenaddress, abi, wallet)
-
-            const receiverWallet = this.state.hydroaddress
-
-            const howMuchTokens = ethers.utils.parseUnits(this.state.amount, 18)
             console.log("Before sending!")
             async function sendTokens() {
                 try {
                     await contract.transfer(receiverWallet, howMuchTokens) 
-                    console.log(`Sent ${howMuchTokens} Hydro to address ${receiverWallet}`)
+                    console.log(`Sent ${howMuchTokens} ${this.state.symbol} to address ${receiverWallet}`)
                     return true, ''
                 } catch (error) {
                     return false, error
-                }                
+                }
             }
             let result, error = await sendTokens()
             if (result) {
@@ -180,13 +181,13 @@ class TransferCustomToken extends Component {
                         />
 
                         <LabelInput
-                            label="Hydro Address"
+                            label="Contract Address"
                             placeholder="Enter Receiver Address"
                             // keyboardType={'number-pad'}
-                            value={this.state.hydroaddress}
+                            value={this.state.receiveraddress}
                             onChangeText={(value) => {
                                 console.log(value)
-                                this.setState({ hydroaddress: value })
+                                this.setState({ receiveraddress: value })
                             }}
                         />
 

@@ -62,7 +62,17 @@ class AddCustomToken extends Component {
             decimals: this.state.decimals,
             symbol: this.state.symbol
         }
-        await SecureStore.setItemAsync("customToken", JSON.stringify(objCustomToken))
+        var customtokens = await SecureStore.getItemAsync("customToken")
+        console.log(customtokens)
+        if (!customtokens) {
+            let customtokens = {'tokens': [objCustomToken]}
+            await SecureStore.setItemAsync("customToken", JSON.stringify(customtokens))
+        } else {
+            customtokens = JSON.parse(customtokens)
+            customtokens['tokens'].push(objCustomToken)
+            await SecureStore.setItemAsync("customToken", JSON.stringify(customtokens))
+        }
+        
         this.props.navigation.goBack()
 
     }

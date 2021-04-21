@@ -30,16 +30,27 @@ class ReceiveCustomToken extends Component {
         privateKey: "",
         balancetext: "Balance",
         title:"Receive",
+        contractAddress: ''
     }
 
     async componentDidMount() {
         await w3s.initContract()
         this.retrieveData()
 
-        let symbol = this.props.route.params.symbol
-        let title = 'Transfer ' + symbol
+        let symbol = this.props.route.params.symbol;
+        let contractAddress = this.props.route.params.contractAddress;
+        let decimals = this.props.route.params.decimals;
+        let title = 'Receive ' + symbol
+        let balancetext = symbol + " Balance"
 
-        this.setState({symbol:symbol, title: title})
+        this.setState(
+            {   symbol:symbol,
+                title: title, 
+                contractAddress: contractAddress, 
+                decimals: decimals, 
+                balancetext: balancetext
+            }
+        )
     }
 
     retrieveData = async () => {
@@ -53,21 +64,15 @@ class ReceiveCustomToken extends Component {
                 console.log('PrivateKey-->', value)
             }
 
-            let customToken = await SecureStore.getItemAsync("customToken")
-            customToken = JSON.parse(customToken)
-            let symbol = customToken.symbol
-            let balancetext = symbol + " Balance"
-
-            let decimals = customToken.decimals
+            let decimals = this.state.decimals;
+            let contractAddress = this.state.contractAddress;
 
             const abi = await w3s.getCustomTokenABI()
-            const customtokenaddress = customToken.contractAddress
-            const contract = new ethers.Contract(customtokenaddress, abi, wallet)
+            const contract = new ethers.Contract(contractAddress, abi, wallet)
 
             let tokenbalance = await contract.balanceOf(wallet.address);
             tokenbalance = tokenbalance / (10**decimals)
-            //tokenbalance = Web3.utils.fromWei(tokenbalance.toString())
-            this.setState({ tokenbalance: tokenbalance, balancetext: balancetext})
+            this.setState({ tokenbalance: tokenbalance})
 
         } catch (error) {
             console.log(error)

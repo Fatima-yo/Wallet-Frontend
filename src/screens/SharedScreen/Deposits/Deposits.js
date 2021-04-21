@@ -26,8 +26,7 @@ import * as SecureStore from 'expo-secure-store';
 import { HydroBalance, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
 const { height, width } = Dimensions.get('window');
-//const Web3 = require("web3")
- 
+
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
 class Deposits extends Component {

@@ -18,6 +18,7 @@ import * as SecureStore from 'expo-secure-store';
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
 import { Apis } from "tuscjs-ws";
+import { SliderComponent } from "react-native";
 
 const { height, width } = Dimensions.get('window');
 const Home = ({ navigation, route }) => {
@@ -34,10 +35,16 @@ const Home = ({ navigation, route }) => {
   const [BEP20Balance, setBEP20Balance] = React.useState(0)
   const [ERC20Balance, setERC20Balance] = React.useState(0)
   const [hydrobalance, setHydrobalance] = React.useState(0);
-  const [customtokenbalance, setcustomtokenbalance] = React.useState(0);
   const [customtokensymbol, setcustomtokensymbol] = React.useState('');
   const [customtokenaddress, setcustomtokenaddress] = React.useState('');
   const [customtokendecimals, setcustomtokendecimals] = React.useState(0);
+
+  const [customTokenRightColor, setCustomTokenRightColor] = React.useState('#000');
+  const [customTokenLeftColor, setCustomTokenLeftColor] = React.useState('gray');
+  const [customTokenBalanceFlag, setCustomTokenBalanceFlag] = React.useState('');
+  const [customTokenIndex, setCustomTokenIndex] = React.useState(0);
+  const [customtoken, setcustomtoken] = React.useState('');
+  const [balances, setBalances] = React.useState('{}');
 
   const { address, hydroId } = route.params;
 
@@ -71,6 +78,81 @@ const Home = ({ navigation, route }) => {
     }
   }
 
+  const getCustomTokenBalance = () => {
+    if (!customtoken) {
+      return 0;
+    }
+    var customtokens_list = JSON.parse(customtoken);
+    let symbol = customtokens_list['tokens'][customTokenIndex]['symbol']
+
+    let balances_aux = JSON.parse(balances);
+
+    if (symbol in balances_aux) {
+      return balances_aux[symbol]
+    }
+    return 0
+  } 
+
+  const getCustomTokenSymbol = () => {
+    if (!customtoken) {
+      return;
+    }
+
+    var customtokens_list = JSON.parse(customtoken);
+
+    return customtokens_list['tokens'][customTokenIndex]['symbol'];
+  }
+
+  const receiveCustomToken = async () => {
+    
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+
+    if (!customtokens_list) {
+        console.log('no custom token')
+        return
+    }
+
+    customtokens_list = JSON.parse(customtokens_list)
+    let customtoken = customtokens_list['tokens'][customTokenIndex]
+
+    let symbol = customtoken.symbol;
+    let contractAddress = customtoken.contractAddress;
+    let decimals = customtoken.decimals;
+
+    navigation.navigate("receivecustomtoken",
+      {
+        symbol: symbol, 
+        contractAddress: contractAddress, 
+        decimals: decimals 
+      }
+    )
+  }
+
+  const sendCustomToken = async () => {
+
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+    
+    if (!customtokens_list) {
+        console.log('no custom token')
+        return
+    }
+
+    customtokens_list = JSON.parse(customtokens_list)
+    let customtoken = customtokens_list['tokens'][customTokenIndex]
+
+    let symbol = customtoken.symbol;
+    let contractAddress = customtoken.contractAddress;
+    let decimals = customtoken.decimals;
+
+    navigation.navigate("transfercustomtoken",
+      {
+        symbol: symbol, 
+        contractAddress: contractAddress, 
+        decimals: decimals 
+      }
+    )
+  }
+
   const sendHydro = async () => {
     if (currentToken == 'BEP20') {
       navigation.navigate("transferbnbhydro", { walletToken: address })
@@ -94,7 +176,6 @@ const Home = ({ navigation, route }) => {
       navigation.navigate("receivehydro")
     }
   }
-
 
   const handlegetHydroBalance = async () => {
     try {
@@ -215,19 +296,40 @@ const Home = ({ navigation, route }) => {
   }
 
   const handleGetCustomToken = async () => {
-    let customToken = await SecureStore.getItemAsync("customToken")
-    customToken = JSON.parse(customToken)
-    let symbol = customToken.symbol
-    let decimals = customToken.decimals
-    let address = customToken.contractAddress
 
-    setcustomtokensymbol(symbol)
-    setcustomtokenaddress(address)
-    setcustomtokendecimals(decimals)
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+    
+    if (!customtokens_list) {
+        console.log('no custom token')
+        return
+    } else {
+      setcustomtoken(customtokens_list)
+      customtokens_list = JSON.parse(customtokens_list)
+
+      let symbol = customtokens_list['tokens'][0]['symbol']
+      let address = customtokens_list['tokens'][0]['contractAddress']
+      let decimals = customtokens_list['tokens'][0]['decimals']
+
+      console.log(customtokens_list)
+      
+      setcustomtokensymbol(symbol)
+      setcustomtokenaddress(address)
+      setcustomtokendecimals(decimals)
+    }
 
   }
 
   const handleGetCustomTokenBalance = async () => {
+
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+    
+    if (!customtokens_list) {
+        console.log('no custom token')
+        return
+    }
+
+    customtokens_list = JSON.parse(customtokens_list)
+    let customtoken = customtokens_list['tokens'][customTokenIndex]
 
     const value = await SecureStore.getItemAsync('privateKey');
     let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
@@ -235,13 +337,27 @@ const Home = ({ navigation, route }) => {
     let wallet = new ethers.Wallet(value, provider)
 
     const abi = await w3s.getCustomTokenABI()
-    const contract = new ethers.Contract(customtokenaddress, abi, wallet)
+    const contract = new ethers.Contract(customtoken.contractAddress, abi, wallet)
 
     let tokenbalance = await contract.balanceOf(wallet.address);
-    tokenbalance = tokenbalance / (10**customtokendecimals)
+    tokenbalance = tokenbalance / (10**customtoken.decimals)
 
-    setcustomtokenbalance(tokenbalance)
+    console.log(balances)
 
+    let balances_aux = {}
+
+    try {
+      balances_aux = JSON.parse(balances);
+    } catch {
+      balances_aux = {}
+    }
+
+    balances_aux[customtoken.symbol] = tokenbalance;
+
+    balances_aux = JSON.stringify(balances_aux)
+
+    setBalances(balances_aux);
+    
   }
 
 
@@ -295,6 +411,57 @@ const Home = ({ navigation, route }) => {
     setRightColor('gray')
     setLeftColor('#000')
   }
+
+  const customTokenHandleChangeLeftBalance = async () => {
+    if (customTokenIndex == 0) {
+      return
+    }
+
+    let index = customTokenIndex - 1;
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+
+    if (!customtokens_list) {
+        return
+    }
+
+    customtokens_list = JSON.parse(customtokens_list)
+
+    let token = customtokens_list['tokens'][index];
+
+    setCustomTokenIndex(index);
+
+    setcustomtokensymbol(token.symbol);
+    setcustomtokenaddress(token.contractAddress);
+    setcustomtokendecimals(token.decimals);
+    handleGetCustomTokenBalance();
+  }
+
+  const customTokenHandleChangeRightBalance = async () => {
+    let index = customTokenIndex + 1
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+    
+    if (!customtokens_list) {
+        console.log('no custom token')
+        return
+    }
+
+    customtokens_list = JSON.parse(customtokens_list)
+
+    if (typeof customtokens_list['tokens'][index] === 'undefined') {
+      console.log('custom token index + 1 undefined')
+      return
+    }
+
+    let token = customtokens_list['tokens'][index];
+    setCustomTokenIndex(index);
+
+    setcustomtokensymbol(token.symbol);
+    setcustomtokenaddress(token.contractAddress);
+    setcustomtokendecimals(token.decimals);
+    handleGetCustomTokenBalance();
+
+    }
+
 
   return (
     <BgView>
@@ -364,10 +531,18 @@ const Home = ({ navigation, route }) => {
           />
 
           <CustomTokenCard
-            balance={customtokenbalance}
-            symbol={customtokensymbol}
-            receive={() => navigation.navigate("receivecustomtoken", { symbol: customtokensymbol })}
-            transfer={() => navigation.navigate("transfercustomtoken", { symbol: customtokensymbol })}
+            balance={getCustomTokenBalance()}
+            symbol={getCustomTokenSymbol()}
+            balanceFlag={customTokenBalanceFlag}
+            address={address}
+            cardName="Custom Token Card"
+            receive={receiveCustomToken}
+            transfer={sendCustomToken}
+            history={hydroHistory}
+            handleChangeLeftBalance={customTokenHandleChangeLeftBalance}
+            handleChangeRightBalance={customTokenHandleChangeRightBalance}
+            rightColor={customTokenRightColor}
+            leftColor={customTokenLeftColor}
           />
 
           <BNBCard
@@ -393,7 +568,6 @@ const Home = ({ navigation, route }) => {
             <Lead style={{ textAlign: "left", color: theme.primary, fontSize:20, paddingTop:10 }}>
               Identity Address
             </Lead>
-
             <TouchableOpacity
               onPress={CopyIdentityAddressClipboard}
               style={{

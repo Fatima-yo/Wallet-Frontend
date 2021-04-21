@@ -234,20 +234,6 @@ export const SettingsCard = ({
           <Paragraph>{hydroAddress}</Paragraph>
         </TouchableOpacity>
       </View>
-      {customToken && Object.keys(customToken).length > 0 &&
-        <View style={{ marginTop: 10 }}>
-          <Lead>Custom Token</Lead>
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              backgroundColor: theme.secondary,
-              borderRadius: 5,
-            }}
-          >
-            <Paragraph>{customToken.symbol}</Paragraph>
-          </TouchableOpacity>
-        </View>
-      }
     </View>
   );
 };
@@ -600,9 +586,10 @@ export const HydroCard = ({ balance, address, cardName, withdraw, receive, trans
   );
 };
 
-export const CustomTokenCard = ({ symbol, balance, address, cardName, withdraw, receive, transfer, ...props }) => {
-  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
-  const theme = isLightTheme ? lightTheme : darkTheme;
+export const CustomTokenCard = ({
+  symbol, balance, address, cardName, withdraw, receive, transfer, history,
+  leftColor, rightColor, handleChangeRightBalance, handleChangeLeftBalance, balanceFlag,
+  ...props }) => {
   return (
     <View style={{
       position: 'relative',
@@ -634,27 +621,48 @@ export const CustomTokenCard = ({ symbol, balance, address, cardName, withdraw, 
         }}
         source={require('../../assets/images/BG_HYDRO.png')}
       />
-      <View style={{ flexDirection: 'row', paddingTop: 15 }}>
+      <View style={{ flexDirection: 'row', paddingTop: 15, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 }}>
+        <View>
+          <TouchableOpacity onPress={handleChangeLeftBalance}>
+            <Icon
+              name="arrow-left"
+              color={leftColor}
+              size={30}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} {symbol}</Text>
+        <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>CUSTOM TOKENS</Text>
+        <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
+        <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} {symbol}</Text>
+        </View>
+        <View>
+          <TouchableOpacity onPress={handleChangeRightBalance}>
+            <Icon
+              name="arrow-right"
+              color={rightColor}
+              size={30}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
-
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={transfer}>
             <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
           </TouchableOpacity>
         </View>
-
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={history}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>History</Text>
+          </TouchableOpacity>
+        </View>
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={receive}>
             <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
           </TouchableOpacity>
         </View>
       </View>
-
     </View >
   );
 };
