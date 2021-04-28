@@ -18,11 +18,10 @@ import * as SecureStore from 'expo-secure-store';
 import { ethers, } from 'ethers';
 import Web3 from 'web3';
 import { Apis } from "tuscjs-ws";
-import { SliderComponent } from "react-native";
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const Home = ({ navigation, route }) => {
-  
+
   const [etherbalance, setEtherbalance] = React.useState(0);
   const [bnbbalance, setBnbbalance] = React.useState(0);
   const [tuscbalance, setTuscbalance] = React.useState(0);
@@ -31,20 +30,16 @@ const Home = ({ navigation, route }) => {
   const [currentToken, setCurrentToken] = React.useState('BEP20')
   
   const [leftColor, setLeftColor] = React.useState('gray');
-  const [rightColor, setRightColor] = React.useState('#000');
+  const [rightColor, setRightColor] = React.useState('gray');
   const [BEP20Balance, setBEP20Balance] = React.useState(0)
   const [ERC20Balance, setERC20Balance] = React.useState(0)
-  const [hydrobalance, setHydrobalance] = React.useState(0);
-  const [customtokensymbol, setcustomtokensymbol] = React.useState('');
-  const [customtokenaddress, setcustomtokenaddress] = React.useState('');
-  const [customtokendecimals, setcustomtokendecimals] = React.useState(0);
 
   const [customTokenRightColor, setCustomTokenRightColor] = React.useState('#000');
   const [customTokenLeftColor, setCustomTokenLeftColor] = React.useState('gray');
-  const [customTokenBalanceFlag, setCustomTokenBalanceFlag] = React.useState('');
   const [customTokenIndex, setCustomTokenIndex] = React.useState(0);
   const [customtoken, setcustomtoken] = React.useState('');
   const [balances, setBalances] = React.useState('{}');
+  const [CURRENT_PROVIDER, setProvider] = React.useState('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27')
 
   const { address, hydroId } = route.params;
 
@@ -80,7 +75,7 @@ const Home = ({ navigation, route }) => {
 
   const getCustomTokenBalance = () => {
     if (!customtoken) {
-      return 0;
+      return "NO CUSTOM TOKENS";
     }
     var customtokens_list = JSON.parse(customtoken);
     let symbol = customtokens_list['tokens'][customTokenIndex]['symbol']
@@ -304,17 +299,6 @@ const Home = ({ navigation, route }) => {
         return
     } else {
       setcustomtoken(customtokens_list)
-      customtokens_list = JSON.parse(customtokens_list)
-
-      let symbol = customtokens_list['tokens'][0]['symbol']
-      let address = customtokens_list['tokens'][0]['contractAddress']
-      let decimals = customtokens_list['tokens'][0]['decimals']
-
-      console.log(customtokens_list)
-      
-      setcustomtokensymbol(symbol)
-      setcustomtokenaddress(address)
-      setcustomtokendecimals(decimals)
     }
 
   }
@@ -360,22 +344,10 @@ const Home = ({ navigation, route }) => {
     
   }
 
-
-  const setHydroCardBalance = async () => {
-    try {
-      if (currentToken == 'BEP20') {
-        await setHydrobalance(BEP20Balance)
-      } else {
-        await setHydrobalance(ERC20Balance)
-      }
-    } catch (error) {
-      console.log(error.message)
-    }}
-
   useEffect(() => {
+    handleGetCustomToken();
     handleGetAllBalances();
     handlegetTuscBalance();
-    handleGetCustomToken();
   }, [])
 
   const handleGetAllBalances = async () => {
@@ -386,8 +358,6 @@ const Home = ({ navigation, route }) => {
 
     let hydroercbalance = await handlegetHydroBalance();
     setERC20Balance(hydroercbalance);
-
-    setHydroCardBalance()
     handlegetEtherBalance();
 
     handleGetCustomTokenBalance();
@@ -397,7 +367,6 @@ const Home = ({ navigation, route }) => {
   const handleChangeLeftBalance = () => {
     console.log('left')
     setCurrentToken('BEP20')
-    setHydrobalance(BEP20Balance)
     setAllHydroBalanceFlag('HYDRO (BEP20)')
     setLeftColor('gray')
     setRightColor('#000')
@@ -406,7 +375,6 @@ const Home = ({ navigation, route }) => {
   const handleChangeRightBalance = () => {
     console.log('right')
     setCurrentToken('ERC20')
-    setHydrobalance(ERC20Balance)
     setAllHydroBalanceFlag('HYDRO (ERC20)')
     setRightColor('gray')
     setLeftColor('#000')
@@ -417,6 +385,8 @@ const Home = ({ navigation, route }) => {
       return
     }
 
+    await handleGetCustomToken();
+
     let index = customTokenIndex - 1;
     var customtokens_list = await SecureStore.getItemAsync("customToken")
 
@@ -424,51 +394,47 @@ const Home = ({ navigation, route }) => {
         return
     }
 
-    customtokens_list = JSON.parse(customtokens_list)
-
-    let token = customtokens_list['tokens'][index];
-
     setCustomTokenIndex(index);
-
-    setcustomtokensymbol(token.symbol);
-    setcustomtokenaddress(token.contractAddress);
-    setcustomtokendecimals(token.decimals);
+    if (index == 0) {
+      setCustomTokenLeftColor('gray');
+      setCustomTokenRightColor('#000');
+    } else {
+      setCustomTokenLeftColor('#000');
+    }
     handleGetCustomTokenBalance();
   }
 
   const customTokenHandleChangeRightBalance = async () => {
-    let index = customTokenIndex + 1
-    var customtokens_list = await SecureStore.getItemAsync("customToken")
-    console.log('customtokens_list', customtokens_list)
+
+    await handleGetCustomToken();
+
+    let index = customTokenIndex + 1;
+    var customtokens_list = await SecureStore.getItemAsync("customToken");
+
     if (!customtokens_list) {
-        console.log('no custom token')
-        return
+        console.log('no custom token');
+        return;
     }
 
-    customtokens_list = JSON.parse(customtokens_list)
+    customtokens_list = JSON.parse(customtokens_list);
 
-    /*if (typeof customtokens_list['tokens'][index] === 'undefined') {
-      console.log('custom token index + 1 undefined')
-      return
-    }*/
-
-    let token = '';
     try {
-      let token = customtokens_list['tokens'][index];
+      let a = customtokens_list['tokens'][index]
+      if (!a) {
+        console.log('custom token index + 1 undefined')
+        return 
+      }
     } catch {
-
+      console.log("ERROR")
     }
 
-    
+    setCustomTokenLeftColor('#000');
+    setCustomTokenRightColor('gray');
     setCustomTokenIndex(index);
 
-    setcustomtokensymbol(token.symbol);
-    setcustomtokenaddress(token.contractAddress);
-    setcustomtokendecimals(token.decimals);
     handleGetCustomTokenBalance();
 
   }
-
 
   return (
     <BgView>
@@ -513,7 +479,6 @@ const Home = ({ navigation, route }) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: width * 0.05 }}>
         <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 30 }}>
 
-
           <AllHydroCard
             balance={getHydroBalance()}
             balanceFlag={allHydroBalanceFlag}
@@ -537,21 +502,6 @@ const Home = ({ navigation, route }) => {
             history={() => navigation.navigate("etherhistory", { walletToken: address })}
           />
 
-          <CustomTokenCard
-            balance={getCustomTokenBalance()}
-            symbol={getCustomTokenSymbol()}
-            balanceFlag={customTokenBalanceFlag}
-            address={address}
-            cardName="Custom Token Card"
-            receive={receiveCustomToken}
-            transfer={sendCustomToken}
-            history={hydroHistory}
-            handleChangeLeftBalance={customTokenHandleChangeLeftBalance}
-            handleChangeRightBalance={customTokenHandleChangeRightBalance}
-            rightColor={customTokenRightColor}
-            leftColor={customTokenLeftColor}
-          />
-
           <BNBCard
             balance={bnbbalance}
             address={address}
@@ -567,6 +517,21 @@ const Home = ({ navigation, route }) => {
             withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}
             transfer={() => navigation.navigate("receivetusc")}
             account={() => navigation.navigate("account")}
+          />
+
+          <CustomTokenCard
+            balance={getCustomTokenBalance()}
+            symbol={getCustomTokenSymbol()}
+            address={address}
+            cardName="Custom Token Card"
+            receive={receiveCustomToken}
+            transfer={sendCustomToken}
+            history={hydroHistory}
+            handleChangeLeftBalance={customTokenHandleChangeLeftBalance}
+            handleChangeRightBalance={customTokenHandleChangeRightBalance}
+            rightColor={customTokenRightColor}
+            leftColor={customTokenLeftColor}
+            add={() => {navigation.navigate("addCustomToken"); handleGetCustomTokenBalance();}}
           />
         </View>
 

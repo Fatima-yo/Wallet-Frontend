@@ -48,13 +48,15 @@ class TransferCustomToken extends Component {
         contractAddress: '',
         decimals: 0,
         title:'',
-        balancetext: ''
+        balancetext: '',
+        provider: ''
     }
 
     async componentDidMount() {
         w3s.initContract()
+        let provider = this.props.route.params.provider;
+        await this.setState({provider:provider})
         this.retrieveData()
-
     }
 
     retrieveData = async () => {
@@ -123,19 +125,22 @@ class TransferCustomToken extends Component {
             const wallet = new ethers.Wallet(privateKey, provider)
             const contract = new ethers.Contract(customtokenaddress, abi, wallet)
             const receiverWallet = this.state.receiveraddress
+            const symbol = this.state.symbol
             const howMuchTokens = ethers.utils.parseUnits(this.state.amount, decimals)
 
             console.log("Before sending!")
             async function sendTokens() {
                 try {
-                    await contract.transfer(receiverWallet, howMuchTokens) 
-                    console.log(`Sent ${howMuchTokens} ${this.state.symbol} to address ${receiverWallet}`)
+                    console.log('receiverWallet', receiverWallet, 'howMuchTokens', howMuchTokens, 'symbol', symbol)
+                    result = await contract.transfer(receiverWallet, howMuchTokens)
+                    console.log(`Sent ${howMuchTokens} ${symbol} to address ${receiverWallet}`)
                     return true, ''
                 } catch (error) {
                     return false, error
                 }
             }
             let result, error = await sendTokens()
+            console.log('result', result, 'error', error)
             if (result) {
                 this.setState({isSuccess:true})
                 this.retrieveData()

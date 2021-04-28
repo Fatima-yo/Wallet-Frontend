@@ -563,7 +563,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, receive, trans
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO (ERC20)</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} HYDRO (ERC20)</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -588,7 +588,7 @@ export const HydroCard = ({ balance, address, cardName, withdraw, receive, trans
 
 export const CustomTokenCard = ({
   symbol, balance, address, cardName, withdraw, receive, transfer, history,
-  leftColor, rightColor, handleChangeRightBalance, handleChangeLeftBalance, balanceFlag,
+  leftColor, rightColor, handleChangeRightBalance, handleChangeLeftBalance, add,
   ...props }) => {
   return (
     <View style={{
@@ -632,9 +632,9 @@ export const CustomTokenCard = ({
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>CUSTOM TOKENS</Text>
+        <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>CUSTOM TOKENS (ERC20)</Text>
         <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-        <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} {symbol}</Text>
+        <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} {symbol}</Text>
         </View>
         <View>
           <TouchableOpacity onPress={handleChangeRightBalance}>
@@ -660,6 +660,11 @@ export const CustomTokenCard = ({
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={receive}>
             <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Receive</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={add}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Add</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -708,7 +713,7 @@ export const HydroBNBCard = ({ balance, address, cardName, withdraw, receive, tr
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} HYDRO (BEP20)</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} HYDRO (BEP20)</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -770,7 +775,7 @@ export const EtherCard = ({ balance, address, cardName, withdraw, transfer, depo
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} ETH</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} ETH</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -833,7 +838,7 @@ export const BNBCard = ({ balance, address, cardName, send, transfer, deposit, h
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} BNB</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} BNB</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -894,7 +899,7 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, accou
       <View style={{ flexDirection: 'row', paddingTop: 15 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} TUSC</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} TUSC</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', paddingTop: 20 }}>
@@ -1039,7 +1044,7 @@ export const AllHydroCard = ({leftColor, rightColor, handleChangeRightBalance, h
         </View>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ color: 'white', paddingTop: 10, letterSpacing: 0.8 }}>BALANCE</Text>
-          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 20 }}>{balance} {balanceFlag}</Text>
+          <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8, fontSize: 15 }}>{balance} {balanceFlag}</Text>
         </View>
         <View>
           <TouchableOpacity onPress={handleChangeRightBalance}>
