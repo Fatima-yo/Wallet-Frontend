@@ -39,7 +39,7 @@ const Home = ({ navigation, route }) => {
   const [customTokenIndex, setCustomTokenIndex] = React.useState(0);
   const [customtoken, setcustomtoken] = React.useState('');
   const [balances, setBalances] = React.useState('{}');
-  const [CURRENT_PROVIDER, setProvider] = React.useState('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27')
+  const [ETH_PROVIDER, setProvider] = React.useState('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27')
 
   const { address, hydroId } = route.params;
 
@@ -126,7 +126,7 @@ const Home = ({ navigation, route }) => {
   const sendCustomToken = async () => {
 
     var customtokens_list = await SecureStore.getItemAsync("customToken")
-    
+
     if (!customtokens_list) {
         console.log('no custom token')
         return
@@ -141,11 +141,48 @@ const Home = ({ navigation, route }) => {
 
     navigation.navigate("transfercustomtoken",
       {
-        symbol: symbol, 
-        contractAddress: contractAddress, 
-        decimals: decimals 
+        symbol: symbol,
+        contractAddress: contractAddress,
+        decimals: decimals
       }
     )
+  }
+
+  const customTokenHistory = async () => {
+    var customtokens_list = await SecureStore.getItemAsync("customToken")
+
+    if (!customtokens_list) {
+        console.log('no custom token')
+        return
+    }
+
+    customtokens_list = JSON.parse(customtokens_list)
+    let customtoken = customtokens_list['tokens'][customTokenIndex]
+
+    let symbol = customtoken.symbol;
+    let contractAddress = customtoken.contractAddress;
+    let decimals = customtoken.decimals;
+
+    navigation.navigate("tokenhistory",
+      {
+        provider: ETH_PROVIDER,
+        symbol: symbol,
+        tokenAddress: contractAddress,
+        decimals: decimals
+      }
+    )
+  }
+
+  const hydroHistory = async () => {
+    if (currentToken == 'BEP20') {
+      //navigation.navigate("hydrobnbhistory", { walletToken: address })
+      console.log('BEP20 HISTORY')
+    } else {
+      let tokenAddress = await w3s.getHydroTokenAddress();
+      let title = 'Hydro ERC20'
+      navigation.navigate("tokenhistory", { provider: ETH_PROVIDER, tokenAddress: tokenAddress, symbol: title})
+      console.log('ERC20 HISTORY')
+    }
   }
 
   const sendHydro = async () => {
@@ -153,14 +190,6 @@ const Home = ({ navigation, route }) => {
       navigation.navigate("transferbnbhydro", { walletToken: address })
     } else {
       navigation.navigate("deposits", { walletToken: address })
-    }
-  }
-
-  const hydroHistory = async () => {
-    if (currentToken == 'BEP20') {
-      console.log('BEP20 HISTORY')
-    } else {
-      console.log('ERC20 HISTORY')
     }
   }
 
@@ -293,7 +322,6 @@ const Home = ({ navigation, route }) => {
   const handleGetCustomToken = async () => {
 
     var customtokens_list = await SecureStore.getItemAsync("customToken")
-    
     if (!customtokens_list) {
         console.log('no custom token')
         return
@@ -516,6 +544,7 @@ const Home = ({ navigation, route }) => {
             cardName="TUSC Card"
             withdraw={() => navigation.navigate("transfertusc", { walletToken: address })}
             transfer={() => navigation.navigate("receivetusc")}
+            history={() => navigation.navigate("tuschistory")}
             account={() => navigation.navigate("account")}
           />
 
@@ -526,7 +555,7 @@ const Home = ({ navigation, route }) => {
             cardName="Custom Token Card"
             receive={receiveCustomToken}
             transfer={sendCustomToken}
-            history={hydroHistory}
+            history={customTokenHistory}
             handleChangeLeftBalance={customTokenHandleChangeLeftBalance}
             handleChangeRightBalance={customTokenHandleChangeRightBalance}
             rightColor={customTokenRightColor}

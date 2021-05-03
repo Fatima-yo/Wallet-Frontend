@@ -77,7 +77,6 @@ class TransferCustomToken extends Component {
 
             this.setState({symbol:symbol, contractAddress: contractAddress, decimals: decimals, title: title, balancetext: balancetext, privatekeyValue: value})
 
-            
             let currentProvider = await new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/75cc8cba22ab40b9bfa7406ae9b69a27');
             let provider = new ethers.providers.Web3Provider(currentProvider);
             let wallet = new ethers.Wallet(value, provider)

@@ -31,6 +31,9 @@ import ReceiveCustomToken from "../screens/SharedScreen/ReceiveCustomToken/Recei
 import Account from "../screens/SharedScreen/Account";
 import TransferTusc from "../screens/SharedScreen/TransferTusc/TransferTusc";
 import EtherHistory from "../screens/SharedScreen/EtherHistory/EtherHistory";
+import TokenHistory from "../screens/SharedScreen/TokenHistory/TokenHistory";
+import TuscHistory from "../screens/SharedScreen/TuscHistory/TuscHistory";
+import HydroBNBHistory from "../screens/SharedScreen/HydroBNBHistory/HydroBNBHistory";
 import ReceiveHydro from "../screens/SharedScreen/ReceiveHydro/ReceiveHydro";
 import ReceiveBNBHydro from "../screens/SharedScreen/ReceiveBNBHydro/ReceiveBNBHydro";
 import TransferBNBHydro from "../screens/SharedScreen/TransferBNBHydro/TransferBNBHydro";
@@ -62,6 +65,9 @@ const MainNavigation = () => {
         <Stack.Screen name="receivecustomtoken" component={ReceiveCustomToken} />
         <Stack.Screen name="account" component={Account} />
         <Stack.Screen name="etherhistory" component={EtherHistory} />
+        <Stack.Screen name="tokenhistory" component={TokenHistory} />
+        <Stack.Screen name="tuschistory" component={TuscHistory} />
+        <Stack.Screen name="hydrobnbhistory" component={HydroBNBHistory} />
         <Stack.Screen name="notification" component={Notification} />
         <Stack.Screen name="settings" component={Settings} />
         <Stack.Screen name="success" component={Success} />

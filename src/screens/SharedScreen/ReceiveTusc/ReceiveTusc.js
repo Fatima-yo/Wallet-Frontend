@@ -11,7 +11,7 @@ import {
 import { LabelInput } from "../../../components/Forms";
 import { BgView, Header } from "../../../components/Layouts";
 import Button from "../../../components/TwoButton/index";
-import { DepositCard, TuscBalance } from "../../../components/cards";
+import { TUSCDepositCard, TuscBalance } from "../../../components/cards";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 const { height, width } = Dimensions.get('window');
 import { CameraKitCameraScreen } from 'react-native-camera-kit';
@@ -106,7 +106,7 @@ class ReceiveTusc extends Component {
 
                     <View style={{ paddingVertical: width * 0.02 }} />
 
-                    <DepositCard
+                    <TUSCDepositCard
                         hydroAddress={this.state.accountName}
                         onIdPress={this.onCopyToClipboard}
                     />

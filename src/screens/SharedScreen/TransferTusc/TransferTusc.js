@@ -33,6 +33,7 @@ class TransferTusc extends Component {
         comments: "",
         isError: false,
         isSuccess: false,
+        txSent: false,
         error: "",
         privatekeyValue: '',
         tuscbalance: '',
@@ -152,6 +153,7 @@ class TransferTusc extends Component {
                                 tr.add_signer(pKey, pKey.toPublicKey().toPublicKeyString());
                                 console.log("serialized transaction:", tr.serialize());
                                 console.log("Now I will broadcast")
+                                this.setState({txSent: true})
                                 tr.broadcast().then(() => {
                                     this.setState({isSuccess: true})
                                 }).catch(function (err) {
@@ -197,7 +199,7 @@ class TransferTusc extends Component {
         return (
 
             <BgView>
-                <Header.Back title="Transfer TUSC" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <Header.Back title="Send TUSC" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
@@ -208,7 +210,7 @@ class TransferTusc extends Component {
 
                         <LabelInput
                             label="TUSC Address"
-                            placeholder="Enter TUSC Address" 
+                            placeholder="Receiver Account Name" 
                             // keyboardType={'number-pad'}
                             value={this.state.tuscaddress}
                             onChangeText={(value) => {
@@ -227,6 +229,12 @@ class TransferTusc extends Component {
                         //     this.setState({ value })
                         // }}
                         />
+
+                        {this.state.txSent &&
+                            <Text style={{ color: 'green' }}>
+                                Transaction Sent!
+                            </Text>
+                        }
 
                         {this.state.isSuccess &&
                             <Text style={{ color: 'green' }}>

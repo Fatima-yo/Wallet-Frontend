@@ -147,7 +147,7 @@ class TransferBNBHydro extends Component {
 
 
     onCopyToClipboard = async () => {
-        await Clipboard.setString(this.state.hydrobalance);
+        await Clipboard.setString(this.state.amount);
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     onChange = (value) => {
@@ -168,6 +168,7 @@ class TransferBNBHydro extends Component {
 
                         <HydroBalance
                             hydroAddress={this.state.hydrobalance}
+                            onIdPress={this.onCopyToClipboard}
                         />
 
                         <LabelInput

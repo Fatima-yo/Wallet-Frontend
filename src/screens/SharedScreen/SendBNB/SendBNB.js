@@ -122,7 +122,7 @@ class SendBNB extends Component {
 
 
     onCopyToClipboard = async () => {
-        await Clipboard.setString(this.props.route.params.walletToken);
+        await Clipboard.setString(this.state.amount);
         ToastAndroid.show("Copied To Clipboard!", ToastAndroid.SHORT);
     };
     onChange = (value) => {

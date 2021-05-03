@@ -237,6 +237,7 @@ export const SettingsCard = ({
     </View>
   );
 };
+
 export const DepositCard = ({
   hydroAddress,
   onWalletPress,
@@ -278,6 +279,49 @@ export const DepositCard = ({
     </View>
   );
 };
+
+export const TUSCDepositCard = ({
+  hydroAddress,
+  onWalletPress,
+  onIdPress,
+  onAddPress,
+  customToken,
+  ...props
+}) => {
+  const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
+  const theme = isLightTheme ? lightTheme : darkTheme;
+  return (
+    <View
+      style={{
+        backgroundColor: theme.secondaryCard,
+        // paddingVertical: width * 0.05,
+        width: width - width * 0.1,
+        //marginTop: width * 0.05,
+        //paddingHorizontal: width * 0.05,
+        borderRadius: 10,
+        //  marginBottom: width * 0.05,
+      }}
+      {...props}
+    >
+
+      <View style={{}}>
+        <Lead>Account Name</Lead>
+        <TouchableOpacity
+          onPress={onIdPress}
+          style={{
+            padding: 5,
+            backgroundColor: theme.secondary,
+            borderRadius: 5,
+            // marginTop: 5
+          }}
+        >
+          <Paragraph>{hydroAddress}</Paragraph>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 export const HydroBalance = ({
   hydroAddress,
   onWalletPress,
@@ -857,7 +901,7 @@ export const BNBCard = ({ balance, address, cardName, send, transfer, deposit, h
   );
 };
 
-export const TuscCard = ({ balance, address, cardName, withdraw, transfer, account, deposit, ...props }) => {
+export const TuscCard = ({ balance, address, cardName, withdraw, transfer, account, deposit, history, ...props }) => {
   const { isLightTheme, lightTheme, darkTheme } = useContext(ThemeContext);
   const theme = isLightTheme ? lightTheme : darkTheme;
   return (
@@ -907,6 +951,12 @@ export const TuscCard = ({ balance, address, cardName, withdraw, transfer, accou
         <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity onPress={withdraw}>
             <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>Send</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TouchableOpacity onPress={history}>
+            <Text style={{ color: 'white', paddingTop: 10, fontWeight: 'bold', letterSpacing: 0.8 }}>History</Text>
           </TouchableOpacity>
         </View>
 

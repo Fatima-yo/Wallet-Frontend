@@ -172,7 +172,7 @@ const Settings = ({ navigation, route }) => {
         <SettingsItemCard value="Contact Card" onPress={() => navigation.navigate('contact')} />
         <SettingsItemCard value="Rate Us" onPress={startRatingCounter} />
         <SettingsItemCard value="Lending" onPress={() => navigation.navigate('comingSoon')} />
-        <SettingsItemCard value="Stacking" onPress={() => navigation.navigate('comingSoon')} />
+        <SettingsItemCard value="Staking" onPress={() => navigation.navigate('comingSoon')} />
         <SettingsItemCard value="Borrowing" onPress={() => navigation.navigate('comingSoon')} />
         <SettingsItemCard value="Loan" onPress={() => navigation.navigate('comingSoon')} />
       </ScrollView>

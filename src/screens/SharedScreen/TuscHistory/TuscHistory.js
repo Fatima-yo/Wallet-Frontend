@@ -25,15 +25,17 @@ import { Value } from 'react-native-reanimated';
 import * as SecureStore from 'expo-secure-store';
 import { DepositCard, } from "../../../components/cards";
 import QRCode from 'react-native-qrcode-svg';
+import { Apis } from "tuscjs-ws";
 
 import { Table, TableWrapper, Row } from 'react-native-table-component';
+import filter from 'lodash.filter';
 
 const { height, width } = Dimensions.get('window');
 //const Web3 = require("web3")
 
 const _spender = "0xB0D5a36733886a4c5597849a05B315626aF5222E";
 
-class EtherHistory extends Component {
+class TokenHistory extends Component {
 
 
     constructor(props) {
@@ -52,10 +54,8 @@ class EtherHistory extends Component {
             balance: "",
             qrSection: false,
             history: [],
-            //tableHead: ['Sent/Received', 'From/To', 'Value', 'Time', 'Conf'],
-            tableHead: ['Sent/Received', 'From/To', 'Value', 'Conf'],
-            //widthArr: [80, 80, 60, 80, 60]
-            widthArr: [90, 90, 120, 60]
+            tableHead: ['From', 'To', 'Value', 'Block'],
+            widthArr: [80, 120, 80, 80]
         }
     }
 
@@ -65,64 +65,38 @@ class EtherHistory extends Component {
     }
 
     retrieveData = async () => {
-        try {
-            const value = await SecureStore.getItemAsync('privateKey');
-            this.setState({ privatekeyValue: value })
-            if (value !== null) {
-                this.etherhistory()
-            }
-        } catch (error) {
 
-        }
-    }
+        const accountname = await SecureStore.getItemAsync('accountName');
+        const value = await SecureStore.getItemAsync('accountprivateKey');
 
-    etherhistory = async () => {
-        try {
-            let privateKey = this.state.privatekeyValue;
-            const provider = ethers.getDefaultProvider()
-            //const provider = new ethers.providers.EtherscanProvider("rinkeby")
-            const wallet = new ethers.Wallet(privateKey, provider)
-            const walletAddress = wallet.address;
-            const tableData = [];
+        this.setState({ privatekeyValue: value })
+        this.setState({ walletaddress: accountname })
+        this.setState({accountname: accountname})
+        console.log("HELLO")
 
-            //let etherscanProvider = new ethers.providers.EtherscanProvider("rinkeby");
-            let etherscanProvider = new ethers.providers.EtherscanProvider();
+        
 
-            etherscanProvider.getHistory(wallet.address).then((history) => {
-                history.forEach((tx) => {
-                    const rowData = [];
-                    let value = Web3.utils.fromWei(tx.value.toString())
+        Apis.instance('wss://tuscapi.gambitweb.com/', true).init_promise.then((res) => {
 
-                    if (tx.from == walletAddress) {
-                        rowData.push('S')
-                        rowData.push(tx.to)
-                        rowData.push(value)
-                        //rowData.push(Math.pow(16, tx.value._hex))
-                        //rowData.push(tx.timestamp)
-                        rowData.push(tx.confirmations)
-                    } else {
-                        rowData.push('R')
-                        rowData.push(tx.from)
-                        rowData.push(value)
-                        //rowData.push(Math.pow(16, tx.value._hex))
-                        //rowData.push(tx.timestamp)
-                        rowData.push(tx.confirmations)
-                    }
-                    tableData.push(rowData)
+            return Apis.history.get_account_history(accountname, "1.8.0", 10, "1.8.0").then(history => {
+                console.log(history)
+                const tableData = [];        
+                history.forEach(e => {
+                    let rowData = [];
+                    rowData.push(e['op'][1]['from']);
+                    rowData.push(e['op'][1]['to']);
+                    rowData.push(e['op'][1]['amount']['amount']);
+                    rowData.push(e['block_num']);
+                    tableData.push(rowData);
                     
                 })
-                console.log('history----------->', tableData)
-                this.setState({ history: tableData })
-                return history
-            });
-        }
-        catch (ex) {
-            await this.setState({ isError: true })
-            if (ex.message)
-                await this.setState({ error: ex.message })
-        }
-    };
+                this.setState({history: tableData})
+            }).catch((error) => {
+                console.log(error)
+            })
+        })
 
+    }
 
     onCopyToClipboard = async () => {
         await Clipboard.setString(this.props.route.params.walletToken);
@@ -133,10 +107,9 @@ class EtherHistory extends Component {
     }
 
     render() {
-        console.log(this.props.route.params.walletToken, "Props")
         return (
             <BgView>
-                <Header.Back title="Ether History" onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
+                <Header.Back title='TUSC History' onBackPress={this.props.navigation.goBack} containerStyle={styles.header} />
                 <View style={styles.container}>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ paddingVertical: width * 0.02 }} />
@@ -205,4 +178,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default EtherHistory;
+export default TokenHistory;
